@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskDao taskDao;

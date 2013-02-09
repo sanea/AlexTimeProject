@@ -10,7 +10,7 @@ import ru.alex.webapp.model.UsersEntity;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
