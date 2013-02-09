@@ -31,12 +31,12 @@
         <authentication-provider user-service-ref="userService"/>
     </authentication-manager>
 
-    <!--&lt;!&ndash;TODO: replace with jdbc &ndash;&gt;-->
-    <!--<user-service id="userService">-->
-    <!--<user name="user1" password="1" authorities="ROLE_USER"/>-->
-    <!--<user name="user2" password="1" authorities="ROLE_USER"/>-->
-    <!--<user name="admin" password="1" authorities="ROLE_ADMIN"/>-->
-    <!--</user-service>-->
+    <!-- replaced with jdbc -->
+    <!--<user-service id="userService">
+    <user name="user1" password="1" authorities="ROLE_USER"/>
+    <user name="user2" password="1" authorities="ROLE_USER"/>
+    <user name="admin" password="1" authorities="ROLE_ADMIN"/>
+    </user-service>-->
 
     <jdbc-user-service id="userService"
                        data-source-ref="dataSource"

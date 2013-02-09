@@ -2,6 +2,7 @@ package ru.alex.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.TaskDao;
 import ru.alex.webapp.dao.UserDao;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskDao taskDao;
@@ -34,7 +35,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void startTask(Long taskId, String username) throws Exception {
         if (taskId == null || taskId.equals("") || username == null || username.equals(""))
             throw new Exception("Wrong input param");
@@ -66,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void endTask(Long taskId, String username) throws Exception {
         if (taskId == null || taskId.equals("") || username == null || username.equals(""))
             throw new Exception("Wrong input param");

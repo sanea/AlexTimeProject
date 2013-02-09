@@ -2,6 +2,7 @@ package ru.alex.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.UserDao;
 import ru.alex.webapp.model.UsersEntity;
@@ -9,7 +10,7 @@ import ru.alex.webapp.model.UsersEntity;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
@@ -20,7 +21,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<UsersEntity> getAllUsers() {
         return userDao.findAllUsers();
     }
@@ -35,16 +35,19 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void addUser(UsersEntity user) {
         userDao.addUser(user);
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void saveUser(UsersEntity user) {
         userDao.updateUser(user);
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(UsersEntity user) {
         userDao.deleteUser(user.getUsername());
     }
