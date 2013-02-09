@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <http pattern="/resources/**" security="none"/>
+    <http pattern="/login*" security="none"/>
+
+    <http use-expressions="true">
+        <!--<intercept-url pattern="/" access="permitAll" />-->
+        <intercept-url pattern="/user" access="hasRole('VIEW_USERS')"/>
+        <intercept-url pattern="/user/**" access="hasRole('EDIT_USERS')"/>
+        <intercept-url pattern="/task" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/task/start/**" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/task/end/**" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/task/**" access="hasRole('EDIT_TASKS')"/>
+        <intercept-url pattern="/stat/**" access="hasRole('STAT')"/>
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
+        <form-login login-page="/login" default-target-url="/" always-use-default-target="true"
+                    login-processing-url="/postlogin" authentication-failure-url="/login?login_error"/>
+        <logout logout-url="/logout" logout-success-url="/"/>
+        <!--<remember-me key="mssKey" token-validity-seconds="60"/>-->
+    </http>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userService"/>
+    </authentication-manager>
+
+    <!--&lt;!&ndash;TODO: replace with jdbc &ndash;&gt;-->
+    <!--<user-service id="userService">-->
+    <!--<user name="user1" password="1" authorities="ROLE_USER"/>-->
+    <!--<user name="user2" password="1" authorities="ROLE_USER"/>-->
+    <!--<user name="admin" password="1" authorities="ROLE_ADMIN"/>-->
+    <!--</user-service>-->
+
+    <jdbc-user-service id="userService"
+                       data-source-ref="dataSource"
+                       group-authorities-by-username-query="select g.id, g.group_name, ga.authority
+                    from groups g, group_members gm, group_authorities ga
+                    where gm.username = ? and g.id = ga.group_id and g.id = gm.group_id"
+                       users-by-username-query="SELECT username, password, enabled FROM users WHERE username = ?"
+                       authorities-by-username-query="SELECT gm.username, ga.authority
+                    FROM group_members gm, group_authorities ga
+                    WHERE gm.group_id = ga.group_id AND gm.username = ?"
+            />
+
+
+    <!--Enable @Secured({"ROLE_1", "ROLE_2"}) annotation-->
+    <global-method-security secured-annotations="enabled"/>
+
+</beans:beans>

@@ -1,0 +1,106 @@
+@CHARSET "UTF-8";
+
+body {
+    font: 100%/1.3 helvetica, arial, sans-serif;
+    color: #444;
+}
+
+h2, h3 {
+    color: #003D5D;
+}
+
+#container {
+    margin: 0 auto;
+    width: 100%;
+    background: #fff;
+}
+
+#header {
+    background: #ccc;
+    padding: 20px;
+}
+
+#header h1 {
+    margin: 0;
+}
+
+#langmenu {
+    float: right;
+}
+
+#navigation {
+    float: left;
+    width: 100%;
+    background: #333;
+}
+
+#navigation ul {
+    margin: 0;
+    padding: 0;
+}
+
+#navigation ul li {
+    list-style-type: none;
+    display: inline;
+}
+
+#navigation li a {
+    display: block;
+    float: left;
+    padding: 5px 10px;
+    color: #fff;
+    text-decoration: none;
+    border-right: 1px solid #fff;
+}
+
+#navigation li a:hover {
+    background: #383;
+}
+
+#navigation #profilebar {
+    float: right;
+    color: #fff;
+}
+
+#navigation #profilebar a {
+    color: #fff;
+}
+
+#content-container {
+    float: left;
+    width: 100%;
+    background: #FFF;
+}
+
+#content {
+    clear: left;
+    float: left;
+    width: 100%;
+    padding: 20px 0;
+    margin: 0 0 0 4%;
+    display: inline;
+}
+
+#content h2 {
+    margin: 0;
+}
+
+#taskbar {
+    float: right;
+    width: 16%;
+    padding: 20px 0;
+    margin: 0 3% 0 0;
+    display: inline;
+}
+
+#taskbar h3 {
+    margin: 0;
+}
+
+#footer {
+    clear: left;
+    background: #ccc;
+    text-align: right;
+    padding: 20px;
+    height: 1%;
+}
