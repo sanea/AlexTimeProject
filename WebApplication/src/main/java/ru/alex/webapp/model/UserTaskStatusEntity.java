@@ -1,21 +1,19 @@
 package ru.alex.webapp.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
 
 /**
  * User: Alexander.Isaenco
  * Date: 06.02.13
  * Time: 13:23
  */
-@javax.persistence.Table(name = "user_task_status", schema = "", catalog = "webapp")
+@Table(name = "user_task_status", schema = "", catalog = "webapp")
 @Entity
 public class UserTaskStatusEntity {
     public static enum TaskStatus {
-        IN_PROGRESS("p"), COMPLETED("c");
+        RUNNING("r"), COMPLETED("c"), PAUSED("p");
         private String status;
 
         private TaskStatus(String status) {
@@ -30,7 +28,7 @@ public class UserTaskStatusEntity {
 
     private long id;
 
-    @javax.persistence.Column(name = "id")
+    @Column(name = "id")
     @Id
     public long getId() {
         return id;
@@ -66,7 +64,7 @@ public class UserTaskStatusEntity {
 
     private String status;
 
-    @javax.persistence.Column(name = "status")
+    @Column(name = "status")
     @Basic
     public String getStatus() {
         return status;
@@ -78,7 +76,7 @@ public class UserTaskStatusEntity {
 
     private int timeSpent;
 
-    @javax.persistence.Column(name = "time_spent")
+    @Column(name = "time_spent")
     @Basic
     public int getTimeSpent() {
         return timeSpent;
@@ -86,30 +84,6 @@ public class UserTaskStatusEntity {
 
     public void setTimeSpent(int timeSpent) {
         this.timeSpent = timeSpent;
-    }
-
-    private Timestamp startTimestamp;
-
-    @javax.persistence.Column(name = "start_timestamp")
-    @Basic
-    public Timestamp getStartTimestamp() {
-        return startTimestamp;
-    }
-
-    public void setStartTimestamp(Timestamp startTimestamp) {
-        this.startTimestamp = startTimestamp;
-    }
-
-    private Timestamp endTimestamp;
-
-    @javax.persistence.Column(name = "end_timestamp")
-    @Basic
-    public Timestamp getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    public void setEndTimestamp(Timestamp endTimestamp) {
-        this.endTimestamp = endTimestamp;
     }
 
     @Override
@@ -122,9 +96,6 @@ public class UserTaskStatusEntity {
         if (id != that.id) return false;
 //        if (taskId != that.taskId) return false;
         if (timeSpent != that.timeSpent) return false;
-        if (endTimestamp != null ? !endTimestamp.equals(that.endTimestamp) : that.endTimestamp != null) return false;
-        if (startTimestamp != null ? !startTimestamp.equals(that.startTimestamp) : that.startTimestamp != null)
-            return false;
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
 //        if (username != null ? !username.equals(that.username) : that.username != null) return false;
 
@@ -138,15 +109,13 @@ public class UserTaskStatusEntity {
 //        result = 31 * result + (int) (taskId ^ (taskId >>> 32));
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + timeSpent;
-        result = 31 * result + (startTimestamp != null ? startTimestamp.hashCode() : 0);
-        result = 31 * result + (endTimestamp != null ? endTimestamp.hashCode() : 0);
         return result;
     }
 
     private TaskEntity taskByTaskId;
 
     @ManyToOne
-    @javax.persistence.JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     public TaskEntity getTaskByTaskId() {
         return taskByTaskId;
     }
@@ -158,12 +127,23 @@ public class UserTaskStatusEntity {
     private UsersEntity usersByUsername;
 
     @ManyToOne
-    @javax.persistence.JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     public UsersEntity getUsersByUsername() {
         return usersByUsername;
     }
 
     public void setUsersByUsername(UsersEntity usersByUsername) {
         this.usersByUsername = usersByUsername;
+    }
+
+    private Collection<UserActionEntity> userActionsById;
+
+    @OneToMany(mappedBy = "userTaskStatusByTaskStatusId")
+    public Collection<UserActionEntity> getUserActionsById() {
+        return userActionsById;
+    }
+
+    public void setUserActionsById(Collection<UserActionEntity> userActionsById) {
+        this.userActionsById = userActionsById;
     }
 }

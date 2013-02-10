@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 /**
@@ -63,16 +64,28 @@ public class TaskEntity {
         this.taskType = taskType;
     }
 
-    private int taskPrice;
+    private BigDecimal taskPrice;
 
     @Column(name = "task_price")
     @Basic
-    public int getTaskPrice() {
+    public BigDecimal getTaskPrice() {
         return taskPrice;
     }
 
-    public void setTaskPrice(int taskPrice) {
+    public void setTaskPrice(BigDecimal taskPrice) {
         this.taskPrice = taskPrice;
+    }
+
+    private String taskEnabled;
+
+    @Column(name = "task_enabled")
+    @Basic
+    public String getTaskEnabled() {
+        return taskEnabled;
+    }
+
+    public void setTaskEnabled(String taskEnabled) {
+        this.taskEnabled = taskEnabled;
     }
 
     @Override
@@ -95,7 +108,7 @@ public class TaskEntity {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
         result = 31 * result + taskType;
-        result = 31 * result + taskPrice;
+        result = 31 * result + taskPrice.intValue();
         return result;
     }
 
@@ -132,4 +145,5 @@ public class TaskEntity {
     public void setActiveForUser(boolean activeForUser) {
         this.activeForUser = activeForUser;
     }
+
 }

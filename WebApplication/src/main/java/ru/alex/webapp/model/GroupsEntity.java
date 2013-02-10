@@ -57,25 +57,25 @@ public class GroupsEntity {
         return result;
     }
 
-    private Collection<GroupAuthoritiesEntity> groupAuthoritiesesById;
+    private Collection<GroupAuthoritiesEntity> groupAuthoritiesById;
 
     @OneToMany(mappedBy = "groupsByGroupId")
-    public Collection<GroupAuthoritiesEntity> getGroupAuthoritiesesById() {
-        return groupAuthoritiesesById;
+    public Collection<GroupAuthoritiesEntity> getGroupAuthoritiesById() {
+        return groupAuthoritiesById;
     }
 
-    public void setGroupAuthoritiesesById(Collection<GroupAuthoritiesEntity> groupAuthoritiesesById) {
-        this.groupAuthoritiesesById = groupAuthoritiesesById;
+    public void setGroupAuthoritiesById(Collection<GroupAuthoritiesEntity> groupAuthoritiesById) {
+        this.groupAuthoritiesById = groupAuthoritiesById;
     }
 
-    private Collection<GroupMembersEntity> groupMembersesById;
+    private Collection<GroupMembersEntity> groupMembersById;
 
     @OneToMany(mappedBy = "groupsByGroupId")
-    public Collection<GroupMembersEntity> getGroupMembersesById() {
-        return groupMembersesById;
+    public Collection<GroupMembersEntity> getGroupMembersById() {
+        return groupMembersById;
     }
 
-    public void setGroupMembersesById(Collection<GroupMembersEntity> groupMembersesById) {
-        this.groupMembersesById = groupMembersesById;
+    public void setGroupMembersById(Collection<GroupMembersEntity> groupMembersById) {
+        this.groupMembersById = groupMembersById;
     }
 }

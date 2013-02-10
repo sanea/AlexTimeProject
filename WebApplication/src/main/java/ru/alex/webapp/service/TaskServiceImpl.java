@@ -56,12 +56,12 @@ public class TaskServiceImpl implements TaskService {
         UserTaskStatusEntity taskStatus = new UserTaskStatusEntity();
         taskStatus.setTaskByTaskId(task);
         taskStatus.setUsersByUsername(user);
-        taskStatus.setStartTimestamp(now);
+        //taskStatus.setStartTimestamp(now);
         if (task.getTaskType() == TaskEntity.TaskType.Process.getType()) {
-            taskStatus.setStatus(UserTaskStatusEntity.TaskStatus.IN_PROGRESS.getStatus());
+            taskStatus.setStatus(UserTaskStatusEntity.TaskStatus.RUNNING.getStatus());
         } else if (task.getTaskType() == TaskEntity.TaskType.Task.getType()) {
             taskStatus.setStatus(UserTaskStatusEntity.TaskStatus.COMPLETED.getStatus());
-            taskStatus.setEndTimestamp(now);
+            //taskStatus.setEndTimestamp(now);
         }
         taskDao.addTaskStatus(taskStatus);
     }
@@ -86,9 +86,9 @@ public class TaskServiceImpl implements TaskService {
 
         Timestamp now = new Timestamp(new Date().getTime());
         for (UserTaskStatusEntity activeTask : activeTasks) {
-            activeTask.setEndTimestamp(now);
-            long timeSpent = now.getTime() - activeTask.getStartTimestamp().getTime();
-            activeTask.setTimeSpent((int) timeSpent / 60000);
+            //activeTask.setEndTimestamp(now);
+            //long timeSpent = now.getTime() - activeTask.getStartTimestamp().getTime();
+            //activeTask.setTimeSpent((int) timeSpent / 60000);
             activeTask.setStatus(UserTaskStatusEntity.TaskStatus.COMPLETED.getStatus());
             taskDao.updateTaskStatus(activeTask);
         }

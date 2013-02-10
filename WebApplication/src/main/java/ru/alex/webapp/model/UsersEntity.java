@@ -71,15 +71,15 @@ public class UsersEntity {
         return result;
     }
 
-    private Collection<GroupMembersEntity> groupMembersesByUsername;
+    private Collection<GroupMembersEntity> groupMembersByUsername;
 
     @OneToMany(mappedBy = "usersByUsername")
-    public Collection<GroupMembersEntity> getGroupMembersesByUsername() {
-        return groupMembersesByUsername;
+    public Collection<GroupMembersEntity> getGroupMembersByUsername() {
+        return groupMembersByUsername;
     }
 
-    public void setGroupMembersesByUsername(Collection<GroupMembersEntity> groupMembersesByUsername) {
-        this.groupMembersesByUsername = groupMembersesByUsername;
+    public void setGroupMembersByUsername(Collection<GroupMembersEntity> groupMembersByUsername) {
+        this.groupMembersByUsername = groupMembersByUsername;
     }
 
     private Collection<UserTaskEntity> userTasksByUsername;

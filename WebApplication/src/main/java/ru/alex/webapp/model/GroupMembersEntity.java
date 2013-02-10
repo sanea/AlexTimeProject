@@ -93,5 +93,4 @@ public class GroupMembersEntity {
     public void setUsersByUsername(UsersEntity usersByUsername) {
         this.usersByUsername = usersByUsername;
     }
-
 }

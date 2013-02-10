@@ -41,7 +41,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public TaskEntity getTask(long id) {
-        return (TaskEntity) currentSession().get(TaskEntity.class, new Long(id));
+        return (TaskEntity) currentSession().get(TaskEntity.class, id);
     }
 
     @Override
@@ -72,16 +72,16 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public List<UserTaskStatusEntity> getActiveTasks(String username) {
-        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st where st.usersByUsername.username = :username AND st.status = :status").setParameter("username", username).setParameter("status", UserTaskStatusEntity.TaskStatus.IN_PROGRESS.getStatus()).list();
+        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st where st.usersByUsername.username = :username AND st.status = :status").setParameter("username", username).setParameter("status", UserTaskStatusEntity.TaskStatus.RUNNING.getStatus()).list();
     }
 
     @Override
     public List<UserTaskStatusEntity> getActiveTasks(String username, Long taskId) {
-        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st where st.usersByUsername.username = :username AND st.taskByTaskId.id = :taskId AND st.status = :status").setParameter("username", username).setParameter("taskId", taskId).setParameter("status", UserTaskStatusEntity.TaskStatus.IN_PROGRESS.getStatus()).list();
+        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st where st.usersByUsername.username = :username AND st.taskByTaskId.id = :taskId AND st.status = :status").setParameter("username", username).setParameter("taskId", taskId).setParameter("status", UserTaskStatusEntity.TaskStatus.RUNNING.getStatus()).list();
     }
 
     @Override
     public List<UserTaskStatusEntity> getAllTaskStatus() {
-        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st ORDER BY st.endTimestamp").list();
+        return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st").list();
     }
 }
