@@ -56,11 +56,10 @@
         <div class="container">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <sec:authorize access="hasRole('MANAGE_TASK')"><span class="icon-bar"></span></sec:authorize>
+                <sec:authorize access="hasRole('STAT')"><span class="icon-bar"></span></sec:authorize>
+                <sec:authorize access="hasRole('EDIT_TASKS')"><span class="icon-bar"></span></sec:authorize>
+                <sec:authorize access="hasRole('EDIT_USERS')"><span class="icon-bar"></span></sec:authorize>
                 <span class="icon-bar"></span>
             </a>
 
@@ -69,35 +68,11 @@
             <div class="nav-collapse collapse">
                 <ul class="nav" id="nav">
                     <li class="active"><a href='<s:url value="/" htmlEscape="true"/>'>Home</a></li>
-                    <sec:authorize access="hasRole('VIEW_USERS')">
-                        <li>
-                            <a href="#user"
-                               onclick="loadContent('<s:url value="/user" htmlEscape="true"/>', this); return false;">
-                                User List
-                            </a>
-                        </li>
-                    </sec:authorize>
                     <sec:authorize access="hasRole('MANAGE_TASK')">
                         <li>
                             <a href="#user"
                                onclick="loadContent('<s:url value="/task" htmlEscape="true"/>', this); return false;">
-                                Task List
-                            </a>
-                        </li>
-                    </sec:authorize>
-                    <sec:authorize access="hasRole('EDIT_USERS')">
-                        <li>
-                            <a href="#user" onclick="loadContent('<s:url value="/user/list"
-                                                                         htmlEscape="true"/>', this); return false;">
-                                Users Edit
-                            </a>
-                        </li>
-                    </sec:authorize>
-                    <sec:authorize access="hasRole('EDIT_TASKS')">
-                        <li>
-                            <a href="#user" onclick="loadContent('<s:url value="/task/list"
-                                                                         htmlEscape="true"/>', this); return false;">
-                                Tasks Edit
+                                Assigned tasks
                             </a>
                         </li>
                     </sec:authorize>
@@ -106,6 +81,20 @@
                             <a href="#user"
                                onclick="loadContent('<s:url value="/stat" htmlEscape="true"/>', this); return false;">
                                 Statistics
+                            </a>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('EDIT_TASKS')">
+                        <li>
+                            <a href="#user" onclick="loadContent('<s:url value="/task/edit" htmlEscape="true"/>', this); return false;">
+                                Tasks Edit
+                            </a>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('EDIT_USERS')">
+                        <li>
+                            <a href="#user" onclick="loadContent('<s:url value="/user" htmlEscape="true"/>', this); return false;">
+                                Users Edit
                             </a>
                         </li>
                     </sec:authorize>

@@ -13,11 +13,11 @@
 
     <http use-expressions="true">
         <!--<intercept-url pattern="/" access="permitAll" />-->
-        <intercept-url pattern="/user" access="hasRole('VIEW_USERS')"/>
         <intercept-url pattern="/user/**" access="hasRole('EDIT_USERS')"/>
         <intercept-url pattern="/task" access="hasRole('MANAGE_TASK')"/>
         <intercept-url pattern="/task/start/**" access="hasRole('MANAGE_TASK')"/>
-        <intercept-url pattern="/task/end/**" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/task/pause/**" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/task/extend/**" access="hasRole('MANAGE_TASK')"/>
         <intercept-url pattern="/task/**" access="hasRole('EDIT_TASKS')"/>
         <intercept-url pattern="/stat/**" access="hasRole('STAT')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>

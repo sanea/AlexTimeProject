@@ -28,17 +28,17 @@ public class UserActionEntity {
         this.id = id;
     }
 
-    private long taskStatusId;
+//    private long taskStatusId;
 
-    @javax.persistence.Column(name = "task_status_id")
-    @Basic
-    public long getTaskStatusId() {
-        return taskStatusId;
-    }
-
-    public void setTaskStatusId(long taskStatusId) {
-        this.taskStatusId = taskStatusId;
-    }
+//    @javax.persistence.Column(name = "task_status_id")
+//    @Basic
+//    public long getTaskStatusId() {
+//        return taskStatusId;
+//    }
+//
+//    public void setTaskStatusId(long taskStatusId) {
+//        this.taskStatusId = taskStatusId;
+//    }
 
     private Timestamp timestamp;
 
@@ -85,7 +85,7 @@ public class UserActionEntity {
 
         if (deltaTime != that.deltaTime) return false;
         if (id != that.id) return false;
-        if (taskStatusId != that.taskStatusId) return false;
+//        if (taskStatusId != that.taskStatusId) return false;
         if (action != null ? !action.equals(that.action) : that.action != null) return false;
         if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
 
@@ -95,7 +95,7 @@ public class UserActionEntity {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (taskStatusId ^ (taskStatusId >>> 32));
+//        result = 31 * result + (int) (taskStatusId ^ (taskStatusId >>> 32));
         result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
         result = 31 * result + (action != null ? action.hashCode() : 0);
         result = 31 * result + deltaTime;
