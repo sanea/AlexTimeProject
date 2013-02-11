@@ -63,9 +63,12 @@
                 <span class="icon-bar"></span>
             </a>
 
-            <div class="brand" style="color: #ffffff;">Web Application</div>
+            <a class="brand" style="color: #ffffff;" href='<s:url value="/" htmlEscape="true"/>'>Web Application</a>
 
             <div class="nav-collapse collapse">
+                <p class="navbar-text pull-right">
+                    Logged in as <a href="#" class="navbar-link"><sec:authentication property="principal.username"/></a>
+                </p>
                 <ul class="nav" id="nav">
                     <li class="active"><a href='<s:url value="/" htmlEscape="true"/>'>Home</a></li>
                     <sec:authorize access="hasRole('MANAGE_TASK')">
@@ -107,7 +110,7 @@
 
 <div class="container">
     <div class="page-header">
-        <h1><fmt:message key="welcome.title"/> <sec:authentication property="principal.username"/></h1>
+        <h1><fmt:message key="welcome.title"/></h1>
     </div>
     <div id="loadingImg" style="width: 32px; height: 32px; margin: 0 auto; display:none;">
         <img src="resources/images/loading.gif" alt="loading"/>
@@ -119,6 +122,12 @@
     </div>
     <div id="error" class="alert alert-error" style="display: none;">
     </div>
+
+    <hr/>
+    <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2013 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </footer>
 </div>
 
 
