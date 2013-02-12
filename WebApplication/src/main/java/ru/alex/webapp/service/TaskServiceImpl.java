@@ -34,9 +34,10 @@ public class TaskServiceImpl implements TaskService {
         return tasks;
     }
 
+
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void startTask(Long taskId, String username) throws Exception {
+    public void startTask(Long taskId, String username, int seconds) throws Exception {
         if (taskId == null || taskId.equals("") || username == null || username.equals(""))
             throw new Exception("Wrong input param");
         UsersEntity user = userDao.getUserByUsername(username);
@@ -48,7 +49,7 @@ public class TaskServiceImpl implements TaskService {
         UserTaskEntity userTask = taskDao.getTaskForUser(username, taskId);
         if (userTask == null)
             throw new Exception("User " + username + " doesn't have task " + taskId);
-        List<UserTaskStatusEntity> activeTasks = taskDao.getActiveTasks(username, taskId);
+//        List<UserTaskStatusEntity> activeTasks = taskDao.getActiveTasks(username, taskId);
         if (activeTasks.size() > 0)
             throw new Exception("Can't start tasks when there is task in progress");
 
@@ -68,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void endTask(Long taskId, String username) throws Exception {
+    public void pauseTask(Long taskId, String username) throws Exception {
         if (taskId == null || taskId.equals("") || username == null || username.equals(""))
             throw new Exception("Wrong input param");
         UsersEntity user = userDao.getUserByUsername(username);
@@ -92,6 +93,11 @@ public class TaskServiceImpl implements TaskService {
             activeTask.setStatus(UserTaskStatusEntity.TaskStatus.COMPLETED.getStatus());
             taskDao.updateTaskStatus(activeTask);
         }
+    }
+
+    @Override
+    public void extendTask(Long taskId, String username, int seconds) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

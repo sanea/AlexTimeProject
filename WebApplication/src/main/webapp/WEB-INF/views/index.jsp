@@ -29,8 +29,21 @@
                 $('#ajaxContent').empty();
                 $("#error").html("Error requesting page.").show();
             });
+            //close error on click
             $('#error').click(function () {
                 $(this).empty().hide();
+            });
+            //back to top button
+            $(window).scroll(function() {
+                if($(this).scrollTop() != 0) {
+                    $('#backToTop').fadeIn();
+                } else {
+                    $('#backToTop').fadeOut();
+                }
+            });
+            $('#backToTop').click(function() {
+                $('body,html').animate({scrollTop:0},800);
+                return false;
             });
         });
 
@@ -42,7 +55,7 @@
                 $("#loadingImg").hide();
                 $("#nav li").removeClass("active");
                 if (activeEl)
-                    $(activeEl).parent().addClass("active");
+                    $(activeEl).addClass("active");
             });
 
             return false;
@@ -74,29 +87,38 @@
                     <sec:authorize access="hasRole('MANAGE_TASK')">
                         <li>
                             <a href="#user"
-                               onclick="loadContent('<s:url value="/task" htmlEscape="true"/>', this); return false;">
+                               onclick="loadContent('<s:url value="/task" htmlEscape="true"/>', $(this).parent()); return false;">
                                 Assigned tasks
                             </a>
                         </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('STAT')">
-                        <li>
-                            <a href="#user"
-                               onclick="loadContent('<s:url value="/stat" htmlEscape="true"/>', this); return false;">
-                                Statistics
-                            </a>
+                        <li class="dropdown" id="statNav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#user" onclick="loadContent('<s:url value="/stat" htmlEscape="true"/>', document.getElementById('statNav')); return false;">
+                                        Online tasks
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#user" onclick="loadContent('<s:url value="/stat/all" htmlEscape="true"/>', document.getElementById('statNav')); return false;">
+                                        General Stat
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('EDIT_TASKS')">
                         <li>
-                            <a href="#user" onclick="loadContent('<s:url value="/task/edit" htmlEscape="true"/>', this); return false;">
+                            <a href="#user" onclick="loadContent('<s:url value="/task/edit" htmlEscape="true"/>', $(this).parent()); return false;">
                                 Tasks Edit
                             </a>
                         </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('EDIT_USERS')">
                         <li>
-                            <a href="#user" onclick="loadContent('<s:url value="/user" htmlEscape="true"/>', this); return false;">
+                            <a href="#user" onclick="loadContent('<s:url value="/user" htmlEscape="true"/>', $(this).parent()); return false;">
                                 Users Edit
                             </a>
                         </li>
@@ -117,7 +139,12 @@
     </div>
 
     <div id="ajaxContent">
-        <p>Here will be some description of the project<br/>
+        <p>Here will be some description of the project<br/><br/><br/><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
             And here also we will write what to do!</p>
     </div>
     <div id="error" class="alert alert-error" style="display: none;">
@@ -125,9 +152,25 @@
 
     <hr/>
     <footer>
-        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p class="pull-right"><a id="backToTop" href="#" style="display: none;">Back to top</a></p>
         <p>&copy; 2013 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
     </footer>
+</div>
+
+
+<!-- Modal -->
+<div id="dialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="dialogHeader">Modal header</h3>
+    </div>
+    <div class="modal-body">
+        <p>One fine body…</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary">Save changes</button>
+    </div>
 </div>
 
 

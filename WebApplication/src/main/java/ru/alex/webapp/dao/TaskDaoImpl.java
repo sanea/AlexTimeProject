@@ -76,7 +76,7 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public List<UserTaskStatusEntity> getActiveTasks(String username, Long taskId) {
+    public List<UserTaskStatusEntity> getActiveTask(String username, Long taskId) {
         return currentSession().createQuery("SELECT st FROM UserTaskStatusEntity st where st.usersByUsername.username = :username AND st.taskByTaskId.id = :taskId AND st.status = :status").setParameter("username", username).setParameter("taskId", taskId).setParameter("status", UserTaskStatusEntity.TaskStatus.RUNNING.getStatus()).list();
     }
 

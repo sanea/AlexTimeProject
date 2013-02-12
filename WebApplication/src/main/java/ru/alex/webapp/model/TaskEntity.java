@@ -134,16 +134,4 @@ public class TaskEntity {
         this.userTaskStatusesById = userTaskStatusesById;
     }
 
-
-    private boolean activeForUser;
-
-    @Transient
-    public boolean isActiveForUser() {
-        return activeForUser;
-    }
-
-    public void setActiveForUser(boolean activeForUser) {
-        this.activeForUser = activeForUser;
-    }
-
 }

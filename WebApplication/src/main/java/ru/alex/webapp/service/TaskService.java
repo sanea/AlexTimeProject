@@ -8,9 +8,11 @@ import java.util.List;
 public interface TaskService {
     List<UserTaskEntity> getTasksForUser(String username);
 
-    void startTask(Long taskId, String username) throws Exception;
+    void startTask(Long taskId, String username, int seconds) throws Exception;
 
-    void endTask(Long taskId, String username) throws Exception;
+    void pauseTask(Long taskId, String username) throws Exception;
+
+    void extendTask(Long taskId, String username, int seconds) throws Exception;
 
     List<UserTaskStatusEntity> getAllTaskStatus();
 }

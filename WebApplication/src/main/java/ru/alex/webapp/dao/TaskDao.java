@@ -6,13 +6,6 @@ import ru.alex.webapp.model.UserTaskStatusEntity;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Alex
- * Date: 06.02.13
- * Time: 1:33
- * To change this template use File | Settings | File Templates.
- */
 public interface TaskDao {
     void addTak(TaskEntity task);
 
@@ -32,7 +25,7 @@ public interface TaskDao {
 
     void updateTaskStatus(UserTaskStatusEntity entity);
 
-    List<UserTaskStatusEntity> getActiveTasks(String username, Long taskId);
+    List<UserTaskStatusEntity> getActiveTask(String username, Long taskId);
 
     List<UserTaskStatusEntity> getActiveTasks(String username);
 

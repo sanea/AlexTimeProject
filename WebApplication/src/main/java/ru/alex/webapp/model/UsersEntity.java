@@ -1,6 +1,8 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 
 /**
@@ -28,7 +30,6 @@ public class UsersEntity {
     private String password;
 
     @Column(name = "password")
-    @Basic
     public String getPassword() {
         return password;
     }

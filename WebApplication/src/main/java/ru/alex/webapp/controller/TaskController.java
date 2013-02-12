@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.alex.webapp.service.TaskService;
 
 
@@ -23,16 +24,19 @@ public class TaskController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String showTasks(Model model) {
+        logger.debug("showTasks for user ");
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        logger.debug(user);
         model.addAttribute("taskList", taskService.getTasksForUser(user.getUsername()));
         return "task/userTask";
     }
 
     @RequestMapping(value = "/start/{taskId}", method = RequestMethod.GET)
-    public String startTask(@PathVariable String taskId, Model model) {
+    public String startTask(@PathVariable String taskId, @RequestParam int timeMinutes, Model model) {
+        logger.debug("startTask " + taskId + " " + timeMinutes);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            taskService.startTask(Long.parseLong(taskId), user.getUsername());
+            taskService.startTask(Long.parseLong(taskId), user.getUsername(), timeMinutes * 60);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";
@@ -41,11 +45,40 @@ public class TaskController {
         return "task/userTask";
     }
 
-    @RequestMapping(value = "/end/{taskId}", method = RequestMethod.GET)
-    public String endTask(@PathVariable String taskId, Model model) {
+    @RequestMapping(value = "/pause/{taskId}", method = RequestMethod.GET)
+    public String pauseTask(@PathVariable String taskId, Model model) {
+        logger.debug("pauseTask " + taskId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            taskService.endTask(Long.parseLong(taskId), user.getUsername());
+            taskService.pauseTask(Long.parseLong(taskId), user.getUsername());
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+        model.addAttribute("taskList", taskService.getTasksForUser(user.getUsername()));
+        return "task/userTask";
+    }
+
+    @RequestMapping(value = "/resume/{taskId}", method = RequestMethod.GET)
+    public String resumeTask(@PathVariable String taskId, Model model) {
+        logger.debug("resumeTask " + taskId);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            taskService.pauseTask(Long.parseLong(taskId), user.getUsername());
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+        model.addAttribute("taskList", taskService.getTasksForUser(user.getUsername()));
+        return "task/userTask";
+    }
+
+    @RequestMapping(value = "/extend/{taskId}", method = RequestMethod.GET)
+    public String extendTask(@PathVariable String taskId, @RequestParam int timeMinutes, Model model) {
+        logger.debug("extendTask " + taskId + " " + timeMinutes);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            taskService.extendTask(Long.parseLong(taskId), user.getUsername(), timeMinutes * 60);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";
