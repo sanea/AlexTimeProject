@@ -5,15 +5,11 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Alex
- * Date: 06.02.13
- * Time: 2:11
- * To change this template use File | Settings | File Templates.
+ * @author Alexander.Isaenco
  */
-@Table(name = "task", schema = "", catalog = "webapp")
+@Table(name = "task")
 @Entity
-public class TaskEntity {
+public class Task {
     public static enum TaskType {
         Process(1), Task(2);
         private int type;
@@ -25,25 +21,39 @@ public class TaskEntity {
         public int getType() {
             return type;
         }
-
     }
 
-    private long id;
-
-    @Column(name = "id")
     @Id
-    public long getId() {
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "task_name", nullable = false, length = 50)
+    private String taskName;
+
+    @Column(name = "task_type", nullable = false, length = 1)
+    private int taskType;
+
+    @Column(name = "task_price", nullable = false, updatable = false)
+    private BigDecimal taskPrice;
+
+    @Column(name = "task_enabled", nullable = false, length = 1)
+    private String taskEnabled;
+
+    @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Collection<UserTask> userTasksById;
+
+    @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Collection<UserTaskStatus> userTaskStatusesById;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    private String taskName;
-
-    @Column(name = "task_name")
-    @Basic
     public String getTaskName() {
         return taskName;
     }
@@ -52,10 +62,7 @@ public class TaskEntity {
         this.taskName = taskName;
     }
 
-    private int taskType;
 
-    @Column(name = "task_type")
-    @Basic
     public int getTaskType() {
         return taskType;
     }
@@ -64,10 +71,7 @@ public class TaskEntity {
         this.taskType = taskType;
     }
 
-    private BigDecimal taskPrice;
 
-    @Column(name = "task_price")
-    @Basic
     public BigDecimal getTaskPrice() {
         return taskPrice;
     }
@@ -76,10 +80,7 @@ public class TaskEntity {
         this.taskPrice = taskPrice;
     }
 
-    private String taskEnabled;
 
-    @Column(name = "task_enabled")
-    @Basic
     public String getTaskEnabled() {
         return taskEnabled;
     }
@@ -93,7 +94,7 @@ public class TaskEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TaskEntity that = (TaskEntity) o;
+        Task that = (Task) o;
 
         if (id != that.id) return false;
         if (taskPrice != that.taskPrice) return false;
@@ -112,25 +113,19 @@ public class TaskEntity {
         return result;
     }
 
-    private Collection<UserTaskEntity> userTasksById;
-
-    @OneToMany(mappedBy = "taskByTaskId")
-    public Collection<UserTaskEntity> getUserTasksById() {
+    public Collection<UserTask> getUserTasksById() {
         return userTasksById;
     }
 
-    public void setUserTasksById(Collection<UserTaskEntity> userTasksById) {
+    public void setUserTasksById(Collection<UserTask> userTasksById) {
         this.userTasksById = userTasksById;
     }
 
-    private Collection<UserTaskStatusEntity> userTaskStatusesById;
-
-    @OneToMany(mappedBy = "taskByTaskId")
-    public Collection<UserTaskStatusEntity> getUserTaskStatusesById() {
+    public Collection<UserTaskStatus> getUserTaskStatusesById() {
         return userTaskStatusesById;
     }
 
-    public void setUserTaskStatusesById(Collection<UserTaskStatusEntity> userTaskStatusesById) {
+    public void setUserTaskStatusesById(Collection<UserTaskStatus> userTaskStatusesById) {
         this.userTaskStatusesById = userTaskStatusesById;
     }
 

@@ -4,31 +4,34 @@ import javax.persistence.*;
 import java.util.Collection;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Alex
- * Date: 06.02.13
- * Time: 2:11
- * To change this template use File | Settings | File Templates.
+ * @author Alexander.Isaenco
  */
-@Table(name = "groups", schema = "", catalog = "webapp")
+@Table(name = "groups")
 @Entity
-public class GroupsEntity {
-    private long id;
-
-    @Column(name = "id")
+public class Groups {
     @Id
-    public long getId() {
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "group_name", nullable = false, length = 50)
+    private String groupName;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupsByGroupId")
+    private Collection<GroupAuthorities> groupAuthoritiesById;
+
+    @OneToMany(mappedBy = "groupsByGroupId")
+    private Collection<GroupMembers> groupMembersById;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    private String groupName;
 
-    @Column(name = "group_name")
-    @Basic
     public String getGroupName() {
         return groupName;
     }
@@ -42,7 +45,7 @@ public class GroupsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GroupsEntity that = (GroupsEntity) o;
+        Groups that = (Groups) o;
 
         if (id != that.id) return false;
         if (groupName != null ? !groupName.equals(that.groupName) : that.groupName != null) return false;
@@ -57,25 +60,21 @@ public class GroupsEntity {
         return result;
     }
 
-    private Collection<GroupAuthoritiesEntity> groupAuthoritiesById;
 
-    @OneToMany(mappedBy = "groupsByGroupId")
-    public Collection<GroupAuthoritiesEntity> getGroupAuthoritiesById() {
+    public Collection<GroupAuthorities> getGroupAuthoritiesById() {
         return groupAuthoritiesById;
     }
 
-    public void setGroupAuthoritiesById(Collection<GroupAuthoritiesEntity> groupAuthoritiesById) {
+    public void setGroupAuthoritiesById(Collection<GroupAuthorities> groupAuthoritiesById) {
         this.groupAuthoritiesById = groupAuthoritiesById;
     }
 
-    private Collection<GroupMembersEntity> groupMembersById;
 
-    @OneToMany(mappedBy = "groupsByGroupId")
-    public Collection<GroupMembersEntity> getGroupMembersById() {
+    public Collection<GroupMembers> getGroupMembersById() {
         return groupMembersById;
     }
 
-    public void setGroupMembersById(Collection<GroupMembersEntity> groupMembersById) {
+    public void setGroupMembersById(Collection<GroupMembers> groupMembersById) {
         this.groupMembersById = groupMembersById;
     }
 }

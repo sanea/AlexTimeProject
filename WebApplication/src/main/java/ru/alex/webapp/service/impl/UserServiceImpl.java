@@ -1,11 +1,12 @@
-package ru.alex.webapp.service;
+package ru.alex.webapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.model.UsersEntity;
+import ru.alex.webapp.model.Users;
+import ru.alex.webapp.service.UserService;
 
 import java.util.List;
 
@@ -16,18 +17,19 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public UsersEntity getUser(String username) {
-        return userDao.getUserByUsername(username);
+    public Users getUser(String username) {
+//        return userDao.getUserByUsername(username);
+        return  null;
     }
 
     @Override
-    public List<UsersEntity> getAllUsers() {
-        return userDao.findAllUsers();
+    public List<Users> getAllUsers() {
+        return userDao.findAll();
     }
 
 //    @Override
-//    public UsersEntity authenticate(String username, String password) {
-//        UsersEntity ue = getUser(username);
+//    public Users authenticate(String username, String password) {
+//        Users ue = getUser(username);
 //        if (ue != null && ue.isEnabled() && ue.getPassword().equals(password))
 //            return ue;
 //        else
@@ -36,19 +38,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void addUser(UsersEntity user) {
-        userDao.addUser(user);
+    public void addUser(Users user) {
+//        userDao.addUser(user);
+        return;
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void saveUser(UsersEntity user) {
-        userDao.updateUser(user);
+    public void saveUser(Users user) {
+//        userDao.updateUser(user);
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void deleteUser(UsersEntity user) {
-        userDao.deleteUser(user.getUsername());
+    public void deleteUser(Users user) {
+//        userDao.deleteUser(user.getUsername());
     }
 }

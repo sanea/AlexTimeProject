@@ -1,22 +1,11 @@
 package ru.alex.webapp.dao;
 
-import ru.alex.webapp.model.UsersEntity;
+import ru.alex.webapp.model.Users;
 
 import java.util.List;
 
 /**
- * User: Alexander.Isaenco
- * Date: 05.02.13
- * Time: 19:44
+ * @author Alexander.Isaenco
  */
-public interface UserDao {
-    void addUser(UsersEntity user);
-
-    void updateUser(UsersEntity user);
-
-    UsersEntity getUserByUsername(String username);
-
-    void deleteUser(String username);
-
-    List<UsersEntity> findAllUsers();
+public interface UserDao extends GenericDAO<Users, String> {
 }

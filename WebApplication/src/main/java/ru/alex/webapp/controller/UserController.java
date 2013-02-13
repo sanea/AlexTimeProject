@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import ru.alex.webapp.model.UsersEntity;
+import ru.alex.webapp.model.Users;
 import ru.alex.webapp.service.UserService;
 
 @Controller
@@ -27,7 +27,7 @@ public class UserController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET, headers = {"Accept=text/html"})
     public String showUser(@PathVariable String username, Model model) {
-        UsersEntity user = userService.getUser(username);
+        Users user = userService.getUser(username);
         model.addAttribute(user);
         return "user/view";
     }

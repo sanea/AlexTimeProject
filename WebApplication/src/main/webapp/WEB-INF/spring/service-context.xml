@@ -14,6 +14,7 @@
     <context:component-scan base-package="ru.alex.webapp.dao"/>
     <context:component-scan base-package="ru.alex.webapp.service"/>
 
+    <!-- Hibernate without JPA
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="ru.alex.webapp.model"/>
@@ -21,20 +22,38 @@
             <props>
                 <prop key="dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <!--<prop key="javax.persistence.validation.mode">none</prop>-->
             </props>
         </property>
     </bean>
-
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
+    -->
+
+    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="persistenceUnitName" value="webapp" />
+        <property name="packagesToScan" value="ru.alex.webapp.model" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="true" />
+                <property name="generateDdl" value="false"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="emf" />
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- bean_exception_translation_post_processor -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
-    <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
-    <!--<annotation-config />-->
 
 </beans>
