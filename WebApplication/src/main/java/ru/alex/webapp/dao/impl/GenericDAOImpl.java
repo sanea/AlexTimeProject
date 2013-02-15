@@ -1,8 +1,6 @@
 package ru.alex.webapp.dao.impl;
 
-import org.hibernate.LockOptions;
-import org.hibernate.Session;
-import ru.alex.webapp.dao.GenericDAO;
+import ru.alex.webapp.dao.GenericDao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -14,14 +12,14 @@ import java.util.List;
 /**
  * @author Alexander.Isaenco
  */
-public abstract class GenericDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID> {
+public abstract class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T, ID> {
 
     private Class<T> entityBeanType;
 
     @PersistenceContext
     private EntityManager em;
 
-    public GenericDAOImpl() {
+    public GenericDaoImpl() {
         this.entityBeanType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 

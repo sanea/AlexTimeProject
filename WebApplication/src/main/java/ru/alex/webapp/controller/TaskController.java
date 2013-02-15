@@ -87,4 +87,22 @@ public class TaskController {
         return "task/userTask";
     }
 
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String listEditTask(Model model) {
+        logger.debug("listEditTask");
+        try {
+
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+        return "task/list";
+    }
+
+    @RequestMapping(value = "/edit/{taskId}", method = RequestMethod.GET)
+    public String editTask(@PathVariable String taskId, Model model) {
+
+        return "task/edit";
+    }
+
 }

@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * @author Alexander.Isaenco
  */
-public interface GenericDAO<T, ID extends Serializable> {
+public interface GenericDao<T, ID extends Serializable> {
 
     T findById(ID id, boolean lock);
 
