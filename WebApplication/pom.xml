@@ -13,7 +13,17 @@
         <mysql.connector.version>5.1.22</mysql.connector.version>
         <log4j.version>1.2.15</log4j.version>
         <org.hibernate.version>4.1.0.Final</org.hibernate.version>
+        <com.sun.faces.version>2.1.17</com.sun.faces.version>
+        <org.primefaces.version>3.5</org.primefaces.version>
     </properties>
+    <repositories>
+        <repository>
+            <id>prime-repo</id>
+            <name>PrimeFaces Maven Repository</name>
+            <url>http://repository.primefaces.org</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- Spring -->
         <dependency>
@@ -88,8 +98,18 @@
             <version>1</version>
         </dependency>
 
-        <!-- Servlet -->
+        <!-- JSF -->
         <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${com.sun.faces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${com.sun.faces.version}</version>
+        </dependency>
+        <!--<dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
@@ -105,6 +125,12 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>-->
+        <!-- Primefaces dependency -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${org.primefaces.version}</version>
         </dependency>
         <!-- Hibernate -->
         <dependency>
