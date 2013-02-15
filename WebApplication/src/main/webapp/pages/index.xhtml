@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head><title>Welcome to Test Proj</title></h:head>
+<h:body>
+    <h:form>
+        <p:dataTable var="user" value="#{userMB.userList}">
+            <p:column headerText="Name">
+                <h:outputText value="#{user.username}" />
+            </p:column>
+
+            <p:column headerText="Pass">
+                <h:outputText value="#{user.password}" />
+            </p:column>
+
+            <p:column headerText="Enabled">
+                <h:outputText value="#{user.enabled}" />
+            </p:column>
+
+        </p:dataTable>
+    </h:form>
+</h:body>
+</html> 

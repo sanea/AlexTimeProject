@@ -1,11 +1,14 @@
 package ru.alex.webapp.beans;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Users;
 import ru.alex.webapp.service.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import java.util.List;
 
@@ -15,7 +18,8 @@ import java.util.List;
 @ManagedBean
 @RequestScoped
 public class UserMB {
-    @Autowired
+
+    @ManagedProperty(value = "#{userServiceImpl}")
     UserService userService;
 
     List<Users> userList;
@@ -31,5 +35,9 @@ public class UserMB {
 
     public void setUserList(List<Users> userList) {
         this.userList = userList;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }
