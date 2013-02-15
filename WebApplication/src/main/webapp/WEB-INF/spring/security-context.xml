@@ -28,27 +28,26 @@
     </http>
 
     <authentication-manager alias="authenticationManager">
-        <authentication-provider user-service-ref="userService"/>
+        <authentication-provider user-service-ref="userServiceJDBC"/>
     </authentication-manager>
 
     <!-- replaced with jdbc -->
-    <!--<user-service id="userService">
+    <!--<user-service id="userServiceJDBC">
     <user name="user1" password="1" authorities="ROLE_USER"/>
     <user name="user2" password="1" authorities="ROLE_USER"/>
     <user name="admin" password="1" authorities="ROLE_ADMIN"/>
     </user-service>-->
 
-    <jdbc-user-service id="userService"
-                       data-source-ref="dataSource"
-                       group-authorities-by-username-query="select g.id, g.group_name, ga.authority
-                    from groups g, group_members gm, group_authorities ga
-                    where gm.username = ? and g.id = ga.group_id and g.id = gm.group_id"
-                       users-by-username-query="SELECT username, password, enabled FROM users WHERE username = ?"
-                       authorities-by-username-query="SELECT gm.username, ga.authority
-                    FROM group_members gm, group_authorities ga
-                    WHERE gm.group_id = ga.group_id AND gm.username = ?"
-            />
-
+    <jdbc-user-service id="userServiceJDBC"
+        data-source-ref="dataSource"
+        group-authorities-by-username-query="select g.id, g.group_name, ga.authority
+                                                from groups g, group_members gm, group_authorities ga
+                                                where gm.username = ? and g.id = ga.group_id and g.id = gm.group_id"
+        users-by-username-query="SELECT username, password, enabled FROM users WHERE username = ?"
+        authorities-by-username-query="SELECT gm.username, ga.authority
+                                        FROM group_members gm, group_authorities ga
+                                        WHERE gm.group_id = ga.group_id AND gm.username = ?"
+    />
 
     <!--Enable @Secured({"ROLE_1", "ROLE_2"}) annotation-->
     <global-method-security secured-annotations="enabled"/>
