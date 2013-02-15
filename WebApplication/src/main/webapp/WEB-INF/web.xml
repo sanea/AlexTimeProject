@@ -41,7 +41,7 @@
         <param-value>
             /WEB-INF/spring/root-context.xml
             /WEB-INF/spring/service-context.xml
-            <!--/WEB-INF/spring/security-context.xml-->
+            /WEB-INF/spring/security-context.xml
         </param-value>
     </context-param>
     <listener>
@@ -59,7 +59,7 @@
 
     <!-- Welcome Page -->
     <welcome-file-list>
-        <welcome-file>/pages/index.xhtml</welcome-file>
+        <welcome-file>/pages/index.jsf</welcome-file>
     </welcome-file-list>
 
     <!-- Handles all requests into the application -->
@@ -68,10 +68,6 @@
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
