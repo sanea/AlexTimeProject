@@ -32,4 +32,15 @@
         <property name="cacheSeconds" value="0"/>
     </bean>
 
+    <!-- adding ViewScope to Spring -->
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="view">
+                    <bean class="ru.alex.webapp.scope.ViewScope"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
 </beans>

@@ -16,6 +16,13 @@
         </layout>
     </appender>
 
+    <appender name="consoleappender" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
     <!-- Application Loggers -->
     <logger name="ru.alex.webapp">
         <level value="debug"/>
@@ -46,6 +53,7 @@
     <root>
         <priority value="warn"/>
         <appender-ref ref="fileappender"/>
+        <appender-ref ref="consoleappender"/>
     </root>
 
 </log4j:configuration>

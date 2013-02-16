@@ -3,6 +3,8 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
+    <description>Alex Time Project</description>
+    <display-name>Alex Time Project</display-name>
     <!-- Reads request input using UTF-8 encoding -->
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
@@ -23,7 +25,7 @@
     </filter-mapping>
 
     <!-- Spring Security filter -->
-    <!--<filter>
+    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>
             org.springframework.web.filter.DelegatingFilterProxy
@@ -33,7 +35,7 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>-->
+    </filter-mapping>
 
     <!-- Context config files location -->
     <context-param>
@@ -68,9 +70,17 @@
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>Login Servlet</servlet-name>
+        <jsp-file>/login.jsp</jsp-file>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login Servlet</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
 
