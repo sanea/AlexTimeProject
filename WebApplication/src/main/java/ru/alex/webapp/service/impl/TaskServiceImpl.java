@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.webapp.dao.TaskDao;
-import ru.alex.webapp.dao.UserDao;
+import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskStatus;
@@ -23,6 +22,13 @@ public class TaskServiceImpl implements TaskService {
     private TaskDao taskDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserTaskDao userTaskDao;
+    @Autowired
+    private UserTaskStatusDao userTaskStatusDao;
+    @Autowired
+    private UserActionDao userActionDao;
+
 
     @Override
     public List<UserTask> getTasksForUser(String username) {
@@ -106,5 +112,21 @@ public class TaskServiceImpl implements TaskService {
     public List<UserTaskStatus> getAllTaskStatus() {
 //        return taskDao.getAllTaskStatus();
         return null;
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return taskDao.findAll();
+    }
+
+    @Override
+    public void saveTask(Task task) throws Exception{
+        taskDao.makePersistent(task);
+    }
+
+    @Override
+    public void deleteTask(Task task) throws Exception{
+
+        taskDao.makeTransient(task);
     }
 }
