@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8"/>
+    <title>Alex time Project</title>
+    <h:outputScript library="js" name="jquery-1.9.1.js"/>
+    <h:outputStylesheet library="styles" name="main.css"/>
+</h:head>
+<h:body>
+    <div id="menu" style="background-color: #d4d4d4;">
+        <ui:insert name="menu">Menu</ui:insert>
+    </div>
+    <div class="container">
+        <ui:insert name="content">Main Content</ui:insert>
+    </div>
+</h:body>
+</html>

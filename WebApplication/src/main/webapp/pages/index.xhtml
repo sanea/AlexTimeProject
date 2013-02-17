@@ -1,34 +1,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Alex time Project</title>
-    <h:outputScript library="js" name="jquery-1.9.1.js"/>
-    <h:outputStylesheet library="styles" name="main.css"/>
-</h:head>
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:body>
-    <div class="container">
-        <h:form>
-            <p:dataTable var="user" value="#{userMB.userList}">
-                <p:column headerText="Name">
-                    <h:outputText value="#{user.username}"/>
-                </p:column>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+            <h:form>
+                <p:dataTable var="user" value="#{userMB.userList}">
+                    <p:column headerText="Name">
+                        <h:outputText value="#{user.username}"/>
+                    </p:column>
 
-                <p:column headerText="Pass">
-                    <h:outputText value="#{user.password}"/>
-                </p:column>
+                    <p:column headerText="Pass">
+                        <h:outputText value="#{user.password}"/>
+                    </p:column>
 
-                <p:column headerText="Enabled">
-                    <h:outputText value="#{user.enabled}"/>
-                </p:column>
+                    <p:column headerText="Enabled">
+                        <h:outputText value="#{user.enabled}"/>
+                    </p:column>
 
-            </p:dataTable>
+                </p:dataTable>
 
-            <h:outputText id="counter" value="#{userMB.counter}" />
-            <p:commandButton value="Count" actionListener="#{userMB.increment}" update="counter"/>
+                <h:outputText id="counter" value="#{userMB.counter}"/>
+                <p:commandButton value="Count" actionListener="#{userMB.increment}" update="counter"/>
 
-        </h:form>
-    </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </h:body>
 </html> 
