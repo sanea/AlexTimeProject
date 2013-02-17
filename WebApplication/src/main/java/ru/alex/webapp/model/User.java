@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 @Table(name = "users")
 @Entity
-public class Users {
+public class User {
     @Id
     @Column(name = "username")
     private String username;
@@ -19,13 +19,13 @@ public class Users {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @OneToMany(mappedBy = "usersByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<GroupMembers> groupMembersByUsername;
+    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Collection<GroupMember> groupMemberByUsername;
 
-    @OneToMany(mappedBy = "usersByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksByUsername;
 
-    @OneToMany(mappedBy = "usersByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTaskStatus> userTaskStatusesByUsername;
 
     public String getUsername() {
@@ -54,12 +54,12 @@ public class Users {
         this.enabled = enabled;
     }
 
-    public Collection<GroupMembers> getGroupMembersByUsername() {
-        return groupMembersByUsername;
+    public Collection<GroupMember> getGroupMemberByUsername() {
+        return groupMemberByUsername;
     }
 
-    public void setGroupMembersByUsername(Collection<GroupMembers> groupMembersByUsername) {
-        this.groupMembersByUsername = groupMembersByUsername;
+    public void setGroupMemberByUsername(Collection<GroupMember> groupMemberByUsername) {
+        this.groupMemberByUsername = groupMemberByUsername;
     }
 
 
@@ -85,7 +85,7 @@ public class Users {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Users that = (Users) o;
+        User that = (User) o;
 
         if (enabled != that.enabled) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;

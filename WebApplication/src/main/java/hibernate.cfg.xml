@@ -13,10 +13,10 @@
         <mapping class="ru.alex.webapp.model.Task"/>
         <mapping class="ru.alex.webapp.model.UserTask"/>
         <mapping class="ru.alex.webapp.model.UserTaskStatus"/>
-        <mapping class="ru.alex.webapp.model.GroupAuthorities"/>
-        <mapping class="ru.alex.webapp.model.GroupMembers"/>
-        <mapping class="ru.alex.webapp.model.Groups"/>
-        <mapping class="ru.alex.webapp.model.Users"/>
+        <mapping class="ru.alex.webapp.model.GroupAuthority"/>
+        <mapping class="ru.alex.webapp.model.GroupMember"/>
+        <mapping class="ru.alex.webapp.model.Group"/>
+        <mapping class="ru.alex.webapp.model.User"/>
         <mapping class="ru.alex.webapp.model.UserAction"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->

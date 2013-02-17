@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 @Table(name = "groups")
 @Entity
-public class Groups {
+public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -17,11 +17,11 @@ public class Groups {
     @Column(name = "group_name", nullable = false, length = 50)
     private String groupName;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupsByGroupId")
-    private Collection<GroupAuthorities> groupAuthoritiesById;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupByGroupId")
+    private Collection<GroupAuthority> groupAuthorityById;
 
-    @OneToMany(mappedBy = "groupsByGroupId")
-    private Collection<GroupMembers> groupMembersById;
+    @OneToMany(mappedBy = "groupByGroupId")
+    private Collection<GroupMember> groupMemberById;
 
     public Long getId() {
         return id;
@@ -45,7 +45,7 @@ public class Groups {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Groups that = (Groups) o;
+        Group that = (Group) o;
 
         if (id != that.id) return false;
         if (groupName != null ? !groupName.equals(that.groupName) : that.groupName != null) return false;
@@ -61,20 +61,20 @@ public class Groups {
     }
 
 
-    public Collection<GroupAuthorities> getGroupAuthoritiesById() {
-        return groupAuthoritiesById;
+    public Collection<GroupAuthority> getGroupAuthorityById() {
+        return groupAuthorityById;
     }
 
-    public void setGroupAuthoritiesById(Collection<GroupAuthorities> groupAuthoritiesById) {
-        this.groupAuthoritiesById = groupAuthoritiesById;
+    public void setGroupAuthorityById(Collection<GroupAuthority> groupAuthorityById) {
+        this.groupAuthorityById = groupAuthorityById;
     }
 
 
-    public Collection<GroupMembers> getGroupMembersById() {
-        return groupMembersById;
+    public Collection<GroupMember> getGroupMemberById() {
+        return groupMemberById;
     }
 
-    public void setGroupMembersById(Collection<GroupMembers> groupMembersById) {
-        this.groupMembersById = groupMembersById;
+    public void setGroupMemberById(Collection<GroupMember> groupMemberById) {
+        this.groupMemberById = groupMemberById;
     }
 }

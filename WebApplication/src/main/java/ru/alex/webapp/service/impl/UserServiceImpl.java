@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.model.Users;
+import ru.alex.webapp.model.User;
 import ru.alex.webapp.service.UserService;
 
 import java.util.List;
@@ -17,19 +17,19 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public Users getUser(String username) {
+    public User getUser(String username) {
 //        return userDao.getUserByUsername(username);
         return  null;
     }
 
     @Override
-    public List<Users> getAllUsers() {
+    public List<User> getAllUsers() {
         return userDao.findAll();
     }
 
 //    @Override
-//    public Users authenticate(String username, String password) {
-//        Users ue = getUser(username);
+//    public User authenticate(String username, String password) {
+//        User ue = getUser(username);
 //        if (ue != null && ue.isEnabled() && ue.getPassword().equals(password))
 //            return ue;
 //        else
@@ -38,20 +38,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void addUser(Users user) {
+    public void addUser(User user) {
 //        userDao.addUser(user);
         return;
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void saveUser(Users user) {
+    public void saveUser(User user) {
 //        userDao.updateUser(user);
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void deleteUser(Users user) {
+    public void deleteUser(User user) {
 //        userDao.deleteUser(user.getUsername());
     }
 }

@@ -13,17 +13,13 @@ public class UserAction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "timestamp", nullable = false, updatable = false)
     private Date timestamp;
-
     @Column(name = "action", nullable = false, updatable = false, length = 1)
     private String action;
-
     @Column(name = "delta_time", nullable = true, length = 11)
     private Integer deltaTime;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_status_id", referencedColumnName = "id", nullable = false)
     private UserTaskStatus userTaskStatusByTaskStatusId;
@@ -51,7 +47,6 @@ public class UserAction {
     public void setAction(String action) {
         this.action = action;
     }
-
 
     public Integer getDeltaTime() {
         return deltaTime;
@@ -91,6 +86,37 @@ public class UserAction {
         result = 31 * result + (action != null ? action.hashCode() : 0);
         result = 31 * result + deltaTime;
         return result;
+    }
+
+    public static enum Action {
+        START('r'), PAUSE('p'), EXTEND('e'), FINISH('f'), STOP('s');
+        private char action;
+
+        private Action(char action) {
+            this.action = action;
+        }
+
+        public static Action getAction(char action) {
+            switch (action) {
+                case 'r':
+                    return START;
+                case 'p':
+                    return PAUSE;
+                case 'e':
+                    return EXTEND;
+                case 'f':
+                    return FINISH;
+                case 's':
+                    return STOP;
+                default:
+                    throw new IllegalArgumentException("wrong action");
+            }
+        }
+
+        public char getAction() {
+            return action;
+        }
+
     }
 
 }

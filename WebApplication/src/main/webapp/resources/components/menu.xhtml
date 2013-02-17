@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:sec="http://www.springframework.org/security/tags">
+<h:body>
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:form id="menuForm">
+            <p:menubar>
+                <p:menuitem value="Home" url="/" ajax="false"/>
+                <p:menuitem value="Assigned Tasks" url="/pages/tasks.jsf" ajax="false" rendered="#{menuMB.hasRole('MANAGE_TASK')}"/>
+                <p:submenu label="Statistics" rendered="#{menuMB.hasRole('STAT')}">
+                    <p:menuitem value="Online Tasks" url="/pages/onlineTasks.jsf" ajax="false"/>
+                    <p:menuitem value="All Tasks" url="/pages/allTasks.jsf" ajax="false"/>
+                </p:submenu>
+                <p:menuitem value="Tasks Edit" url="/pages/tasksEdit.jsf" ajax="false" rendered="#{menuMB.hasRole('EDIT_TASKS')}"/>
+                <p:menuitem value="Users Edit" url="/pages/usersEdit.jsf" ajax="false" rendered="#{menuMB.hasRole('EDIT_USERS')}"/>
+                <p:menuitem value="Logout" url="/logout" ajax="false"/>
+                <f:facet name="options">
+                    <span>Username: <b><h:outputText value="#{menuMB.userName}"/></b></span>
+                </f:facet>
+            </p:menubar>
+        </h:form>
+    </composite:implementation>
+</h:body>
+</html>

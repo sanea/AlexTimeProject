@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.alex.webapp.beans.wrappers.TaskWrapper;
 import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskStatus;
-import ru.alex.webapp.model.Users;
 import ru.alex.webapp.service.TaskService;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,15 +29,15 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public List<UserTask> getTasksForUser(String username) {
-//        List<UserTask> tasks = taskDao.getTasksForUser(username);
-//        for (UserTask task : tasks) {
-//            List<UserTaskStatus> activeTasks = taskDao.getActiveTasks(username, task.getTaskByTaskId().getId());
-//            if (activeTasks.size() > 0)
-//                task.getTaskByTaskId().setActiveForUser(true);
-//        }
-//        return tasks;
-        return null;
+    public List<TaskWrapper> getTasksForUser(String username) {
+        if (username == null || username.equals(""))
+            throw new IllegalArgumentException("Wrong username");
+        List<Task> tasks = taskDao.getTasksForUser(username);
+        List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
+        for (Task task : tasks) {
+            taskWrappers.add(new TaskWrapper(task));
+        }
+        return taskWrappers;
     }
 
 
@@ -48,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
     public void startTask(Long taskId, String username, int seconds) throws Exception {
 //        if (taskId == null || taskId.equals("") || username == null || username.equals(""))
 //            throw new Exception("Wrong input param");
-//        Users user = userDao.getUserByUsername(username);
+//        User user = userDao.getUserByUsername(username);
 //        if (user == null)
 //            throw new Exception("No user with username " + username);
 //        Task task = taskDao.getTask(taskId);
@@ -64,7 +62,7 @@ public class TaskServiceImpl implements TaskService {
 //        Timestamp now = new Timestamp(new Date().getTime());
 //        UserTaskStatus taskStatus = new UserTaskStatus();
 //        taskStatus.setTaskByTaskId(task);
-//        taskStatus.setUsersByUsername(user);
+//        taskStatus.setUserByUsername(user);
 //        //taskStatus.setStartTimestamp(now);
 //        if (task.getTaskType() == Task.TaskType.Process.getType()) {
 //            taskStatus.setStatus(UserTaskStatus.TaskStatus.RUNNING.getStatus());
@@ -80,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
     public void pauseTask(Long taskId, String username) throws Exception {
 //        if (taskId == null || taskId.equals("") || username == null || username.equals(""))
 //            throw new Exception("Wrong input param");
-//        Users user = userDao.getUserByUsername(username);
+//        User user = userDao.getUserByUsername(username);
 //        if (user == null)
 //            throw new Exception("No user with username " + username);
 //        Task task = taskDao.getTask(taskId);

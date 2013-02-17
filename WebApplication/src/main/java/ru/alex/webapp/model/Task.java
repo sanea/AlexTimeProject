@@ -10,39 +10,20 @@ import java.util.Collection;
 @Table(name = "task")
 @Entity
 public class Task {
-    public static enum TaskType {
-        Process(1), Task(2);
-        private int type;
-
-        private TaskType(int type) {
-            this.type = type;
-        }
-
-        public int getType() {
-            return type;
-        }
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "task_name", nullable = false, length = 50)
     private String taskName;
-
     @Column(name = "task_type", nullable = false, length = 1)
     private int taskType;
-
     @Column(name = "task_price", nullable = false, updatable = false)
     private BigDecimal taskPrice;
-
     @Column(name = "task_enabled", nullable = false, length = 1)
     private String taskEnabled;
-
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksById;
-
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTaskStatus> userTaskStatusesById;
 
@@ -62,7 +43,6 @@ public class Task {
         this.taskName = taskName;
     }
 
-
     public int getTaskType() {
         return taskType;
     }
@@ -71,7 +51,6 @@ public class Task {
         this.taskType = taskType;
     }
 
-
     public BigDecimal getTaskPrice() {
         return taskPrice;
     }
@@ -79,7 +58,6 @@ public class Task {
     public void setTaskPrice(BigDecimal taskPrice) {
         this.taskPrice = taskPrice;
     }
-
 
     public String getTaskEnabled() {
         return taskEnabled;
@@ -127,6 +105,30 @@ public class Task {
 
     public void setUserTaskStatusesById(Collection<UserTaskStatus> userTaskStatusesById) {
         this.userTaskStatusesById = userTaskStatusesById;
+    }
+
+    public static enum TaskType {
+        Process(1), Task(2);
+        private final int type;
+
+        private TaskType(int type) {
+            this.type = type;
+        }
+
+        public static TaskType getType(int type) {
+            switch (type) {
+                case 1:
+                    return Process;
+                case 2:
+                    return Task;
+                default:
+                    throw new IllegalArgumentException("wrong task type");
+            }
+        }
+
+        public int getType() {
+            return type;
+        }
     }
 
 }

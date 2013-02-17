@@ -20,7 +20,7 @@ public class UserTask {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
-    private Users usersByUsername;
+    private User userByUsername;
 
 
     public Long getId() {
@@ -60,12 +60,12 @@ public class UserTask {
     }
 
 
-    public Users getUsersByUsername() {
-        return usersByUsername;
+    public User getUserByUsername() {
+        return userByUsername;
     }
 
-    public void setUsersByUsername(Users usersByUsername) {
-        this.usersByUsername = usersByUsername;
+    public void setUserByUsername(User userByUsername) {
+        this.userByUsername = userByUsername;
     }
 
 }

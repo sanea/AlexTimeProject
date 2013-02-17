@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:body>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+
+            <h2>Assigned Tasks</h2>
+
+            <p:dataTable var="task" value="#{taskMB.assignedTasks}">
+                <p:column headerText="Name">
+                    <h:outputText value="#{task.taskName}"/>
+                </p:column>
+
+                <p:column headerText="Type">
+                    <h:outputText value="#{task.taskTypeStr}"/>
+                </p:column>
+
+                <p:column headerText="Price">
+                    <h:outputText value="#{task.taskPrice}"/>
+                </p:column>
+
+                <p:column headerText="Time Left">
+                    <h:outputText value="#{task.timeLeft}"/>
+                </p:column>
+
+                <p:column>
+                    <p:commandButton value="start"/>
+                    <p:commandButton value="pause"/>
+                    <p:commandButton value="extend"/>
+                    <p:commandButton value="finish"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html> 

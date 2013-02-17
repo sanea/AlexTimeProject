@@ -6,26 +6,12 @@
 <h:body>
     <ui:composition template="template.xhtml">
         <ui:define name="content">
-            <h:form>
-                <p:dataTable var="user" value="#{userMB.userList}">
-                    <p:column headerText="Name">
-                        <h:outputText value="#{user.username}"/>
-                    </p:column>
 
-                    <p:column headerText="Pass">
-                        <h:outputText value="#{user.password}"/>
-                    </p:column>
+            <h1>Welcome to Time Project</h1>
 
-                    <p:column headerText="Enabled">
-                        <h:outputText value="#{user.enabled}"/>
-                    </p:column>
+            <p>Here will be some description of the project<br/>
+                And here also we will write what to do!</p>
 
-                </p:dataTable>
-
-                <h:outputText id="counter" value="#{userMB.counter}"/>
-                <p:commandButton value="Count" actionListener="#{userMB.increment}" update="counter"/>
-
-            </h:form>
         </ui:define>
     </ui:composition>
 </h:body>

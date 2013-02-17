@@ -1,20 +1,20 @@
 package ru.alex.webapp.service;
 
 
-import ru.alex.webapp.model.Users;
+import ru.alex.webapp.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    public Users getUser(String username);
+    public User getUser(String username);
 
-    public List<Users> getAllUsers();
+    public List<User> getAllUsers();
 
-//    public Users authenticate(String username, String password);
+//    public User authenticate(String username, String password);
 
-    public void addUser(Users user);
+    public void addUser(User user);
 
-    public void saveUser(Users user);
+    public void saveUser(User user);
 
-    public void deleteUser(Users user);
+    public void deleteUser(User user);
 }

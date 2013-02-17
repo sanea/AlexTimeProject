@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Table(name = "group_members")
 @Entity
-public class GroupMembers {
+public class GroupMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,11 +16,11 @@ public class GroupMembers {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)
-    private Groups groupsByGroupId;
+    private Group groupByGroupId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
-    private Users usersByUsername;
+    private User userByUsername;
 
     public Long getId() {
         return id;
@@ -30,20 +30,20 @@ public class GroupMembers {
         this.id = id;
     }
 
-    public Groups getGroupsByGroupId() {
-        return groupsByGroupId;
+    public Group getGroupByGroupId() {
+        return groupByGroupId;
     }
 
-    public void setGroupsByGroupId(Groups groupsByGroupId) {
-        this.groupsByGroupId = groupsByGroupId;
+    public void setGroupByGroupId(Group groupByGroupId) {
+        this.groupByGroupId = groupByGroupId;
     }
 
-    public Users getUsersByUsername() {
-        return usersByUsername;
+    public User getUserByUsername() {
+        return userByUsername;
     }
 
-    public void setUsersByUsername(Users usersByUsername) {
-        this.usersByUsername = usersByUsername;
+    public void setUserByUsername(User userByUsername) {
+        this.userByUsername = userByUsername;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GroupMembers {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GroupMembers that = (GroupMembers) o;
+        GroupMember that = (GroupMember) o;
         if (id != that.id) return false;
 
         return true;

@@ -4,7 +4,9 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:comp="http://java.sun.com/jsf/composite/components"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
     <meta http-equiv="Content-Type"
           content="text/html; charset=UTF-8"/>
@@ -13,11 +15,16 @@
     <h:outputStylesheet library="styles" name="main.css"/>
 </h:head>
 <h:body>
-    <div id="menu" style="background-color: #d4d4d4;">
-        <ui:insert name="menu">Menu</ui:insert>
+    <div id="menu">
+        <div class="container">
+            <comp:menu/>
+        </div>
     </div>
     <div class="container">
-        <ui:insert name="content">Main Content</ui:insert>
+        <h:form id="contentForm">
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
+            <ui:insert name="content">Main Content</ui:insert>
+        </h:form>
     </div>
 </h:body>
 </html>

@@ -15,7 +15,6 @@ import java.util.List;
 public abstract class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T, ID> {
 
     private Class<T> entityBeanType;
-
     @PersistenceContext
     private EntityManager em;
 
@@ -38,7 +37,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         T entity;
         if (lock) {
             entity = getEntityManager().find(getEntityBeanType(), id);
-            em.lock(entity, LockModeType.WRITE);
+            getEntityManager().lock(entity, LockModeType.WRITE);
         } else {
             entity = getEntityManager().find(getEntityBeanType(), id);
         }
@@ -46,7 +45,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     public List<T> findAll() {
-        return getEntityManager().createQuery("from " + getEntityBeanType().getName() ).getResultList();
+        return getEntityManager().createQuery("from " + getEntityBeanType().getName()).getResultList();
     }
 
     @Override

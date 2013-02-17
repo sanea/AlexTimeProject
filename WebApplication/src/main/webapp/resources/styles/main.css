@@ -8,3 +8,7 @@ body {
     margin-right: auto;
     margin-left: auto;
 }
+
+.ui-widget {
+    font-size: 12px !important;
+}

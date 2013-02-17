@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Table(name = "group_authorities")
 @Entity
-public class GroupAuthorities {
+public class GroupAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -19,7 +19,7 @@ public class GroupAuthorities {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)
-    private Groups groupsByGroupId;
+    private Group groupByGroupId;
 
     public Long getId() {
         return id;
@@ -37,12 +37,12 @@ public class GroupAuthorities {
         this.authority = authority;
     }
 
-    public Groups getGroupsByGroupId() {
-        return groupsByGroupId;
+    public Group getGroupByGroupId() {
+        return groupByGroupId;
     }
 
-    public void setGroupsByGroupId(Groups groupsByGroupId) {
-        this.groupsByGroupId = groupsByGroupId;
+    public void setGroupByGroupId(Group groupByGroupId) {
+        this.groupByGroupId = groupByGroupId;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GroupAuthorities {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GroupAuthorities that = (GroupAuthorities) o;
+        GroupAuthority that = (GroupAuthority) o;
 
         if (id != that.id) return false;
         if (authority != null ? !authority.equals(that.authority) : that.authority != null) return false;

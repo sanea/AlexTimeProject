@@ -4,12 +4,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ru.alex.webapp.model.Users;
+import ru.alex.webapp.model.User;
 import ru.alex.webapp.service.UserService;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedProperty;
-import javax.persistence.PostUpdate;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,15 +17,11 @@ import java.util.List;
 @Component
 @Scope(value = "view")
 public class UserMB implements Serializable {
-    static final long serialVersionUID = 1L;
-
-    Logger logger = Logger.getLogger(UserMB.class);
-
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(UserMB.class);
     @Autowired
     UserService userService;
-
-    List<Users> userList;
-    private int counter = 0;
+    List<User> userList;
 
     @PostConstruct
     private void init() {
@@ -35,11 +29,11 @@ public class UserMB implements Serializable {
         userList = userService.getAllUsers();
     }
 
-    public List<Users> getUserList() {
+    public List<User> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<Users> userList) {
+    public void setUserList(List<User> userList) {
         this.userList = userList;
     }
 
@@ -47,14 +41,5 @@ public class UserMB implements Serializable {
         this.userService = userService;
     }
 
-    public int getCounter() {
-        return counter;
-    }
-    public void setCounter(int counter) {
-        this.counter = counter;
-    }
 
-    public void increment() {
-        counter++;
-    }
 }
