@@ -12,7 +12,7 @@
         <property name="show_sql">true</property>
         <mapping class="ru.alex.webapp.model.Task"/>
         <mapping class="ru.alex.webapp.model.UserTask"/>
-        <mapping class="ru.alex.webapp.model.UserTaskStatus"/>
+        <mapping class="ru.alex.webapp.model.UserTaskTime"/>
         <mapping class="ru.alex.webapp.model.GroupAuthority"/>
         <mapping class="ru.alex.webapp.model.GroupMember"/>
         <mapping class="ru.alex.webapp.model.Group"/>

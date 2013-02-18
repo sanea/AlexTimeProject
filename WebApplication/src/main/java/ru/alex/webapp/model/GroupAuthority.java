@@ -52,16 +52,13 @@ public class GroupAuthority {
 
         GroupAuthority that = (GroupAuthority) o;
 
-        if (id != that.id) return false;
-        if (authority != null ? !authority.equals(that.authority) : that.authority != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (authority != null ? authority.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }

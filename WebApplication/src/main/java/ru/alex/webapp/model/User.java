@@ -25,8 +25,6 @@ public class User {
     @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksByUsername;
 
-    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<UserTaskStatus> userTaskStatusesByUsername;
 
     public String getUsername() {
         return username;
@@ -71,36 +69,20 @@ public class User {
         this.userTasksByUsername = userTasksByUsername;
     }
 
-
-    public Collection<UserTaskStatus> getUserTaskStatusesByUsername() {
-        return userTaskStatusesByUsername;
-    }
-
-    public void setUserTaskStatusesByUsername(Collection<UserTaskStatus> userTaskStatusesByUsername) {
-        this.userTaskStatusesByUsername = userTaskStatusesByUsername;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User that = (User) o;
+        User user = (User) o;
 
-        if (enabled != that.enabled) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (enabled ? 1 : 0);
-        return result;
+        return username != null ? username.hashCode() : 0;
     }
-
-
 }

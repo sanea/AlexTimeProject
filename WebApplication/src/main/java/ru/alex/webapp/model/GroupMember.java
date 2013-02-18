@@ -52,14 +52,14 @@ public class GroupMember {
         if (o == null || getClass() != o.getClass()) return false;
 
         GroupMember that = (GroupMember) o;
-        if (id != that.id) return false;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }

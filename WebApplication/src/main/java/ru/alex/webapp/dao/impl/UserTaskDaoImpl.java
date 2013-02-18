@@ -13,6 +13,7 @@ import java.util.List;
 public class UserTaskDaoImpl extends GenericDaoImpl<UserTask, Long> implements UserTaskDao {
     @Override
     public List<UserTask> getTasksForUser(String username) {
-        return getEntityManager().createQuery("select ut from UserTask ut where usersByUsername.username = :username", UserTask.class).setParameter("username", username).getResultList();
+        //return getEntityManager().createQuery("select ut from UserTask ut where usersByUsername.username = :username", UserTask.class).setParameter("username", username).getResultList();
+        return null;
     }
 }

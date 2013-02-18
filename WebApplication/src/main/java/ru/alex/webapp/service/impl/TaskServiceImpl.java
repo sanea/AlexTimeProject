@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.beans.wrappers.TaskWrapper;
 import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTaskStatus;
+import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserTaskDao userTaskDao;
     @Autowired
-    private UserTaskStatusDao userTaskStatusDao;
+    private UserTaskTimeDao userTaskTimeDao;
     @Autowired
     private UserActionDao userActionDao;
 
@@ -49,25 +49,25 @@ public class TaskServiceImpl implements TaskService {
 //        User user = userDao.getUserByUsername(username);
 //        if (user == null)
 //            throw new Exception("No user with username " + username);
-//        Task task = taskDao.getTask(taskId);
+//        TASK task = taskDao.getTask(taskId);
 //        if (task == null)
 //            throw new Exception("No task with task id " + taskId);
 //        UserTask userTask = taskDao.getTaskForUser(username, taskId);
 //        if (userTask == null)
 //            throw new Exception("User " + username + " doesn't have task " + taskId);
-////        List<UserTaskStatus> activeTasks = taskDao.getActiveTasks(username, taskId);
+////        List<UserTaskTime> activeTasks = taskDao.getActiveTasks(username, taskId);
 //        if (activeTasks.size() > 0)
 //            throw new Exception("Can't start tasks when there is task in progress");
 //
 //        Timestamp now = new Timestamp(new Date().getTime());
-//        UserTaskStatus taskStatus = new UserTaskStatus();
+//        UserTaskTime taskStatus = new UserTaskTime();
 //        taskStatus.setTaskByTaskId(task);
 //        taskStatus.setUserByUsername(user);
 //        //taskStatus.setStartTimestamp(now);
-//        if (task.getTaskType() == Task.TaskType.Process.getType()) {
-//            taskStatus.setStatus(UserTaskStatus.TaskStatus.RUNNING.getStatus());
-//        } else if (task.getTaskType() == Task.TaskType.Task.getType()) {
-//            taskStatus.setStatus(UserTaskStatus.TaskStatus.COMPLETED.getStatus());
+//        if (task.getTaskType() == TASK.TaskType.PROCESS.getType()) {
+//            taskStatus.setStatus(UserTaskTime.TaskStatus.RUNNING.getStatus());
+//        } else if (task.getTaskType() == TASK.TaskType.TASK.getType()) {
+//            taskStatus.setStatus(UserTaskTime.TaskStatus.COMPLETED.getStatus());
 //            //taskStatus.setEndTimestamp(now);
 //        }
 //        taskDao.addTaskStatus(taskStatus);
@@ -81,22 +81,22 @@ public class TaskServiceImpl implements TaskService {
 //        User user = userDao.getUserByUsername(username);
 //        if (user == null)
 //            throw new Exception("No user with username " + username);
-//        Task task = taskDao.getTask(taskId);
+//        TASK task = taskDao.getTask(taskId);
 //        if (task == null)
 //            throw new Exception("No task with task id " + taskId);
 //        UserTask userTask = taskDao.getTaskForUser(username, taskId);
 //        if (userTask == null)
 //            throw new Exception("User " + username + " doesn't have task " + taskId);
-//        List<UserTaskStatus> activeTasks = taskDao.getActiveTasks(username, taskId);
+//        List<UserTaskTime> activeTasks = taskDao.getActiveTasks(username, taskId);
 //        if (activeTasks.size() == 0)
 //            throw new Exception("No task to end");
 //
 //        Timestamp now = new Timestamp(new Date().getTime());
-//        for (UserTaskStatus activeTask : activeTasks) {
+//        for (UserTaskTime activeTask : activeTasks) {
 //            //activeTask.setEndTimestamp(now);
 //            //long timeSpent = now.getTime() - activeTask.getStartTimestamp().getTime();
 //            //activeTask.setTimeSpent((int) timeSpent / 60000);
-//            activeTask.setStatus(UserTaskStatus.TaskStatus.COMPLETED.getStatus());
+//            activeTask.setStatus(UserTaskTime.TaskStatus.COMPLETED.getStatus());
 //            taskDao.updateTaskStatus(activeTask);
 //        }
     }
@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<UserTaskStatus> getAllTaskStatus() {
+    public List<UserTaskTime> getAllTaskStatus() {
 //        return taskDao.getAllTaskStatus();
         return null;
     }

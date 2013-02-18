@@ -17,12 +17,12 @@ public class UserAction {
     @Column(name = "timestamp", nullable = false, updatable = false)
     private Date timestamp;
     @Column(name = "action", nullable = false, updatable = false, length = 1)
-    private String action;
+    private char action;
     @Column(name = "delta_time", nullable = true, length = 11)
     private Integer deltaTime;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "task_status_id", referencedColumnName = "id", nullable = false)
-    private UserTaskStatus userTaskStatusByTaskStatusId;
+    @JoinColumn(name = "task_time_id", referencedColumnName = "id", nullable = false)
+    private UserTaskTime userTaskTimeById;
 
     public Long getId() {
         return id;
@@ -40,11 +40,11 @@ public class UserAction {
         this.timestamp = timestamp;
     }
 
-    public String getAction() {
+    public char getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(char action) {
         this.action = action;
     }
 
@@ -56,12 +56,12 @@ public class UserAction {
         this.deltaTime = deltaTime;
     }
 
-    public UserTaskStatus getUserTaskStatusByTaskStatusId() {
-        return userTaskStatusByTaskStatusId;
+    public UserTaskTime getUserTaskTimeById() {
+        return userTaskTimeById;
     }
 
-    public void setUserTaskStatusByTaskStatusId(UserTaskStatus userTaskStatusByTaskStatusId) {
-        this.userTaskStatusByTaskStatusId = userTaskStatusByTaskStatusId;
+    public void setUserTaskTimeById(UserTaskTime userTaskTimeById) {
+        this.userTaskTimeById = userTaskTimeById;
     }
 
     @Override
@@ -71,21 +71,14 @@ public class UserAction {
 
         UserAction that = (UserAction) o;
 
-        if (deltaTime != that.deltaTime) return false;
-        if (id != that.id) return false;
-        if (action != null ? !action.equals(that.action) : that.action != null) return false;
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        Integer result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + deltaTime;
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     public static enum Action {

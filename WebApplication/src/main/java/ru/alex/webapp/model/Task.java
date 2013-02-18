@@ -24,8 +24,6 @@ public class Task {
     private String taskEnabled;
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksById;
-    @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<UserTaskStatus> userTaskStatusesById;
 
     public Long getId() {
         return id;
@@ -99,16 +97,8 @@ public class Task {
         this.userTasksById = userTasksById;
     }
 
-    public Collection<UserTaskStatus> getUserTaskStatusesById() {
-        return userTaskStatusesById;
-    }
-
-    public void setUserTaskStatusesById(Collection<UserTaskStatus> userTaskStatusesById) {
-        this.userTaskStatusesById = userTaskStatusesById;
-    }
-
     public static enum TaskType {
-        Process(1), Task(2);
+        PROCESS(1), TASK(2);
         private final int type;
 
         private TaskType(int type) {
@@ -118,9 +108,9 @@ public class Task {
         public static TaskType getType(int type) {
             switch (type) {
                 case 1:
-                    return Process;
+                    return PROCESS;
                 case 2:
-                    return Task;
+                    return TASK;
                 default:
                     throw new IllegalArgumentException("wrong task type");
             }
@@ -130,5 +120,7 @@ public class Task {
             return type;
         }
     }
+
+
 
 }

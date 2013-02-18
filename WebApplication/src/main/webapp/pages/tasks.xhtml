@@ -28,9 +28,9 @@
 
                 <p:column>
                     <p:commandButton value="start"/>
-                    <p:commandButton value="pause"/>
-                    <p:commandButton value="extend"/>
-                    <p:commandButton value="finish"/>
+                    <p:commandButton value="pause" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}"/>
+                    <p:commandButton value="extend" rendered="#{task.taskType == 1}"/>
+                    <p:commandButton value="finish" rendered="#{task.taskType == 1}"/>
                 </p:column>
 
             </p:dataTable>
