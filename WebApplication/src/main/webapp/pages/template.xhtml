@@ -2,7 +2,7 @@
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xml:lang="en" lang="en"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:comp="http://java.sun.com/jsf/composite/components"
@@ -11,7 +11,7 @@
     <meta http-equiv="Content-Type"
           content="text/html; charset=UTF-8"/>
     <title>Alex time Project</title>
-    <h:outputScript library="js" name="jquery-1.9.1.js"/>
+    <!--<h:outputScript library="js" name="jquery-1.9.1.js"/>-->
     <h:outputStylesheet library="styles" name="main.css"/>
 </h:head>
 <h:body>
@@ -26,5 +26,14 @@
             <ui:insert name="content">Main Content</ui:insert>
         </h:form>
     </div>
+    <p:ajaxStatus style="width: 64px; height: 64px; position: fixed; right: 10px; bottom: 10px;">
+        <f:facet name="start">
+            <p:graphicImage value="#{resource['images/loading.gif']}" style="width: 64px; height: 64px;"/>
+        </f:facet>
+
+        <f:facet name="complete">
+            <h:outputText value="" />
+        </f:facet>
+    </p:ajaxStatus>
 </h:body>
 </html>

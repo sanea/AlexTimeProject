@@ -6,11 +6,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.beans.wrappers.TaskWrapper;
 import ru.alex.webapp.dao.*;
+import ru.alex.webapp.dao.impl.GenericDaoImpl;
+import ru.alex.webapp.dao.impl.UserTaskDaoImpl;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.UserAction;
+import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,102 +35,69 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public List<TaskWrapper> getTasksForUser(String username) {
+    public List<UserTask> getTasksForUser(String username) {
         if (username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong username");
-        List<Task> tasks = taskDao.getTasksForUser(username);
-        List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
-        for (Task task : tasks) {
-            taskWrappers.add(new TaskWrapper(task));
-        }
-        return taskWrappers;
+        List<UserTask> tasks = userTaskDao.getTasksForUser(username);
+        return tasks;
     }
 
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void startTask(Long taskId, String username, int seconds) throws Exception {
-//        if (taskId == null || taskId.equals("") || username == null || username.equals(""))
-//            throw new Exception("Wrong input param");
-//        User user = userDao.getUserByUsername(username);
-//        if (user == null)
-//            throw new Exception("No user with username " + username);
-//        TASK task = taskDao.getTask(taskId);
-//        if (task == null)
-//            throw new Exception("No task with task id " + taskId);
-//        UserTask userTask = taskDao.getTaskForUser(username, taskId);
-//        if (userTask == null)
-//            throw new Exception("User " + username + " doesn't have task " + taskId);
-////        List<UserTaskTime> activeTasks = taskDao.getActiveTasks(username, taskId);
-//        if (activeTasks.size() > 0)
-//            throw new Exception("Can't start tasks when there is task in progress");
-//
-//        Timestamp now = new Timestamp(new Date().getTime());
-//        UserTaskTime taskStatus = new UserTaskTime();
-//        taskStatus.setTaskByTaskId(task);
-//        taskStatus.setUserByUsername(user);
-//        //taskStatus.setStartTimestamp(now);
-//        if (task.getTaskType() == TASK.TaskType.PROCESS.getType()) {
-//            taskStatus.setStatus(UserTaskTime.TaskStatus.RUNNING.getStatus());
-//        } else if (task.getTaskType() == TASK.TaskType.TASK.getType()) {
-//            taskStatus.setStatus(UserTaskTime.TaskStatus.COMPLETED.getStatus());
-//            //taskStatus.setEndTimestamp(now);
-//        }
-//        taskDao.addTaskStatus(taskStatus);
+        if (taskId == null || username == null || username.equals("") || seconds <= 0)
+            throw new IllegalArgumentException("Wrong Input Params for starting task");
+        UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        if (userTask == null)
+            throw new Exception("can't find user task");
+        if (!(userTask.getStatus().equals(UserTask.TaskStatus.COMPLETED.getStatusStr())
+                || userTask.getStatus().equals(UserTask.TaskStatus.UNKNOWN.getStatusStr())))
+            throw new Exception("wrong status of task for user");
+
+        //change user_task status
+        userTask.setStatus(UserTask.TaskStatus.RUNNING.getStatusStr());
+
+        //add user_task_time
+        UserTaskTime taskTime = new UserTaskTime();
+        taskTime.setTimeSpent(0);
+        Calendar now = Calendar.getInstance();
+        taskTime.setStartTime(now.getTime());
+        now.add(Calendar.SECOND, seconds);
+        taskTime.setFinishTime(now.getTime());
+        userTask.addUserTaskTime(taskTime);
+        userTaskDao.makePersistent(userTask);
+
+        //add user_action
+        UserAction userAction = new UserAction();
+        userAction.setAction(UserAction.Action.START.getActionStr());
+        userAction.setTimeSeconds(seconds);
+        userAction.setTimestamp(new Date());
+        taskTime.addUserAction(userAction);
+        userTaskTimeDao.makePersistent(taskTime);
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void pauseTask(Long taskId, String username) throws Exception {
-//        if (taskId == null || taskId.equals("") || username == null || username.equals(""))
-//            throw new Exception("Wrong input param");
-//        User user = userDao.getUserByUsername(username);
-//        if (user == null)
-//            throw new Exception("No user with username " + username);
-//        TASK task = taskDao.getTask(taskId);
-//        if (task == null)
-//            throw new Exception("No task with task id " + taskId);
-//        UserTask userTask = taskDao.getTaskForUser(username, taskId);
-//        if (userTask == null)
-//            throw new Exception("User " + username + " doesn't have task " + taskId);
-//        List<UserTaskTime> activeTasks = taskDao.getActiveTasks(username, taskId);
-//        if (activeTasks.size() == 0)
-//            throw new Exception("No task to end");
-//
-//        Timestamp now = new Timestamp(new Date().getTime());
-//        for (UserTaskTime activeTask : activeTasks) {
-//            //activeTask.setEndTimestamp(now);
-//            //long timeSpent = now.getTime() - activeTask.getStartTimestamp().getTime();
-//            //activeTask.setTimeSpent((int) timeSpent / 60000);
-//            activeTask.setStatus(UserTaskTime.TaskStatus.COMPLETED.getStatus());
-//            taskDao.updateTaskStatus(activeTask);
-//        }
+        //TODO
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void resumeTask(Long taskId, String username) throws Exception {
+        //TODO
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void extendTask(Long taskId, String username, int seconds) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO
     }
 
     @Override
-    public List<UserTaskTime> getAllTaskStatus() {
-//        return taskDao.getAllTaskStatus();
-        return null;
-    }
-
-    @Override
-    public List<Task> getAllTasks() {
-        return taskDao.findAll();
-    }
-
-    @Override
-    public void saveTask(Task task) throws Exception{
-        taskDao.makePersistent(task);
-    }
-
-    @Override
-    public void deleteTask(Task task) throws Exception{
-
-        taskDao.makeTransient(task);
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void stopTask(Long taskId, String username) throws Exception {
+        //TODO
     }
 }

@@ -22,7 +22,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         this.entityBeanType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    protected EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
         if (em == null)
             throw new IllegalStateException("EntityManager has not been set on DAO before usage");
         return em;

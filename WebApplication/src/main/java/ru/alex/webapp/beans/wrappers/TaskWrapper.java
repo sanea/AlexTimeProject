@@ -1,47 +1,37 @@
 package ru.alex.webapp.beans.wrappers;
 
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.UserTask;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author Alex
  */
-public class TaskWrapper {
-    private Task task;
+public class TaskWrapper implements Serializable {
+    private UserTask userTask;
     private boolean isActive;
     private int timeLeft;
-    private char currentStatus;
 
-    public TaskWrapper(Task task) {
-        this.task = task;
+    public TaskWrapper(UserTask userTask) {
+        this.userTask = userTask;
     }
 
     public String getTaskName() {
-        return task.getTaskName();
+        return userTask.getTaskByTaskId().getTaskName();
     }
 
     public String getTaskTypeStr() {
-        String taskType = "";
-        switch (Task.TaskType.getType(task.getTaskType())) {
-            case TASK:
-                taskType = "Task";
-                break;
-            case PROCESS:
-                taskType = "Process";
-                break;
-            default:
-                break;
-        }
-        return taskType;
+        return Task.TaskType.getTypeStr(userTask.getTaskByTaskId().getTaskType());
     }
 
     public int getTaskType() {
-        return task.getTaskType();
+        return userTask.getTaskByTaskId().getTaskType();
     }
 
     public BigDecimal getTaskPrice() {
-        return task.getTaskPrice();
+        return userTask.getTaskByTaskId().getTaskPrice();
     }
 
     public int getTimeLeft() {
@@ -52,11 +42,16 @@ public class TaskWrapper {
         this.timeLeft = timeLeft;
     }
 
-    public char getCurrentStatus() {
-        return currentStatus;
+    public String getCurrentStatusStr() {
+        return UserTask.TaskStatus.getStatusFormated(userTask.getStatus().charAt(0));
     }
 
-    public void setCurrentStatus(char currentStatus) {
-        this.currentStatus = currentStatus;
+    public String getCurrentStatus() {
+        return userTask.getStatus();
     }
+
+    public Long getTaskId() {
+        return userTask.getTaskByTaskId().getId();
+    }
+
 }

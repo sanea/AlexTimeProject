@@ -17,9 +17,9 @@ public class UserAction {
     @Column(name = "timestamp", nullable = false, updatable = false)
     private Date timestamp;
     @Column(name = "action", nullable = false, updatable = false, length = 1)
-    private char action;
-    @Column(name = "delta_time", nullable = true, length = 11)
-    private Integer deltaTime;
+    private String action;
+    @Column(name = "time_seconds", nullable = true, length = 11)
+    private Integer timeSeconds;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_time_id", referencedColumnName = "id", nullable = false)
     private UserTaskTime userTaskTimeById;
@@ -40,20 +40,20 @@ public class UserAction {
         this.timestamp = timestamp;
     }
 
-    public char getAction() {
+    public String getAction() {
         return action;
     }
 
-    public void setAction(char action) {
+    public void setAction(String action) {
         this.action = action;
     }
 
-    public Integer getDeltaTime() {
-        return deltaTime;
+    public Integer getTimeSeconds() {
+        return timeSeconds;
     }
 
-    public void setDeltaTime(Integer deltaTime) {
-        this.deltaTime = deltaTime;
+    public void setTimeSeconds(Integer timeSeconds) {
+        this.timeSeconds = timeSeconds;
     }
 
     public UserTaskTime getUserTaskTimeById() {
@@ -82,7 +82,7 @@ public class UserAction {
     }
 
     public static enum Action {
-        START('r'), PAUSE('p'), EXTEND('e'), FINISH('f'), STOP('s');
+        START('r'), PAUSE('p'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s');
         private char action;
 
         private Action(char action) {
@@ -95,6 +95,8 @@ public class UserAction {
                     return START;
                 case 'p':
                     return PAUSE;
+                case 'c':
+                    return RESUME;
                 case 'e':
                     return EXTEND;
                 case 'f':
@@ -104,6 +106,10 @@ public class UserAction {
                 default:
                     throw new IllegalArgumentException("wrong action");
             }
+        }
+
+        public String getActionStr() {
+            return String.valueOf(action);
         }
 
         public char getAction() {

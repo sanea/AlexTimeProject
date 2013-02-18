@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class UserTask {
     private Long id;
 
     @Column(name = "status", nullable = false, length = 1)
-    private char status;
+    private String status;
 
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
@@ -45,11 +46,11 @@ public class UserTask {
         this.id = id;
     }
 
-    public char getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(char status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -103,8 +104,15 @@ public class UserTask {
         return id != null ? id.hashCode() : 0;
     }
 
+    public void addUserTaskTime(UserTaskTime taskTime) {
+        taskTime.setUserTaskById(this);
+        if (userTaskTimeList == null)
+            userTaskTimeList = new ArrayList<UserTaskTime>();
+        userTaskTimeList.add(taskTime);
+    }
+
     public static enum TaskStatus {
-        RUNNING('r'), COMPLETED('c'), PAUSED('p'), STOPPED('s');
+        RUNNING('r'), COMPLETED('c'), PAUSED('p'), STOPPED('s'), UNKNOWN('u');
         private char status;
 
         private TaskStatus(char status) {
@@ -121,9 +129,32 @@ public class UserTask {
                     return PAUSED;
                 case 's':
                     return STOPPED;
+                case 'u':
+                    return UNKNOWN;
                 default:
                     throw new IllegalArgumentException("wrong status");
             }
+        }
+
+        public static String getStatusFormated(char status) {
+            switch (status) {
+                case 'r':
+                    return "Running";
+                case 'c':
+                    return "Completed";
+                case 'p':
+                    return "Paused";
+                case 's':
+                    return "Stopped";
+                case 'u':
+                    return "Unknown";
+                default:
+                    throw new IllegalArgumentException("wrong status");
+            }
+        }
+
+        public String getStatusStr() {
+            return String.valueOf(status);
         }
 
         public char getStatus() {

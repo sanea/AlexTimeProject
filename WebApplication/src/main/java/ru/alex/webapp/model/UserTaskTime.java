@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -90,5 +91,12 @@ public class UserTaskTime {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public void addUserAction(UserAction userAction) {
+        userAction.setUserTaskTimeById(this);
+        if (userActionsById == null)
+            userActionsById = new ArrayList<UserAction>();
+        userActionsById.add(userAction);
     }
 }

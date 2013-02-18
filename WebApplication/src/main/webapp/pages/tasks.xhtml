@@ -9,7 +9,7 @@
 
             <h2>Assigned Tasks</h2>
 
-            <p:dataTable var="task" value="#{taskMB.assignedTasks}">
+            <p:dataTable id="taskTable" var="task" value="#{taskMB.assignedTasks}">
                 <p:column headerText="Name">
                     <h:outputText value="#{task.taskName}"/>
                 </p:column>
@@ -22,18 +22,41 @@
                     <h:outputText value="#{task.taskPrice}"/>
                 </p:column>
 
+                <p:column headerText="Status">
+                    <h:outputText value="#{task.currentStatusStr}" rendered="#{task.taskType == 1}"/>
+                </p:column>
+
                 <p:column headerText="Time Left">
-                    <h:outputText value="#{task.timeLeft}"/>
+                    <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType == 1}"/>
                 </p:column>
 
                 <p:column>
-                    <p:commandButton value="start"/>
-                    <p:commandButton value="pause" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}"/>
-                    <p:commandButton value="extend" rendered="#{task.taskType == 1}"/>
-                    <p:commandButton value="finish" rendered="#{task.taskType == 1}"/>
+                    <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
+                                     rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}">
+                        <f:attribute name="taskId" value="#{task.taskId}"/>
+                    </p:commandButton>
+                    <p:commandButton value="pause" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}"/>
+                    <p:commandButton value="resume" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}"/>
+                    <p:commandButton value="extend" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}"/>
+                    <p:commandButton value="finish"
+                                     rendered="#{task.taskType == 1 and (task.currentStatus == 'r' or task.currentStatus == 'p')}"/>
                 </p:column>
 
             </p:dataTable>
+
+            <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">
+                <h:panelGrid columns="3">
+                    <h:outputLabel for="minutes" value="Minutes: *"/>
+                    <p:inputText id="minutes" required="true" value="#{taskMB.selectedMinutes}">
+                        <f:convertNumber/>
+                    </p:inputText>
+                    <p:message for="minutes" display="icon"/>
+                </h:panelGrid>
+
+                <p:commandButton value="Start" action="#{taskMB.start}" update="taskTable" onsuccess="timeDialog.hide();"/>
+                <p:commandButton value="Close" onclick="timeDialog.hide();"/>
+
+            </p:dialog>
 
         </ui:define>
     </ui:composition>

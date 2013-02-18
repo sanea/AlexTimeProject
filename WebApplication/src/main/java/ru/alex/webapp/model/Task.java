@@ -116,6 +116,17 @@ public class Task {
             }
         }
 
+        public static String getTypeStr(int type) {
+            switch (type) {
+                case 1:
+                    return "Process";
+                case 2:
+                    return "Task";
+                default:
+                    throw new IllegalArgumentException("wrong task type");
+            }
+        }
+
         public int getType() {
             return type;
         }
