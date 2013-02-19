@@ -87,28 +87,41 @@ public class UserTask {
         this.userByUsername = userByUsername;
     }
 
+    public void addUserTaskTime(UserTaskTime taskTime) {
+        taskTime.setUserTaskById(this);
+        if (userTaskTimeList == null)
+            userTaskTimeList = new ArrayList<UserTaskTime>();
+        userTaskTimeList.add(taskTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof UserTask)) return false;
 
         UserTask userTask = (UserTask) o;
 
+        if (createTime != null ? !createTime.equals(userTask.createTime) : userTask.createTime != null) return false;
         if (id != null ? !id.equals(userTask.id) : userTask.id != null) return false;
+        if (status != null ? !status.equals(userTask.status) : userTask.status != null) return false;
+        if (taskByTaskId != null ? !taskByTaskId.equals(userTask.taskByTaskId) : userTask.taskByTaskId != null)
+            return false;
+        if (updateTime != null ? !updateTime.equals(userTask.updateTime) : userTask.updateTime != null) return false;
+        if (userByUsername != null ? !userByUsername.equals(userTask.userByUsername) : userTask.userByUsername != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    public void addUserTaskTime(UserTaskTime taskTime) {
-        taskTime.setUserTaskById(this);
-        if (userTaskTimeList == null)
-            userTaskTimeList = new ArrayList<UserTaskTime>();
-        userTaskTimeList.add(taskTime);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
+        result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
+        result = 31 * result + (taskByTaskId != null ? taskByTaskId.hashCode() : 0);
+        result = 31 * result + (userByUsername != null ? userByUsername.hashCode() : 0);
+        return result;
     }
 
     public static enum TaskStatus {

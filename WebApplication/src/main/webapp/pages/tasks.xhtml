@@ -26,17 +26,18 @@
                     <h:outputText value="#{task.currentStatusStr}" rendered="#{task.taskType == 1}"/>
                 </p:column>
 
-                <p:column headerText="Time Left">
+                <p:column headerText="Time Left (min)">
                     <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType == 1}"/>
                 </p:column>
 
                 <p:column>
+                    <p:commandButton value="start" rendered="#{task.taskType == 2}" action="#{taskMB.startTask(task.taskId)}" update="taskTable"/>
                     <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
-                                     rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}">
+                                     rendered="#{task.taskType == 1 and (task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's')}">
                         <f:attribute name="taskId" value="#{task.taskId}"/>
                     </p:commandButton>
-                    <p:commandButton value="pause" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}"/>
-                    <p:commandButton value="resume" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}"/>
+                    <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}" update="taskTable"/>
+                    <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}" update="taskTable"/>
                     <p:commandButton value="extend" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}"/>
                     <p:commandButton value="finish"
                                      rendered="#{task.taskType == 1 and (task.currentStatus == 'r' or task.currentStatus == 'p')}"/>
@@ -53,7 +54,7 @@
                     <p:message for="minutes" display="icon"/>
                 </h:panelGrid>
 
-                <p:commandButton value="Start" action="#{taskMB.start}" update="taskTable" onsuccess="timeDialog.hide();"/>
+                <p:commandButton value="Start" action="#{taskMB.startProcess}" update="taskTable" onsuccess="timeDialog.hide();"/>
                 <p:commandButton value="Close" onclick="timeDialog.hide();"/>
 
             </p:dialog>

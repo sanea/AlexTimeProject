@@ -65,29 +65,6 @@ public class Task {
         this.taskEnabled = taskEnabled;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Task that = (Task) o;
-
-        if (id != that.id) return false;
-        if (taskPrice != that.taskPrice) return false;
-        if (taskType != that.taskType) return false;
-        if (taskName != null ? !taskName.equals(that.taskName) : that.taskName != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
-        result = 31 * result + taskType;
-        result = 31 * result + taskPrice.intValue();
-        return result;
-    }
 
     public Collection<UserTask> getUserTasksById() {
         return userTasksById;
@@ -95,6 +72,32 @@ public class Task {
 
     public void setUserTasksById(Collection<UserTask> userTasksById) {
         this.userTasksById = userTasksById;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+
+        Task task = (Task) o;
+
+        if (taskType != task.taskType) return false;
+        if (id != null ? !id.equals(task.id) : task.id != null) return false;
+        if (taskEnabled != null ? !taskEnabled.equals(task.taskEnabled) : task.taskEnabled != null) return false;
+        if (taskName != null ? !taskName.equals(task.taskName) : task.taskName != null) return false;
+        if (taskPrice != null ? !taskPrice.equals(task.taskPrice) : task.taskPrice != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
+        result = 31 * result + taskType;
+        result = 31 * result + (taskPrice != null ? taskPrice.hashCode() : 0);
+        result = 31 * result + (taskEnabled != null ? taskEnabled.hashCode() : 0);
+        return result;
     }
 
     public static enum TaskType {

@@ -1,7 +1,7 @@
 package ru.alex.webapp.dao;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Alexander.Isaenco
@@ -12,8 +12,13 @@ public interface GenericDao<T, ID extends Serializable> {
 
     List<T> findAll();
 
-    T makePersistent(T entity);
+    T merge(T entity);
+
+    void persist(T entity);
 
     void makeTransient(T entity);
 
+    public void flush();
+
+    public void clear();
 }

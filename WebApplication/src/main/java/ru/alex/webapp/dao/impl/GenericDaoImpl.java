@@ -49,8 +49,13 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     @Override
-    public T makePersistent(T entity) {
+    public T merge(T entity) {
         return getEntityManager().merge(entity);
+    }
+
+    @Override
+    public void persist(T entity) {
+        getEntityManager().persist(entity);
     }
 
     @Override
@@ -58,10 +63,12 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         getEntityManager().remove(entity);
     }
 
+    @Override
     public void flush() {
         getEntityManager().flush();
     }
 
+    @Override
     public void clear() {
         getEntityManager().clear();
     }

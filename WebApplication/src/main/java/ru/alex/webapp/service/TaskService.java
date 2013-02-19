@@ -8,7 +8,7 @@ import ru.alex.webapp.model.UserTaskTime;
 import java.util.List;
 
 public interface TaskService {
-    List<UserTask> getTasksForUser(String username);
+    List<UserTask> getTasksForUser(String username) throws Exception;
 
     void startTask(Long taskId, String username, int seconds) throws Exception;
 
