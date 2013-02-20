@@ -33,7 +33,7 @@ public class TaskMB implements Serializable {
     private String userName;
     private List<TaskWrapper> assignedTasks;
     private int selectedMinutes;
-    private Long selectedTaskId;
+    private TaskWrapper selectedTask;
 
     @PostConstruct
     private void init() {
@@ -61,7 +61,7 @@ public class TaskMB implements Serializable {
 
     public void startProcess() {
         try {
-            taskService.startTask(selectedTaskId, userName, selectedMinutes * 60);
+            taskService.startTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
             initAssignedTasks();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,18 +99,20 @@ public class TaskMB implements Serializable {
         }
     }
 
-    public void extend(TaskWrapper task, int minutes) {
+    public void extendProcess() {
         try {
-            taskService.extendTask(task.getTaskId(), userName, minutes * 60);
+            taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
+            initAssignedTasks();
         } catch (Exception e) {
             e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error extending task", e.toString()));
         }
     }
 
-    public void finish(TaskWrapper task) {
+    public void stop(String taskId) {
         try {
-            taskService.stopTask(task.getTaskId(), userName);
+            taskService.stopTask(Long.valueOf(taskId), userName);
+            initAssignedTasks();
         } catch (Exception e) {
             e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
@@ -125,9 +127,13 @@ public class TaskMB implements Serializable {
         this.selectedMinutes = selectedMinutes;
     }
 
+    public TaskWrapper getSelectedTask() {
+        return selectedTask;
+    }
+
     public void startListener(ActionEvent event) {
         selectedMinutes = 30;
-        selectedTaskId = (Long) event.getComponent().getAttributes().get("taskId");
+        selectedTask = (TaskWrapper) event.getComponent().getAttributes().get("task");
     }
 
 }

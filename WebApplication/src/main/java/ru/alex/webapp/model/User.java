@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,23 +9,19 @@ import java.util.Collection;
  */
 @Table(name = "users")
 @Entity
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "username")
     private String username;
-
     @Column(name = "password", length = 50, nullable = false)
     private String password;
-
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
-
     @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<GroupMember> groupMemberByUsername;
-
     @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksByUsername;
-
 
     public String getUsername() {
         return username;
@@ -34,7 +31,6 @@ public class User {
         this.username = username;
     }
 
-
     public String getPassword() {
         return password;
     }
@@ -42,7 +38,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
     public boolean isEnabled() {
         return enabled;
@@ -59,7 +54,6 @@ public class User {
     public void setGroupMemberByUsername(Collection<GroupMember> groupMemberByUsername) {
         this.groupMemberByUsername = groupMemberByUsername;
     }
-
 
     public Collection<UserTask> getUserTasksByUsername() {
         return userTasksByUsername;

@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,35 +9,28 @@ import java.util.Date;
 /**
  * @author Alexander.Isaenco
  */
-@Table(name = "user_task", uniqueConstraints=@UniqueConstraint(columnNames={"username", "task_id"}))
+@Table(name = "user_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "task_id"}))
 @Entity
-public class UserTask {
-
+public class UserTask implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "status", nullable = false, length = 1)
     private String status;
-
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
-
     @Column(name = "create_time", nullable = false)
     private Date createTime;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     private Task taskByTaskId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User userByUsername;
-
     @OneToMany(mappedBy = "userTaskById", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTaskTime> userTaskTimeList;
-
 
     public Long getId() {
         return id;
@@ -77,7 +71,6 @@ public class UserTask {
     public void setTaskByTaskId(Task taskByTaskId) {
         this.taskByTaskId = taskByTaskId;
     }
-
 
     public User getUserByUsername() {
         return userByUsername;

@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,8 @@ import java.util.Date;
  */
 @Table(name = "user_action")
 @Entity
-public class UserAction {
+public class UserAction implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

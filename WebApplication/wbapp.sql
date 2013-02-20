@@ -140,7 +140,7 @@ CREATE TABLE `user_action` (
   PRIMARY KEY (`id`),
   KEY `FK_TASK_TIME_idx` (`task_time_id`),
   CONSTRAINT `FK_TASK_TIME` FOREIGN KEY (`task_time_id`) REFERENCES `user_task_time` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,7 +180,7 @@ CREATE TABLE `user_task` (
 
 LOCK TABLES `user_task` WRITE;
 /*!40000 ALTER TABLE `user_task` DISABLE KEYS */;
-INSERT INTO `user_task` VALUES (1,'user1',1,'u','2013-02-18 13:16:24','2013-02-18 13:16:31'),(2,'user1',2,'u','2013-02-18 13:16:24','2013-02-18 13:16:31'),(3,'user2',1,'u','2013-02-18 13:16:24','2013-02-18 13:16:31');
+INSERT INTO `user_task` VALUES (1,'user1',1,'p','2013-02-20 08:31:59','2013-02-18 13:16:31'),(2,'user1',2,'c','2013-02-19 15:02:04','2013-02-18 13:16:31'),(3,'user2',1,'u','2013-02-18 13:16:24','2013-02-18 13:16:31');
 /*!40000 ALTER TABLE `user_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +205,7 @@ CREATE TABLE `user_task_time` (
   KEY `FK_TIME_SEQ_idx` (`time_seq_id`),
   CONSTRAINT `FK_TIME_SEQ` FOREIGN KEY (`time_seq_id`) REFERENCES `user_task_time_seq` (`id`),
   CONSTRAINT `FK_USER_TASK1` FOREIGN KEY (`user_task_id`) REFERENCES `user_task` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,9 +233,9 @@ CREATE TABLE `user_task_time_seq` (
   PRIMARY KEY (`id`),
   KEY `FK_TIME_SEQ_NEXT_idx` (`next_id`),
   KEY `FK_TIME_SEQ_PREV_idx` (`prev_id`),
-  CONSTRAINT `FK_TIME_SEQ_NEXT` FOREIGN KEY (`next_id`) REFERENCES `user_task_time_seq` (`id`),
-  CONSTRAINT `FK_TIME_SEQ_PREV` FOREIGN KEY (`prev_id`) REFERENCES `user_task_time_seq` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_TIME_SEQ_NEXT` FOREIGN KEY (`next_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_TIME_SEQ_PREV` FOREIGN KEY (`prev_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,4 +281,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-02-19 16:44:14
+-- Dump completed on 2013-02-20 12:35:59

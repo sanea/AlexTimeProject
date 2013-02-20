@@ -55,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
                 throw new Exception("Running task should have current time");
             Date now = new Date();
             if (now.after(currentTime.getFinishTime())) {
-                endTask(task);
+                endTask(task, currentTime.getFinishTime(), false);
                 return true;
             }
         } else if (status != UserTask.TaskStatus.PAUSED && currentTime != null) {
@@ -65,31 +65,41 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    private void endTask(UserTask task) throws Exception {
+    private void endTask(UserTask task, Date finishTime, boolean stop) throws Exception {
         List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
         UserTaskTime currentTime = currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
-        Date finishTime = currentTime.getFinishTime();
-
         //change user_task status
-        task.setStatus(UserTask.TaskStatus.COMPLETED.getStatusStr());
+        task.setStatus(stop ? UserTask.TaskStatus.STOPPED.getStatusStr() : UserTask.TaskStatus.COMPLETED.getStatusStr());
         task.setUpdateTime(finishTime);
         userTaskDao.merge(task);
         userTaskDao.flush();
         userTaskDao.clear();
 
-        //calculate timeSpentSec and close last timeSec
-        int timeSpentSec = 0;
+        //calculate timeSpentSec and close last timeSec if Running
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
-        timeSeqList.get(0).setEndTime(finishTime);
-        timeSeqList.set(0, userTaskTimeSeqDao.merge(timeSeqList.get(0)));
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
-
+        UserTask.TaskStatus taskStatus = UserTask.TaskStatus.getStatus(task.getStatus().charAt(0));
+        switch (taskStatus) {
+            case RUNNING:
+                UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
+                currentTimeSeq.setEndTime(finishTime);
+                currentTimeSeq = userTaskTimeSeqDao.merge(currentTimeSeq);
+                userTaskTimeSeqDao.flush();
+                userTaskTimeSeqDao.clear();
+                timeSeqList.set(0, currentTimeSeq);
+                break;
+            case PAUSED:
+                if (timeSeqList.get(0).getEndTime() == null)
+                    throw new Exception("Time seq should have end time in Paused task");
+                break;
+            default:
+                throw new Exception("Wrong task stasus, can't end task");
+        }
+        int timeSpentSec = 0;
         for (UserTaskTimeSeq timeSeq : timeSeqList) {
             if (timeSeq.getEndTime() == null && timeSeq.getEndTime().after(timeSeq.getStartTime()))
                 throw new Exception("time sequence should have correct end time");
@@ -103,10 +113,11 @@ public class TaskServiceImpl implements TaskService {
         currentTime = userTaskTimeDao.merge(currentTime);
         userTaskTimeDao.flush();
         userTaskTimeDao.clear();
+
         //add user_action
         UserAction action = new UserAction();
         action.setTimestamp(finishTime);
-        action.setAction(UserAction.Action.FINISH.getActionStr());
+        action.setAction(stop ? UserAction.Action.STOP.getActionStr() : UserAction.Action.FINISH.getActionStr());
         currentTime.addUserAction(action);
         userActionDao.persist(action);
         userActionDao.flush();
@@ -224,6 +235,7 @@ public class TaskServiceImpl implements TaskService {
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
+        //close task if time is finished
         boolean isClosed = checkTask(userTask);
         if (isClosed)
             return;
@@ -266,7 +278,7 @@ public class TaskServiceImpl implements TaskService {
         if (!userTask.getStatus().equals(UserTask.TaskStatus.PAUSED.getStatusStr()))
             throw new Exception("wrong status of task for user");
         if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
-            throw new Exception("can't pause Task");
+            throw new Exception("can't resume Task");
         List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
         UserTaskTime currentTime = currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
         if (currentTime == null || currentTime.getTimeSeq() == null)
@@ -300,13 +312,11 @@ public class TaskServiceImpl implements TaskService {
         userTaskTimeDao.clear();
 
         //add user_task_time_seq to end of current user_task_time
-        List<UserTaskTimeSeq> timeSeqList2 = getAllTimeSeq(currentTime.getTimeSeq());
-        if (timeSeqList2.size() == 0)
-            throw new Exception("timeSeqList should have size >= 1");
         UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
         timeSeq.setStartTime(now);
-        timeSeq.setPrevTimeSeq(timeSeqList2.get(0));
-        timeSeqList2.get(0).setNextTimeSeq(timeSeq);
+        UserTaskTimeSeq prevTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
+        timeSeq.setPrevTimeSeq(prevTimeSeq);
+        prevTimeSeq.setNextTimeSeq(timeSeq);
         userTaskTimeSeqDao.persist(timeSeq);
         userTaskTimeSeqDao.flush();
         userTaskTimeSeqDao.clear();
@@ -324,12 +334,71 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void extendTask(Long taskId, String username, int seconds) throws Exception {
-        //TODO
+        if (taskId == null || username == null || username.equals(""))
+            throw new IllegalArgumentException("Wrong Input Params for starting task");
+        UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        if (userTask == null)
+            throw new Exception("can't find user task");
+        if (!userTask.getStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr()))
+            throw new Exception("wrong status of task for user");
+        if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
+            throw new Exception("can't extend Task");
+        List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
+        UserTaskTime currentTime = currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
+        if (currentTime == null || currentTime.getTimeSeq() == null)
+            throw new Exception("task should have current time and time seq");
+
+        //close task if time is finished
+        boolean isClosed = checkTask(userTask);
+        if (isClosed)
+            return;
+
+        Date now = new Date();
+        //change user_task status no needed, has RUNNING status
+        //extend finish_time of user_task_time
+        Calendar finisTime = Calendar.getInstance();
+        finisTime.setTime(now);
+        finisTime.add(Calendar.SECOND, seconds);
+        currentTime.setFinishTime(finisTime.getTime());
+        currentTime = userTaskTimeDao.merge(currentTime);
+        userTaskTimeDao.flush();
+        userTaskTimeDao.clear();
+
+        //add user action
+        UserAction userAction = new UserAction();
+        userAction.setAction(UserAction.Action.EXTEND.getActionStr());
+        userAction.setTimestamp(now);
+        currentTime.addUserAction(userAction);
+        userActionDao.persist(userAction);
+        userActionDao.flush();
+        userActionDao.clear();
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void stopTask(Long taskId, String username) throws Exception {
-        //TODO
+        if (taskId == null || username == null || username.equals(""))
+            throw new IllegalArgumentException("Wrong Input Params for starting task");
+        UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        if (userTask == null)
+            throw new Exception("can't find user task");
+        if (!userTask.getStatus().equals(UserTask.TaskStatus.PAUSED.getStatusStr())
+                || !userTask.getStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr()))
+            throw new Exception("wrong status of task for user");
+        if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
+            throw new Exception("can't pause Task");
+        List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
+        if (currentTimeList.size() != 1)
+            throw new Exception("current time list should have size = 1");
+        UserTaskTime currentTime = currentTimeList.get(0);
+        if (currentTime == null || currentTime.getTimeSeq() == null)
+            throw new Exception("task should have current time and time seq");
+
+        //check if task should be ended
+        boolean isClosed = checkTask(userTask);
+        if (isClosed)
+            return;
+
+        //force ending task
+        endTask(userTask, new Date(), true);
     }
 }

@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -9,7 +10,8 @@ import java.util.Collection;
  */
 @Table(name = "task")
 @Entity
-public class Task {
+public class Task implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -64,7 +66,6 @@ public class Task {
     public void setTaskEnabled(String taskEnabled) {
         this.taskEnabled = taskEnabled;
     }
-
 
     public Collection<UserTask> getUserTasksById() {
         return userTasksById;
@@ -134,7 +135,6 @@ public class Task {
             return type;
         }
     }
-
 
 
 }

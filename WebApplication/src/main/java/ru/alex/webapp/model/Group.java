@@ -1,6 +1,7 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,18 +9,16 @@ import java.util.Collection;
  */
 @Table(name = "groups")
 @Entity
-public class Group {
+public class Group implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "group_name", nullable = false, length = 50)
     private String groupName;
-
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupByGroupId")
     private Collection<GroupAuthority> groupAuthorityById;
-
     @OneToMany(mappedBy = "groupByGroupId")
     private Collection<GroupMember> groupMemberById;
 
@@ -30,7 +29,6 @@ public class Group {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getGroupName() {
         return groupName;
@@ -47,7 +45,6 @@ public class Group {
     public void setGroupAuthorityById(Collection<GroupAuthority> groupAuthorityById) {
         this.groupAuthorityById = groupAuthorityById;
     }
-
 
     public Collection<GroupMember> getGroupMemberById() {
         return groupMemberById;

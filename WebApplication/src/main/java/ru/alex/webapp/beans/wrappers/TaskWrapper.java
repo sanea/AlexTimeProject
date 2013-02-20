@@ -10,6 +10,7 @@ import java.math.BigDecimal;
  * @author Alex
  */
 public class TaskWrapper implements Serializable {
+    private static final long serialVersionUID = 1L;
     private UserTask userTask;
     private boolean isActive;
     private int timeLeft;
@@ -42,7 +43,7 @@ public class TaskWrapper implements Serializable {
         this.timeLeft = timeLeft;
     }
 
-    public String getCurrentStatusStr() {
+    public String getCurrentStatusFormated() {
         return UserTask.TaskStatus.getStatusFormated(userTask.getStatus().charAt(0));
     }
 

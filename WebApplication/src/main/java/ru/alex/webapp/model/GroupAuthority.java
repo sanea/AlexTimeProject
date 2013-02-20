@@ -2,21 +2,21 @@ package ru.alex.webapp.model;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Alexander.Isaenco
  */
 @Table(name = "group_authorities")
 @Entity
-public class GroupAuthority {
+public class GroupAuthority implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "authority", nullable = false, length = 50, updatable = false)
     private String authority;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)
     private Group groupByGroupId;

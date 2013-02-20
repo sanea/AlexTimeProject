@@ -23,7 +23,7 @@
                 </p:column>
 
                 <p:column headerText="Status">
-                    <h:outputText value="#{task.currentStatusStr}" rendered="#{task.taskType == 1}"/>
+                    <h:outputText value="#{task.currentStatusFormated}" rendered="#{task.taskType == 1}"/>
                 </p:column>
 
                 <p:column headerText="Time Left (min)">
@@ -32,15 +32,19 @@
 
                 <p:column>
                     <p:commandButton value="start" rendered="#{task.taskType == 2}" action="#{taskMB.startTask(task.taskId)}" update="taskTable"/>
-                    <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
-                                     rendered="#{task.taskType == 1 and (task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's')}">
-                        <f:attribute name="taskId" value="#{task.taskId}"/>
-                    </p:commandButton>
-                    <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}" update="taskTable"/>
-                    <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}" rendered="#{task.taskType == 1 and task.currentStatus == 'p'}" update="taskTable"/>
-                    <p:commandButton value="extend" rendered="#{task.taskType == 1 and task.currentStatus == 'r'}"/>
-                    <p:commandButton value="finish"
-                                     rendered="#{task.taskType == 1 and (task.currentStatus == 'r' or task.currentStatus == 'p')}"/>
+                    <h:panelGroup rendered="#{task.taskType == 1}">
+                        <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
+                                         rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}">
+                            <f:attribute name="task" value="#{task}"/>
+                        </p:commandButton>
+                        <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}" rendered="#{task.currentStatus == 'r'}" update="taskTable"/>
+                        <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}" rendered="#{task.currentStatus == 'p'}" update="taskTable"/>
+                        <p:commandButton value="extend" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
+                                         rendered="#{task.currentStatus == 'r'}">
+                            <f:attribute name="task" value="#{task}"/>
+                        </p:commandButton>
+                        <p:commandButton value="stop" action="#{taskMB.stop(task.taskId)}" rendered="#{task.currentStatus == 'r' or task.currentStatus == 'p'}" update="taskTable"/>
+                    </h:panelGroup>
                 </p:column>
 
             </p:dataTable>
@@ -54,7 +58,10 @@
                     <p:message for="minutes" display="icon"/>
                 </h:panelGrid>
 
-                <p:commandButton value="Start" action="#{taskMB.startProcess}" update="taskTable" onsuccess="timeDialog.hide();"/>
+                <p:commandButton value="Start" action="#{taskMB.startProcess}" update="taskTable" onsuccess="timeDialog.hide();"
+                                 rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"/>
+                <p:commandButton value="Extend" action="#{taskMB.extendProcess}" update="taskTable" onsuccess="timeDialog.hide();"
+                                 rendered="#{taskMB.selectedTask.currentStatus == 'r'"/>
                 <p:commandButton value="Close" onclick="timeDialog.hide();"/>
 
             </p:dialog>

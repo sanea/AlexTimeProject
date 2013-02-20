@@ -1,23 +1,22 @@
 package ru.alex.webapp.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Alexander.Isaenco
  */
 @Table(name = "group_members")
 @Entity
-public class GroupMember {
-
+public class GroupMember implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)
     private Group groupByGroupId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User userByUsername;
