@@ -133,4 +133,20 @@ public class UserTaskTime implements Serializable {
         result = 31 * result + (current != null ? current.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("UserTaskTime");
+        sb.append("{id=").append(id);
+        sb.append(", durationSec=").append(durationSec);
+        sb.append(", startTime=").append(startTime);
+        sb.append(", finishTime=").append(finishTime);
+        sb.append(", current=").append(current);
+        sb.append(", userTaskById=").append(userTaskById);
+        sb.append(", userActionsById=").append(userActionsById);
+        sb.append(", timeSeq=").append(timeSeq);
+        sb.append('}');
+        return sb.toString();
+    }
 }

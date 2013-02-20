@@ -93,6 +93,19 @@ public class UserAction implements Serializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("UserAction");
+        sb.append("{id=").append(id);
+        sb.append(", timestamp=").append(timestamp);
+        sb.append(", action='").append(action).append('\'');
+        sb.append(", timeSeconds=").append(timeSeconds);
+        sb.append(", userTaskTimeById=").append(userTaskTimeById);
+        sb.append('}');
+        return sb.toString();
+    }
+
     public static enum Action {
         START('r'), PAUSE('p'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s');
         private char action;

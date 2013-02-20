@@ -125,6 +125,21 @@ public class UserTask implements Serializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("UserTask");
+        sb.append("{id=").append(id);
+        sb.append(", status='").append(status).append('\'');
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", taskByTaskId=").append(taskByTaskId);
+        sb.append(", userByUsername=").append(userByUsername);
+        sb.append(", userTaskTimeList=").append(userTaskTimeList);
+        sb.append('}');
+        return sb.toString();
+    }
+
     public static enum TaskStatus {
         RUNNING('r'), COMPLETED('c'), PAUSED('p'), STOPPED('s'), UNKNOWN('u');
         private char status;

@@ -87,4 +87,17 @@ public class UserTaskTimeSeq implements Serializable {
         result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("UserTaskTimeSeq");
+        sb.append("{id=").append(id);
+        sb.append(", startTime=").append(startTime);
+        sb.append(", endTime=").append(endTime);
+        sb.append(", nextTimeSeq=").append(nextTimeSeq);
+        sb.append(", prevTimeSeq=").append(prevTimeSeq);
+        sb.append('}');
+        return sb.toString();
+    }
 }

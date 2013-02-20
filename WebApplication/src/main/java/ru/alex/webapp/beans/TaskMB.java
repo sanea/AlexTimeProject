@@ -39,15 +39,19 @@ public class TaskMB implements Serializable {
     @PostConstruct
     private void init() {
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.debug("init username=" + userName);
         initAssignedTasks();
     }
 
     private void initAssignedTasks() {
+        logger.debug("initAssignedTasks");
         try {
             List<UserTask> tasks = taskService.getTasksForUser(userName);
+            logger.debug("tasks=" + tasks);
             List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getId(), userName);
+                logger.debug("currentTime=" + currentTime);
                 taskWrappers.add(new TaskWrapper(ut, currentTime));
             }
             assignedTasks = taskWrappers;
@@ -62,6 +66,7 @@ public class TaskMB implements Serializable {
     }
 
     public void startProcess() {
+        logger.debug("startProcess " + selectedTask + " " + userName + " " + selectedMinutes);
         try {
             taskService.startTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
             initAssignedTasks();
@@ -72,6 +77,7 @@ public class TaskMB implements Serializable {
     }
 
     public void startTask(String taskId) {
+        logger.debug("startTask " + taskId);
         try {
             taskService.startTask(Long.valueOf(taskId), userName, 0);
             initAssignedTasks();
@@ -82,6 +88,7 @@ public class TaskMB implements Serializable {
     }
 
     public void pause(String taskId) {
+        logger.debug("pause " + taskId);
         try {
             taskService.pauseTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
@@ -92,6 +99,7 @@ public class TaskMB implements Serializable {
     }
 
     public void resume(String taskId) {
+        logger.debug("resume " + taskId);
         try {
             taskService.resumeTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
@@ -102,6 +110,7 @@ public class TaskMB implements Serializable {
     }
 
     public void extendProcess() {
+        logger.debug("extendProcess " + selectedTask + " " + userName + " " + selectedMinutes);
         try {
             taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
             initAssignedTasks();
@@ -112,6 +121,7 @@ public class TaskMB implements Serializable {
     }
 
     public void stop(String taskId) {
+        logger.debug("stop " + taskId);
         try {
             taskService.stopTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
@@ -136,6 +146,7 @@ public class TaskMB implements Serializable {
     public void startListener(ActionEvent event) {
         selectedMinutes = 30;
         selectedTask = (TaskWrapper) event.getComponent().getAttributes().get("task");
+        logger.debug("startListener selectedTask=" + selectedTask);
     }
 
 }

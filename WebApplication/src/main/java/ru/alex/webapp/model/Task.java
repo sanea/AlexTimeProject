@@ -101,6 +101,20 @@ public class Task implements Serializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Task");
+        sb.append("{id=").append(id);
+        sb.append(", taskName='").append(taskName).append('\'');
+        sb.append(", taskType=").append(taskType);
+        sb.append(", taskPrice=").append(taskPrice);
+        sb.append(", taskEnabled='").append(taskEnabled).append('\'');
+        sb.append(", userTasksById=").append(userTasksById);
+        sb.append('}');
+        return sb.toString();
+    }
+
     public static enum TaskType {
         PROCESS(1), TASK(2);
         private final int type;

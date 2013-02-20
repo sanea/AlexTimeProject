@@ -61,4 +61,15 @@ public class GroupMember implements Serializable {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("GroupMember");
+        sb.append("{id=").append(id);
+        sb.append(", groupByGroupId=").append(groupByGroupId);
+        sb.append(", userByUsername=").append(userByUsername);
+        sb.append('}');
+        return sb.toString();
+    }
 }

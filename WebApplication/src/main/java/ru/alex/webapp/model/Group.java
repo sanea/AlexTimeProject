@@ -70,4 +70,16 @@ public class Group implements Serializable {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Group");
+        sb.append("{id=").append(id);
+        sb.append(", groupName='").append(groupName).append('\'');
+        sb.append(", groupAuthorityById=").append(groupAuthorityById);
+        sb.append(", groupMemberById=").append(groupMemberById);
+        sb.append('}');
+        return sb.toString();
+    }
 }

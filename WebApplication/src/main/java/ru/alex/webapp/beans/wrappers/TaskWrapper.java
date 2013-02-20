@@ -1,5 +1,6 @@
 package ru.alex.webapp.beans.wrappers;
 
+import org.apache.log4j.Logger;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
@@ -13,17 +14,20 @@ import java.util.Date;
  */
 public class TaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(TaskWrapper.class);
     private UserTask userTask;
     private UserTaskTime currentTime;
     private boolean isActive;
     private int timeLeft;
 
     public TaskWrapper(UserTask userTask, UserTaskTime currentTime) {
+        logger.debug("init TaskWrapper " + userTask + " " + currentTime);
         this.userTask = userTask;
         this.currentTime = currentTime;
         if (currentTime != null && currentTime.getFinishTime() != null) {
             Date now = new Date();
             this.timeLeft = (int) ((currentTime.getFinishTime().getTime() - now.getTime()) / 1000);
+            logger.debug("init TaskWrapper timeLeft=" + this.timeLeft);
         }
     }
 
@@ -67,4 +71,15 @@ public class TaskWrapper implements Serializable {
         return currentTime != null ? Integer.valueOf(currentTime.getDurationSec()) : null;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("TaskWrapper");
+        sb.append("{userTask=").append(userTask);
+        sb.append(", currentTime=").append(currentTime);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", timeLeft=").append(timeLeft);
+        sb.append('}');
+        return sb.toString();
+    }
 }

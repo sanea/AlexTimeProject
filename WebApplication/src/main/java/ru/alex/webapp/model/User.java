@@ -84,4 +84,17 @@ public class User implements Serializable {
         result = 31 * result + (enabled ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("User");
+        sb.append("{username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", enabled=").append(enabled);
+        sb.append(", groupMemberByUsername=").append(groupMemberByUsername);
+        sb.append(", userTasksByUsername=").append(userTasksByUsername);
+        sb.append('}');
+        return sb.toString();
+    }
 }
