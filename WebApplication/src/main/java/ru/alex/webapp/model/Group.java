@@ -17,9 +17,9 @@ public class Group implements Serializable {
     private Long id;
     @Column(name = "group_name", nullable = false, length = 50)
     private String groupName;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupByGroupId")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupByGroupId", fetch = FetchType.EAGER)
     private Collection<GroupAuthority> groupAuthorityById;
-    @OneToMany(mappedBy = "groupByGroupId")
+    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Collection<GroupMember> groupMemberById;
 
     public Long getId() {
@@ -77,8 +77,11 @@ public class Group implements Serializable {
         sb.append("Group");
         sb.append("{id=").append(id);
         sb.append(", groupName='").append(groupName).append('\'');
-        sb.append(", groupAuthorityById=").append(groupAuthorityById);
-        sb.append(", groupMemberById=").append(groupMemberById);
+        sb.append(", GroupAuthority[");
+        for (GroupAuthority ga : groupAuthorityById)
+            sb.append(", ").append(ga.getAuthority());
+        sb.append("]");
+        //sb.append(", groupMemberById=").append(groupMemberById); - LAZY
         sb.append('}');
         return sb.toString();
     }

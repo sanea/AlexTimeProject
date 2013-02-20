@@ -143,9 +143,12 @@ public class UserTaskTime implements Serializable {
         sb.append(", startTime=").append(startTime);
         sb.append(", finishTime=").append(finishTime);
         sb.append(", current=").append(current);
-        sb.append(", userTaskById=").append(userTaskById);
-        sb.append(", userActionsById=").append(userActionsById);
-        sb.append(", timeSeq=").append(timeSeq);
+        sb.append(", userTaskById=").append(userTaskById == null ? null : userTaskById.getId());
+        sb.append("userActionsById[");
+        for (UserAction action : userActionsById)
+            sb.append(", ").append(action.getId());
+        sb.append("]");
+        sb.append(", timeSeq=").append(timeSeq == null ? null : timeSeq.getId());
         sb.append('}');
         return sb.toString();
     }

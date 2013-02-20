@@ -68,7 +68,7 @@ public class GroupAuthority implements Serializable {
         sb.append("GroupAuthority");
         sb.append("{id=").append(id);
         sb.append(", authority='").append(authority).append('\'');
-        sb.append(", groupByGroupId=").append(groupByGroupId);
+        sb.append(", groupByGroupId=").append(groupByGroupId == null ? null : groupByGroupId.getGroupName());
         sb.append('}');
         return sb.toString();
     }

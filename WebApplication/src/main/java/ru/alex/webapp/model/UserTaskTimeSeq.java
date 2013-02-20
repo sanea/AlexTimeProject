@@ -95,8 +95,8 @@ public class UserTaskTimeSeq implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
-        sb.append(", nextTimeSeq=").append(nextTimeSeq);
-        sb.append(", prevTimeSeq=").append(prevTimeSeq);
+        sb.append(", nextTimeSeq=").append(nextTimeSeq == null ? null : nextTimeSeq.getId());
+        sb.append(", prevTimeSeq=").append(prevTimeSeq == null ? null : prevTimeSeq.getId());
         sb.append('}');
         return sb.toString();
     }

@@ -92,8 +92,8 @@ public class User implements Serializable {
         sb.append("{username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", enabled=").append(enabled);
-        sb.append(", groupMemberByUsername=").append(groupMemberByUsername);
-        sb.append(", userTasksByUsername=").append(userTasksByUsername);
+        //sb.append(", groupMemberByUsername=").append(groupMemberByUsername);
+        //sb.append(", userTasksByUsername=").append(userTasksByUsername);
         sb.append('}');
         return sb.toString();
     }

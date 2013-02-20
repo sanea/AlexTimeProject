@@ -110,7 +110,7 @@ public class Task implements Serializable {
         sb.append(", taskType=").append(taskType);
         sb.append(", taskPrice=").append(taskPrice);
         sb.append(", taskEnabled='").append(taskEnabled).append('\'');
-        sb.append(", userTasksById=").append(userTasksById);
+        //sb.append(", userTasksById=").append(userTasksById); - LAZY
         sb.append('}');
         return sb.toString();
     }

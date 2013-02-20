@@ -133,9 +133,9 @@ public class UserTask implements Serializable {
         sb.append(", status='").append(status).append('\'');
         sb.append(", updateTime=").append(updateTime);
         sb.append(", createTime=").append(createTime);
-        sb.append(", taskByTaskId=").append(taskByTaskId);
-        sb.append(", userByUsername=").append(userByUsername);
-        sb.append(", userTaskTimeList=").append(userTaskTimeList);
+        sb.append(", taskByTaskId=").append(taskByTaskId == null ? null : taskByTaskId.getTaskName());
+        sb.append(", userByUsername=").append(userByUsername == null ? null : userByUsername.getUsername());
+        //sb.append(", userTaskTimeList=").append(userTaskTimeList); - LAZY
         sb.append('}');
         return sb.toString();
     }

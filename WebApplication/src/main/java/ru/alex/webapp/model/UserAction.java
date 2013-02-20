@@ -101,7 +101,7 @@ public class UserAction implements Serializable {
         sb.append(", timestamp=").append(timestamp);
         sb.append(", action='").append(action).append('\'');
         sb.append(", timeSeconds=").append(timeSeconds);
-        sb.append(", userTaskTimeById=").append(userTaskTimeById);
+        sb.append(", userTaskTimeById=").append(userTaskTimeById == null ? null : userTaskTimeById.getId());
         sb.append('}');
         return sb.toString();
     }

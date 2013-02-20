@@ -67,8 +67,8 @@ public class GroupMember implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("GroupMember");
         sb.append("{id=").append(id);
-        sb.append(", groupByGroupId=").append(groupByGroupId);
-        sb.append(", userByUsername=").append(userByUsername);
+        sb.append(", groupByGroupId=").append(groupByGroupId == null ? null : groupByGroupId.getGroupName());
+        sb.append(", userByUsername=").append(userByUsername == null ? null : userByUsername.getUsername());
         sb.append('}');
         return sb.toString();
     }
