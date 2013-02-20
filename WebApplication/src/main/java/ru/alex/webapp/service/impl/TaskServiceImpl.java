@@ -1,5 +1,6 @@
 package ru.alex.webapp.service.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class TaskServiceImpl implements TaskService {
+    private static final Logger logger = Logger.getLogger(TaskServiceImpl.class);
     @Autowired
     private TaskDao taskDao;
     @Autowired
@@ -31,9 +33,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<UserTask> getTasksForUser(String username) throws Exception {
+        logger.debug("getTasksForUser username=" + username);
         if (username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong username");
         List<UserTask> tasks = userTaskDao.getTasksForUser(username);
+        logger.debug("getTasksForUser tasks=" + tasks);
         for (UserTask task : tasks)
             checkTask(task);
         return tasks;
@@ -41,7 +45,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception {
+        logger.debug("getCurrentTimeForUser taskId=" + taskId + ", username=" + username);
         List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
+        logger.debug("getCurrentTimeForUser currentTimeList=" + currentTimeList);
         if (currentTimeList.size() > 1)
             throw new Exception("current time list should have size <= 1");
         return currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
@@ -55,8 +61,10 @@ public class TaskServiceImpl implements TaskService {
      * @throws Exception
      */
     private boolean checkTask(UserTask task) throws Exception {
+        logger.debug("checkTask task=" + task);
         UserTask.TaskStatus status = UserTask.TaskStatus.getStatus(task.getStatus().charAt(0));
         UserTaskTime currentTime = getCurrentTimeForUser(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
+        logger.debug("checkTask currentTime=" + currentTime);
         if (status == UserTask.TaskStatus.RUNNING) {
             if (currentTime == null)
                 throw new Exception("Running task should have current time");
@@ -73,12 +81,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     private void endTask(UserTask task, Date finishTime, boolean stop) throws Exception {
+        logger.debug("endTask task=" + task + ", finishTime=" + finishTime + ", stop=" + stop);
         UserTaskTime currentTime = getCurrentTimeForUser(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
+        logger.debug("endTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
         //calculate timeSpentSec and close last timeSec if Running
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        logger.debug("endTask timeSeqList=" + timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
         UserTask.TaskStatus taskStatus = UserTask.TaskStatus.getStatus(task.getStatus().charAt(0));
@@ -142,6 +153,7 @@ public class TaskServiceImpl implements TaskService {
      * @throws Exception
      */
     private List<UserTaskTimeSeq> getAllTimeSeq(UserTaskTimeSeq timeSeq) throws Exception {
+        logger.debug("getAllTimeSeq timeSeq=" + timeSeq);
         List<UserTaskTimeSeq> nextTimeSeqList = null;
         if (timeSeq.getNextTimeSeq() != null)
             nextTimeSeqList = getAllTimeSeq(timeSeq.getNextTimeSeq());
@@ -159,9 +171,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void startTask(Long taskId, String username, int seconds) throws Exception {
+        logger.debug("startTask taskId=" + taskId + ", username=" + username + ", seconds=" + seconds);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
         UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        logger.debug("startTask userTask=" + userTask);
         if (userTask == null)
             throw new Exception("can't find user task");
         //only COMPLETED, UNKNOWN and STOPPED allowed
@@ -232,9 +246,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void pauseTask(Long taskId, String username) throws Exception {
+        logger.debug("pauseTask taskId=" + taskId + ", username=" + username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
         UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        logger.debug("pauseTask userTask=" + userTask);
         if (userTask == null)
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr()))
@@ -242,11 +258,13 @@ public class TaskServiceImpl implements TaskService {
         if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
             throw new Exception("can't pause Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        logger.debug("pauseTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
         //close task if time is finished
         boolean isClosed = checkTask(userTask);
+        logger.debug("pauseTask isClosed=" + isClosed);
         if (isClosed)
             return;
 
@@ -260,6 +278,7 @@ public class TaskServiceImpl implements TaskService {
 
         //set end time user_task_time_seq
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        logger.debug("pauseTask timeSeqList=" + timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
         UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
@@ -281,9 +300,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void resumeTask(Long taskId, String username) throws Exception {
+        logger.debug("resumeTask taskId=" + taskId + ", username=" + username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
         UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        logger.debug("resumeTask userTask=" + userTask);
         if (userTask == null)
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(UserTask.TaskStatus.PAUSED.getStatusStr()))
@@ -291,6 +312,7 @@ public class TaskServiceImpl implements TaskService {
         if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
             throw new Exception("can't resume Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        logger.debug("resumeTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
@@ -305,6 +327,7 @@ public class TaskServiceImpl implements TaskService {
         //update finish_time of user_task_time
         int timeSpentSec = 0;
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        logger.debug("resumeTask timeSeqList=" + timeSeqList);
         for (UserTaskTimeSeq ts : timeSeqList) {
             if (ts.getEndTime() == null && ts.getEndTime().after(ts.getStartTime()))
                 throw new Exception("time sequence should have correct end time");
@@ -343,9 +366,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void extendTask(Long taskId, String username, int seconds) throws Exception {
+        logger.debug("extendTask taskId=" + taskId + ", username=" + username + ", seconds=" + seconds);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
         UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        logger.debug("extendTask userTask=" + userTask);
         if (userTask == null)
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr()))
@@ -353,11 +378,13 @@ public class TaskServiceImpl implements TaskService {
         if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
             throw new Exception("can't extend Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        logger.debug("extendTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
         //close task if time is finished
         boolean isClosed = checkTask(userTask);
+        logger.debug("extendTask isClosed=" + isClosed);
         if (isClosed)
             return;
 
@@ -385,9 +412,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void stopTask(Long taskId, String username) throws Exception {
+        logger.debug("stopTask taskId=" + taskId + ", username=" + username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
         UserTask userTask = userTaskDao.getTaskForUser(username, taskId);
+        logger.debug("stopTask userTask=" + userTask);
         if (userTask == null)
             throw new Exception("can't find user task");
         //only PAUSED and RUNNING allowed
@@ -397,11 +426,13 @@ public class TaskServiceImpl implements TaskService {
         if (userTask.getTaskByTaskId().getTaskType() == Task.TaskType.TASK.getType())
             throw new Exception("can't pause Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        logger.debug("stopTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
         //check if task should be ended
         boolean isClosed = checkTask(userTask);
+        logger.debug("stopTask isClosed=" + isClosed);
         if (isClosed)
             return;
 

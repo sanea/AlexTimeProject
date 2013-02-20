@@ -50,7 +50,7 @@ public class TaskMB implements Serializable {
             logger.debug("tasks=" + tasks);
             List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
-                UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getId(), userName);
+                UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
                 taskWrappers.add(new TaskWrapper(ut, currentTime));
             }
@@ -147,6 +147,12 @@ public class TaskMB implements Serializable {
         selectedMinutes = 30;
         selectedTask = (TaskWrapper) event.getComponent().getAttributes().get("task");
         logger.debug("startListener selectedTask=" + selectedTask);
+    }
+
+    public void refreshTable() {
+        //TODO make more effective
+        //remove databse read and check, use only local time updater for detached item
+        initAssignedTasks();
     }
 
 }

@@ -26,6 +26,7 @@ public class TaskWrapper implements Serializable {
         this.currentTime = currentTime;
         if (currentTime != null && currentTime.getFinishTime() != null) {
             Date now = new Date();
+            //todo timeleft = duration - timeSpentFromTimeSeq
             this.timeLeft = (int) ((currentTime.getFinishTime().getTime() - now.getTime()) / 1000);
             logger.debug("init TaskWrapper timeLeft=" + this.timeLeft);
         }
