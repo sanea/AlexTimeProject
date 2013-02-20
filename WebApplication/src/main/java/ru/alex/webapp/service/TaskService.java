@@ -10,6 +10,8 @@ import java.util.List;
 public interface TaskService {
     List<UserTask> getTasksForUser(String username) throws Exception;
 
+    UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception;
+
     void startTask(Long taskId, String username, int seconds) throws Exception;
 
     void pauseTask(Long taskId, String username) throws Exception;

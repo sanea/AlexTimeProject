@@ -5,6 +5,7 @@ import ru.alex.webapp.model.UserTask;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Alex
@@ -14,9 +15,15 @@ public class TaskWrapper implements Serializable {
     private UserTask userTask;
     private boolean isActive;
     private int timeLeft;
+    private Date finishTime;
 
-    public TaskWrapper(UserTask userTask) {
+    public TaskWrapper(UserTask userTask, Date finishTime) {
         this.userTask = userTask;
+        if (finishTime != null) {
+            Date now = new Date();
+            this.timeLeft = (int) ((finishTime.getTime() - now.getTime()) / 1000);
+            this.finishTime = finishTime;
+        }
     }
 
     public String getTaskName() {
@@ -39,11 +46,7 @@ public class TaskWrapper implements Serializable {
         return timeLeft;
     }
 
-    public void setTimeLeft(int timeLeft) {
-        this.timeLeft = timeLeft;
-    }
-
-    public String getCurrentStatusFormated() {
+    public String getCurrentStatusFormatted() {
         return UserTask.TaskStatus.getStatusFormated(userTask.getStatus().charAt(0));
     }
 
@@ -53,6 +56,10 @@ public class TaskWrapper implements Serializable {
 
     public Long getTaskId() {
         return userTask.getTaskByTaskId().getId();
+    }
+
+    public Date getFinishTime() {
+        return finishTime;
     }
 
 }

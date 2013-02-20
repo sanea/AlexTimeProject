@@ -80,6 +80,14 @@ public class UserTask implements Serializable {
         this.userByUsername = userByUsername;
     }
 
+    public Collection<UserTaskTime> getUserTaskTimeList() {
+        return userTaskTimeList;
+    }
+
+    public void setUserTaskTimeList(Collection<UserTaskTime> userTaskTimeList) {
+        this.userTaskTimeList = userTaskTimeList;
+    }
+
     public void addUserTaskTime(UserTaskTime taskTime) {
         taskTime.setUserTaskById(this);
         if (userTaskTimeList == null)

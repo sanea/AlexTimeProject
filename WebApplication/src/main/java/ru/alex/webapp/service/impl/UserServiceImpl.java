@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void addUser(User user) {
 //        userDao.addUser(user);
-        return;
     }
 
     @Override

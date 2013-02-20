@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.TaskWrapper;
 import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 
@@ -46,7 +47,8 @@ public class TaskMB implements Serializable {
             List<UserTask> tasks = taskService.getTasksForUser(userName);
             List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
-                taskWrappers.add(new TaskWrapper(ut));
+                UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getId(), userName);
+                taskWrappers.add(new TaskWrapper(ut, currentTime != null ? currentTime.getFinishTime() : null));
             }
             assignedTasks = taskWrappers;
         } catch (Exception e) {
