@@ -2,6 +2,7 @@ package ru.alex.webapp.beans.wrappers;
 
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserTaskTime;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,16 +14,16 @@ import java.util.Date;
 public class TaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private UserTask userTask;
+    private UserTaskTime currentTime;
     private boolean isActive;
     private int timeLeft;
-    private Date finishTime;
 
-    public TaskWrapper(UserTask userTask, Date finishTime) {
+    public TaskWrapper(UserTask userTask, UserTaskTime currentTime) {
         this.userTask = userTask;
-        if (finishTime != null) {
+        this.currentTime = currentTime;
+        if (currentTime != null && currentTime.getFinishTime() != null) {
             Date now = new Date();
-            this.timeLeft = (int) ((finishTime.getTime() - now.getTime()) / 1000);
-            this.finishTime = finishTime;
+            this.timeLeft = (int) ((currentTime.getFinishTime().getTime() - now.getTime()) / 1000);
         }
     }
 
@@ -59,7 +60,11 @@ public class TaskWrapper implements Serializable {
     }
 
     public Date getFinishTime() {
-        return finishTime;
+        return currentTime != null ? currentTime.getFinishTime() : null;
+    }
+
+    public Integer getDuration() {
+        return currentTime != null ? Integer.valueOf(currentTime.getDurationSec()) : null;
     }
 
 }

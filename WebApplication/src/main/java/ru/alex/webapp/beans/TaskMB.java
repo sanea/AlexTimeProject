@@ -48,7 +48,7 @@ public class TaskMB implements Serializable {
             List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getId(), userName);
-                taskWrappers.add(new TaskWrapper(ut, currentTime != null ? currentTime.getFinishTime() : null));
+                taskWrappers.add(new TaskWrapper(ut, currentTime));
             }
             assignedTasks = taskWrappers;
         } catch (Exception e) {

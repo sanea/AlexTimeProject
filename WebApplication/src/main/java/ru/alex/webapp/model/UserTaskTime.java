@@ -17,8 +17,8 @@ public class UserTaskTime implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "time_spent", length = 11)
-    private int timeSpentSec;
+    @Column(name = "duration", length = 11, nullable = false)
+    private int durationSec;
     @Column(name = "start_time", nullable = false)
     private Date startTime;
     @Column(name = "finish_time", nullable = false)
@@ -42,12 +42,12 @@ public class UserTaskTime implements Serializable {
         this.id = id;
     }
 
-    public int getTimeSpentSec() {
-        return timeSpentSec;
+    public int getDurationSec() {
+        return durationSec;
     }
 
-    public void setTimeSpentSec(int timeSpent) {
-        this.timeSpentSec = timeSpent;
+    public void setDurationSec(int durationSec) {
+        this.durationSec = durationSec;
     }
 
     public Date getStartTime() {
@@ -112,7 +112,7 @@ public class UserTaskTime implements Serializable {
 
         UserTaskTime taskTime = (UserTaskTime) o;
 
-        if (timeSpentSec != taskTime.timeSpentSec) return false;
+        if (durationSec != taskTime.durationSec) return false;
         if (finishTime != null ? !finishTime.equals(taskTime.finishTime) : taskTime.finishTime != null) return false;
         if (id != null ? !id.equals(taskTime.id) : taskTime.id != null) return false;
         if (startTime != null ? !startTime.equals(taskTime.startTime) : taskTime.startTime != null) return false;
@@ -126,7 +126,7 @@ public class UserTaskTime implements Serializable {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + timeSpentSec;
+        result = 31 * result + durationSec;
         result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
         result = 31 * result + (finishTime != null ? finishTime.hashCode() : 0);
         result = 31 * result + (userTaskById != null ? userTaskById.hashCode() : 0);

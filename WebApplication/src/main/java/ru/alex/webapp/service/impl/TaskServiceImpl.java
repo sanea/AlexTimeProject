@@ -98,13 +98,6 @@ public class TaskServiceImpl implements TaskService {
             default:
                 throw new Exception("Wrong task status, can't end task");
         }
-        int timeSpentSec = 0;
-        for (UserTaskTimeSeq timeSeq : timeSeqList) {
-            if (timeSeq.getEndTime() == null && timeSeq.getEndTime().after(timeSeq.getStartTime()))
-                throw new Exception("time sequence should have correct end time");
-            long timeDif = (timeSeq.getEndTime().getTime() - timeSeq.getStartTime().getTime()) / 1000;
-            timeSpentSec = (int) (timeSpentSec + timeDif);
-        }
 
         //change user_task status
         task.setStatus(stop ? UserTask.TaskStatus.STOPPED.getStatusStr() : UserTask.TaskStatus.COMPLETED.getStatusStr());
@@ -113,9 +106,19 @@ public class TaskServiceImpl implements TaskService {
         userTaskDao.flush();
         userTaskDao.clear();
 
-        //change user_tak_time time_spent and current value
+        //change user_tak_time current value and if stop - duration
+        if (stop) {
+            int timeSpentSec = 0;
+            for (UserTaskTimeSeq timeSeq : timeSeqList) {
+                if (timeSeq.getEndTime() == null && timeSeq.getEndTime().after(timeSeq.getStartTime()))
+                    throw new Exception("time sequence should have correct end time");
+                long timeDif = (timeSeq.getEndTime().getTime() - timeSeq.getStartTime().getTime()) / 1000;
+                timeSpentSec = (int) (timeSpentSec + timeDif);
+            }
+            currentTime.setDurationSec(timeSpentSec);
+        }
         currentTime.setCurrent(false);
-        currentTime.setTimeSpentSec(timeSpentSec);
+        currentTime.setFinishTime(finishTime);
         currentTime = userTaskTimeDao.merge(currentTime);
         userTaskTimeDao.flush();
         userTaskTimeDao.clear();
@@ -184,7 +187,7 @@ public class TaskServiceImpl implements TaskService {
                 userTask = userTaskDao.merge(userTask);
 
                 //add user_task_time
-                taskTime.setTimeSpentSec(0);
+                taskTime.setDurationSec(seconds);
                 taskTime.setStartTime(now);
                 taskTime.setFinishTime(endTime.getTime());
                 taskTime.setCurrent(true);
@@ -209,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
                 userTask = userTaskDao.merge(userTask);
 
                 //add user_task_time
-                taskTime.setTimeSpentSec(0);
+                taskTime.setDurationSec(0);
                 taskTime.setStartTime(now);
                 taskTime.setFinishTime(now);
                 taskTime.setCurrent(false);
@@ -308,8 +311,7 @@ public class TaskServiceImpl implements TaskService {
             long seqDif = (ts.getEndTime().getTime() - ts.getStartTime().getTime()) / 1000;
             timeSpentSec = (int) (timeSpentSec + seqDif);
         }
-        long timeDif = (currentTime.getFinishTime().getTime() - currentTime.getStartTime().getTime()) / 1000;
-        int secondToAdd = (int) (timeDif - timeSpentSec);
+        int secondToAdd = currentTime.getDurationSec() - timeSpentSec;
         Calendar finisTime = Calendar.getInstance();
         finisTime.setTime(now);
         finisTime.add(Calendar.SECOND, secondToAdd);
@@ -361,11 +363,12 @@ public class TaskServiceImpl implements TaskService {
 
         Date now = new Date();
         //change user_task status no needed, has RUNNING status
-        //extend finish_time of user_task_time
+        //extend finish_time of user_task_time and duration
         Calendar finisTime = Calendar.getInstance();
         finisTime.setTime(currentTime.getFinishTime());
         finisTime.add(Calendar.SECOND, seconds);
         currentTime.setFinishTime(finisTime.getTime());
+        currentTime.setDurationSec(currentTime.getDurationSec() + seconds);
         currentTime = userTaskTimeDao.merge(currentTime);
         userTaskTimeDao.flush();
         userTaskTimeDao.clear();

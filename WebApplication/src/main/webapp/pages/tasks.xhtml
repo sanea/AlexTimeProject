@@ -31,6 +31,10 @@
                         <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType == 1}"/>
                     </p:column>
 
+                    <p:column headerText="Duration">
+                        <h:outputText value="#{task.duration}" rendered="#{task.taskType == 1}"/>
+                    </p:column>
+
                     <p:column headerText="Finish Time">
                         <h:outputText value="#{task.finishTime}" rendered="#{task.taskType == 1}"/>
                     </p:column>
