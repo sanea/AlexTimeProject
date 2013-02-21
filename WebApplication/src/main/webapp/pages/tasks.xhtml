@@ -24,24 +24,24 @@
                     </p:column>
 
                     <p:column headerText="Status">
-                        <h:outputText value="#{task.currentStatusFormatted}" rendered="#{task.taskType == 1}"/>
+                        <h:outputText value="#{task.currentStatusFormatted}" rendered="#{task.taskType eq 'p'}"/>
                     </p:column>
 
                     <p:column headerText="Time Left (sec)">
-                        <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType == 1}"/>
+                        <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType eq 'p'}"/>
                     </p:column>
 
                     <p:column headerText="Duration">
-                        <h:outputText value="#{task.duration}" rendered="#{task.taskType == 1}"/>
+                        <h:outputText value="#{task.duration}" rendered="#{task.taskType eq 'p'}"/>
                     </p:column>
 
                     <p:column headerText="Finish Time">
-                        <h:outputText value="#{task.finishTime}" rendered="#{task.taskType == 1}"/>
+                        <h:outputText value="#{task.finishTime}" rendered="#{task.taskType eq 'p'}"/>
                     </p:column>
 
                     <p:column>
-                        <p:commandButton value="start" rendered="#{task.taskType == 2}" action="#{taskMB.startTask(task.taskId)}" update=":contentForm:taskTable"/>
-                        <h:panelGroup rendered="#{task.taskType == 1}">
+                        <p:commandButton value="start" rendered="#{task.taskType eq 't'}" action="#{taskMB.startTask(task.taskId)}" update=":contentForm:taskTable"/>
+                        <h:panelGroup rendered="#{task.taskType eq 'p'}">
                             <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
                                              rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}">
                                 <f:attribute name="task" value="#{task}"/>
