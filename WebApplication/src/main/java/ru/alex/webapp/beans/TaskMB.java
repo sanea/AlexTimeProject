@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.TaskWrapper;
+import ru.alex.webapp.model.TaskStatus;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
@@ -55,8 +56,10 @@ public class TaskMB implements Serializable {
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
-                taskWrappers.add(new TaskWrapper(ut, currentTime));
-                if (UserTask.TaskStatus.RUNNING.getStatusStr().equals(ut.getStatus()))
+                int timeSpent = taskService.getTimeSpentForUserTask(ut.getTaskByTaskId().getId(), userName);
+                logger.debug("timeSpent=" + timeSpent);
+                taskWrappers.add(new TaskWrapper(ut, currentTime, timeSpent));
+                if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
                     renderTableUpdater = true;
             }
             assignedTasks = taskWrappers;
@@ -157,8 +160,8 @@ public class TaskMB implements Serializable {
     public void refreshTable() {
         boolean needInit = false;
         for (TaskWrapper task : assignedTasks) {
-            if (task.getCurrentStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr())) {
-                int timeLeft =   task.getTimeLeft() - 1;
+            if (TaskStatus.getStatus(task.getCurrentStatus()) == TaskStatus.RUNNING) {
+                int timeLeft = task.getTimeLeft() - 1;
                 if (timeLeft > 0)
                     task.setTimeLeft(timeLeft);
                 else

@@ -8,7 +8,74 @@
         <ui:define name="content">
 
             <h2>Edit Tasks</h2>
+            <p:dataTable var="task" value="#{taskEditMB.taskList}" id="taskTable" editable="true">
 
+                <p:ajax event="rowEdit" listener="#{taskEditMB.onEdit}" update=":contentForm:messages" />
+                <p:ajax event="rowEditCancel" listener="#{taskEditMB.onCancel}" update=":contentForm:messages" />
+
+                <p:column headerText="Task Name">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{task.taskName}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{task.taskName}" style="width:100%" required="true"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Type">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{task.taskType}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{task.taskType}" >
+                                <f:selectItems value="#{}"
+                                           var=""
+                                           itemLabel="#{}"
+                                           itemValue="#{}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Price" style="width:24%">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{task.taskPrice}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{task.taskPrice}" >
+                                <p:inputText value="#{task.taskPrice}" style="width:100%" required="true">
+                                    <f:convertNumber/>
+                                </p:inputText>
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Enabled">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{task.taskEnabled}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{car.color}" >
+                                <f:selectItems value="#{tableBean.colors}"
+                                               var="color"
+                                               itemLabel="#{color}"
+                                               itemValue="#{color}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column>
+                    <p:rowEditor />
+                </p:column>
+
+            </p:dataTable>
 
         </ui:define>
     </ui:composition>

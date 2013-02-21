@@ -1,9 +1,7 @@
 package ru.alex.webapp.beans.wrappers;
 
 import org.apache.log4j.Logger;
-import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTask;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,14 +17,12 @@ public class TaskWrapper implements Serializable {
     private UserTaskTime currentTime;
     private int timeLeft;
 
-    public TaskWrapper(UserTask userTask, UserTaskTime currentTime) {
+    public TaskWrapper(UserTask userTask, UserTaskTime currentTime, int timeSpent) {
         logger.debug("init TaskWrapper " + userTask + " " + currentTime);
         this.userTask = userTask;
         this.currentTime = currentTime;
-        if (currentTime != null && currentTime.getFinishTime() != null) {
-            Date now = new Date();
-            //todo timeleft = duration - timeSpentFromTimeSeq
-            this.timeLeft = (int) ((currentTime.getFinishTime().getTime() - now.getTime()) / 1000);
+        if (currentTime != null) {
+            this.timeLeft = currentTime.getDurationSec() - timeSpent;
             logger.debug("init TaskWrapper timeLeft=" + this.timeLeft);
         }
     }
@@ -36,10 +32,10 @@ public class TaskWrapper implements Serializable {
     }
 
     public String getTaskTypeStr() {
-        return Task.TaskType.getTypeStr(userTask.getTaskByTaskId().getTaskType());
+        return TaskType.getTypeFormatted(userTask.getTaskByTaskId().getTaskType());
     }
 
-    public int getTaskType() {
+    public String getTaskType() {
         return userTask.getTaskByTaskId().getTaskType();
     }
 
@@ -56,7 +52,7 @@ public class TaskWrapper implements Serializable {
     }
 
     public String getCurrentStatusFormatted() {
-        return UserTask.TaskStatus.getStatusFormated(userTask.getStatus().charAt(0));
+        return TaskStatus.getStatusFormatted(userTask.getStatus());
     }
 
     public String getCurrentStatus() {

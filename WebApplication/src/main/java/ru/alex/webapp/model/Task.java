@@ -19,11 +19,11 @@ public class Task implements Serializable {
     @Column(name = "task_name", nullable = false, length = 50)
     private String taskName;
     @Column(name = "task_type", nullable = false, length = 1)
-    private int taskType;
+    private String taskType;
     @Column(name = "task_price", nullable = false, updatable = false)
     private BigDecimal taskPrice;
-    @Column(name = "task_enabled", nullable = false, length = 1)
-    private String taskEnabled;
+    @Column(name = "task_enabled", nullable = false)
+    private Boolean taskEnabled;
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksById;
 
@@ -43,11 +43,11 @@ public class Task implements Serializable {
         this.taskName = taskName;
     }
 
-    public int getTaskType() {
+    public String getTaskType() {
         return taskType;
     }
 
-    public void setTaskType(int taskType) {
+    public void setTaskType(String taskType) {
         this.taskType = taskType;
     }
 
@@ -59,11 +59,11 @@ public class Task implements Serializable {
         this.taskPrice = taskPrice;
     }
 
-    public String getTaskEnabled() {
+    public Boolean getTaskEnabled() {
         return taskEnabled;
     }
 
-    public void setTaskEnabled(String taskEnabled) {
+    public void setTaskEnabled(Boolean taskEnabled) {
         this.taskEnabled = taskEnabled;
     }
 
@@ -95,7 +95,7 @@ public class Task implements Serializable {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
-        result = 31 * result + taskType;
+        result = 31 * result + (taskType != null ? taskType.hashCode() : 0);
         result = 31 * result + (taskPrice != null ? taskPrice.hashCode() : 0);
         result = 31 * result + (taskEnabled != null ? taskEnabled.hashCode() : 0);
         return result;
@@ -114,41 +114,5 @@ public class Task implements Serializable {
         sb.append('}');
         return sb.toString();
     }
-
-    public static enum TaskType {
-        PROCESS(1), TASK(2);
-        private final int type;
-
-        private TaskType(int type) {
-            this.type = type;
-        }
-
-        public static TaskType getType(int type) {
-            switch (type) {
-                case 1:
-                    return PROCESS;
-                case 2:
-                    return TASK;
-                default:
-                    throw new IllegalArgumentException("wrong task type");
-            }
-        }
-
-        public static String getTypeStr(int type) {
-            switch (type) {
-                case 1:
-                    return "Process";
-                case 2:
-                    return "Task";
-                default:
-                    throw new IllegalArgumentException("wrong task type");
-            }
-        }
-
-        public int getType() {
-            return type;
-        }
-    }
-
 
 }

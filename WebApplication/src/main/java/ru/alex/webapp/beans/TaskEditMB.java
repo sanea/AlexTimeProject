@@ -1,11 +1,13 @@
 package ru.alex.webapp.beans;
 
 import org.apache.log4j.Logger;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.TaskWrapper;
+import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
@@ -33,12 +35,30 @@ public class TaskEditMB implements Serializable {
     private UserService userService;
     private String userName;
 
+    List<Task> taskList;
+
     @PostConstruct
     private void init() {
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
         logger.debug("init username=" + userName);
 
+
     }
 
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void onEdit(RowEditEvent event) {
+        Task task = (Task)event.getObject();
+        FacesMessage msg = new FacesMessage("Task Edited", task.getTaskName());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onCancel(RowEditEvent event) {
+        Task task = (Task)event.getObject();
+        FacesMessage msg = new FacesMessage("Task Edited", task.getTaskName());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 }
 

@@ -106,41 +106,4 @@ public class UserAction implements Serializable {
         return sb.toString();
     }
 
-    public static enum Action {
-        START('r'), PAUSE('p'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s');
-        private char action;
-
-        private Action(char action) {
-            this.action = action;
-        }
-
-        public static Action getAction(char action) {
-            switch (action) {
-                case 'r':
-                    return START;
-                case 'p':
-                    return PAUSE;
-                case 'c':
-                    return RESUME;
-                case 'e':
-                    return EXTEND;
-                case 'f':
-                    return FINISH;
-                case 's':
-                    return STOP;
-                default:
-                    throw new IllegalArgumentException("wrong action");
-            }
-        }
-
-        public String getActionStr() {
-            return String.valueOf(action);
-        }
-
-        public char getAction() {
-            return action;
-        }
-
-    }
-
 }
