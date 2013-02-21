@@ -51,6 +51,10 @@ public enum TaskStatus {
         }
     }
 
+    public String getStatusFormatted() {
+        return getStatusFormatted(String.valueOf(status));
+    }
+
     public String getStatusStr() {
         return String.valueOf(status);
     }

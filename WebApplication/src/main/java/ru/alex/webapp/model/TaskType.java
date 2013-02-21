@@ -39,6 +39,10 @@ public enum TaskType {
         }
     }
 
+    public String getTypeFormatted() {
+        return getTypeFormatted(String.valueOf(type));
+    }
+
     public String getTypeStr() {
         return String.valueOf(type);
     }

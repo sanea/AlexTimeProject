@@ -1,13 +1,15 @@
 package ru.alex.webapp.service;
 
-import ru.alex.webapp.beans.wrappers.TaskWrapper;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface TaskService {
+public interface TaskService extends Serializable {
+    List<Task> getAllTasks() throws Exception;
+
     List<UserTask> getTasksForUser(String username) throws Exception;
 
     UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception;

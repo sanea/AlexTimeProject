@@ -55,6 +55,10 @@ public enum Action {
         }
     }
 
+    public String getActionFormatted() {
+        return getActionFormatted(String.valueOf(action));
+    }
+
     public String getActionStr() {
         return String.valueOf(action);
     }

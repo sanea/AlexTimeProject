@@ -32,6 +32,12 @@ public class TaskServiceImpl implements TaskService {
     private UserActionDao userActionDao;
 
     @Override
+    public List<Task> getAllTasks() throws Exception {
+        logger.debug("getAllTasks");
+        return taskDao.findAll();
+    }
+
+    @Override
     public List<UserTask> getTasksForUser(String username) throws Exception {
         logger.debug("getTasksForUser username=" + username);
         if (username == null || username.equals(""))
