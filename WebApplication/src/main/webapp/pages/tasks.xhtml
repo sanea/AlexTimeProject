@@ -56,8 +56,8 @@
                         </h:panelGroup>
                     </p:column>
                 </p:dataTable>
-                <!-- todo updater is rendered only we have at least 1 running task -->
-                <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskDataTable" />
+                <!-- TODO relace poll with normal javascript timer withou databse update, database update should be once in a minute, just in case to check all tasks -->
+                <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskDataTable" rendered="#{taskMB.renderTableUpdater}" widgetVar="tableUpdater" />
             </h:panelGroup>
 
             <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">

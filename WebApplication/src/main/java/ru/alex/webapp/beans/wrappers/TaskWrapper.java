@@ -17,7 +17,6 @@ public class TaskWrapper implements Serializable {
     private static final Logger logger = Logger.getLogger(TaskWrapper.class);
     private UserTask userTask;
     private UserTaskTime currentTime;
-    private boolean isActive;
     private int timeLeft;
 
     public TaskWrapper(UserTask userTask, UserTaskTime currentTime) {
@@ -52,6 +51,10 @@ public class TaskWrapper implements Serializable {
         return timeLeft;
     }
 
+    public void setTimeLeft(int timeLeft) {
+        this.timeLeft = timeLeft;
+    }
+
     public String getCurrentStatusFormatted() {
         return UserTask.TaskStatus.getStatusFormated(userTask.getStatus().charAt(0));
     }
@@ -78,7 +81,6 @@ public class TaskWrapper implements Serializable {
         sb.append("TaskWrapper");
         sb.append("{userTask=").append(userTask);
         sb.append(", currentTime=").append(currentTime);
-        sb.append(", isActive=").append(isActive);
         sb.append(", timeLeft=").append(timeLeft);
         sb.append('}');
         return sb.toString();

@@ -28,7 +28,7 @@
         <level value="debug"/>
     </logger>
 
-    <!-- 3rdparty Loggers -->
+    <!-- spring Loggers -->
     <logger name="org.springframework.core">
         <level value="info"/>
     </logger>
@@ -49,9 +49,46 @@
         <level value="info"/>
     </logger>
 
+    <logger name="org.springframework.security">
+        <level value="info"/>
+    </logger>
+
+    <!-- hibernate Loggers -->
+    <logger name="log4j.logger.org.hibernate">
+        <level value="info" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.SQL">
+        <level value="debug" />
+    </logger>
+
+    <logger name="log4j.logger.org.type">
+        <level value="trace" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.hql.ast.AST">
+        <level value="info" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.tool.hbm2ddl">
+        <level value="warn" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.hql">
+        <level value="debug" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.cache">
+        <level value="info" />
+    </logger>
+
+    <logger name="log4j.logger.org.hibernate.jdbc">
+        <level value="debug" />
+    </logger>
+
     <!-- Root Logger -->
     <root>
-        <priority value="warn"/>
+        <priority value="debug"/>
         <appender-ref ref="fileappender"/>
         <appender-ref ref="consoleappender"/>
     </root>

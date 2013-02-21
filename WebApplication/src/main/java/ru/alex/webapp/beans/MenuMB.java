@@ -19,7 +19,7 @@ import java.util.Collection;
 public class MenuMB implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(UserMB.class);
+    private static final Logger logger = Logger.getLogger(MenuMB.class);
     private String userName;
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -36,12 +36,15 @@ public class MenuMB implements Serializable {
     }
 
     public boolean hasRole(String roleName) {
-        logger.debug("hasRole " + roleName);
+        boolean result = false;
         for (GrantedAuthority authority : authorities) {
-            if (authority.getAuthority().equals(roleName))
-                return true;
+            if (authority.getAuthority().equals(roleName)) {
+                result = true;
+                break;
+            }
         }
-        return false;
+        logger.debug("hasRole " + roleName + " " + result);
+        return result;
     }
 
 }

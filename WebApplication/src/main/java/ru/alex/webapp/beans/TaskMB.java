@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +27,7 @@ import java.util.List;
 @Scope(value = "view")
 public class TaskMB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(UserMB.class);
+    private static final Logger logger = Logger.getLogger(TaskMB.class);
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -35,6 +36,7 @@ public class TaskMB implements Serializable {
     private List<TaskWrapper> assignedTasks;
     private int selectedMinutes;
     private TaskWrapper selectedTask;
+    private boolean renderTableUpdater;
 
     @PostConstruct
     private void init() {
@@ -46,6 +48,7 @@ public class TaskMB implements Serializable {
     private void initAssignedTasks() {
         logger.debug("initAssignedTasks");
         try {
+            renderTableUpdater = false;
             List<UserTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks=" + tasks);
             List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
@@ -53,10 +56,12 @@ public class TaskMB implements Serializable {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
                 taskWrappers.add(new TaskWrapper(ut, currentTime));
+                if (UserTask.TaskStatus.RUNNING.getStatusStr().equals(ut.getStatus()))
+                    renderTableUpdater = true;
             }
             assignedTasks = taskWrappers;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
         }
     }
@@ -71,7 +76,7 @@ public class TaskMB implements Serializable {
             taskService.startTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
         }
     }
@@ -82,7 +87,7 @@ public class TaskMB implements Serializable {
             taskService.startTask(Long.valueOf(taskId), userName, 0);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting task", e.toString()));
         }
     }
@@ -93,7 +98,7 @@ public class TaskMB implements Serializable {
             taskService.pauseTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error pausing task", e.toString()));
         }
     }
@@ -104,7 +109,7 @@ public class TaskMB implements Serializable {
             taskService.resumeTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error resuming task", e.toString()));
         }
     }
@@ -115,7 +120,7 @@ public class TaskMB implements Serializable {
             taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error extending task", e.toString()));
         }
     }
@@ -126,7 +131,7 @@ public class TaskMB implements Serializable {
             taskService.stopTask(Long.valueOf(taskId), userName);
             initAssignedTasks();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
         }
     }
@@ -150,10 +155,26 @@ public class TaskMB implements Serializable {
     }
 
     public void refreshTable() {
-        //TODO make more effective
-        //remove databse read and check, use only local time updater for detached item
-        initAssignedTasks();
+        boolean needInit = false;
+        for (TaskWrapper task : assignedTasks) {
+            if (task.getCurrentStatus().equals(UserTask.TaskStatus.RUNNING.getStatusStr())) {
+                int timeLeft =   task.getTimeLeft() - 1;
+                if (timeLeft > 0)
+                    task.setTimeLeft(timeLeft);
+                else
+                    needInit = true;
+            }
+        }
+        if (needInit)
+            initAssignedTasks();
+        if (!renderTableUpdater) {
+            RequestContext reqCtx = RequestContext.getCurrentInstance();
+            reqCtx.execute("tableUpdater.stop();");
+        }
     }
 
+    public boolean isRenderTableUpdater() {
+        return renderTableUpdater;
+    }
 }
 
