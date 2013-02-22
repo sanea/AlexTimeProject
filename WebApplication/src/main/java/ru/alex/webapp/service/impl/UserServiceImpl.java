@@ -20,23 +20,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String username) {
-//        return userDao.getUserByUsername(username);
-        return null;
+        return userDao.findById(username);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.findAll();
+        return userDao.getEnabledUsers();
     }
-
-//    @Override
-//    public User authenticate(String username, String password) {
-//        User ue = getUser(username);
-//        if (ue != null && ue.isEnabled() && ue.getPassword().equals(password))
-//            return ue;
-//        else
-//            return null;
-//    }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

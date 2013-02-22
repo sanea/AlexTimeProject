@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.TaskType;
+import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 
@@ -37,6 +39,8 @@ public class TaskEditMB implements Serializable {
     private String userName;
     private Task newTask = new Task();
     private Long selectedTaskId;
+
+    private Map<User, Boolean> taskAssignUserMap;
 
     @PostConstruct
     private void init() {
@@ -81,6 +85,10 @@ public class TaskEditMB implements Serializable {
         return TaskType.getTypeFormatted(taskType);
     }
 
+    public Map<User, Boolean> getTaskAssignUserMap() {
+        return taskAssignUserMap;
+    }
+
     public void onEdit(RowEditEvent event) {
         Task task = (Task) event.getObject();
         logger.debug("onEdit task=" + task);
@@ -118,6 +126,7 @@ public class TaskEditMB implements Serializable {
             taskService.addTask(newTask);
             initTasks();
             logger.debug("addNewTask taskList=" + taskList);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Added", newTask.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding task", e.toString()));
@@ -125,9 +134,26 @@ public class TaskEditMB implements Serializable {
     }
 
     public void assignListener(ActionEvent event) {
-        //todo
-        selectedTaskId = (Long) event.getComponent().getAttributes().get("taskId");
-        logger.debug("assignListener removeTaskId=" + selectedTaskId);
+        try {
+            selectedTaskId = (Long) event.getComponent().getAttributes().get("taskId");
+            logger.debug("assignListener selectedTaskId=" + selectedTaskId);
+
+            List<User> userList = userService.getAllUsers();
+            logger.debug("assignListener userList=" + userList);
+            taskAssignUserMap = new HashMap<User, Boolean>(userList.size());
+            for (User u : userList)
+                taskAssignUserMap.put(u, false);
+
+            List<UserTask> userTaskList = taskService.getUsersForTask(selectedTaskId);
+            logger.debug("assignListener userTaskList=" + userTaskList);
+            for (UserTask ut : userTaskList)
+                taskAssignUserMap.put(ut.getUserByUsername(), true);
+
+            logger.debug("assignListener taskAssignUserMap=" + taskAssignUserMap);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in getting user list for task", e.toString()));
+        }
     }
 
     public void assignTask() {
@@ -138,7 +164,7 @@ public class TaskEditMB implements Serializable {
             initTasks();
             logger.debug("assignTask taskList=" + taskList);
             selectedTaskId = null;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Assigned"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));

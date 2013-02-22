@@ -47,6 +47,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<UserTask> getUsersForTask(Long taskId) throws Exception {
+        logger.debug("getUsersForTask taskId=" + taskId);
+        if (taskId == null)
+            throw new IllegalArgumentException("Wrong taskId");
+        List<UserTask> tasks = userTaskDao.getUsersForTask(taskId);
+        logger.debug("getUsersForTask tasks=" + tasks);
+        return tasks;
+    }
+
+    @Override
     public UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception {
         logger.debug("getCurrentTimeForUser taskId=" + taskId + ", username=" + username);
         List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
@@ -503,6 +513,14 @@ public class TaskServiceImpl implements TaskService {
         taskDao.makeTransient(task);
     }
 
+    /**
+     * Returns false if task has status not UNKNOWN or has at least 1 userTaskTime record
+     * (Doesn't need checkTask(userTask); call)!
+     *
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean isTaskEditable(Long taskId) throws Exception {
         logger.debug("removeTask taskId=" + taskId);
@@ -542,5 +560,10 @@ public class TaskServiceImpl implements TaskService {
         }
         task = taskDao.merge(task);
         logger.debug("editTask merged_task=" + task);
+    }
+
+    @Override
+    public void updateUserTask(Long taskId, String username, boolean assigned) {
+        //TODO
     }
 }

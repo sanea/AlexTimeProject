@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface UserTaskDao extends GenericDao<UserTask, Long> {
     List<UserTask> getTasksForUser(String username);
+    List<UserTask> getUsersForTask(Long taskId);
     UserTask getTaskForUser(String username, Long taskId);
 }

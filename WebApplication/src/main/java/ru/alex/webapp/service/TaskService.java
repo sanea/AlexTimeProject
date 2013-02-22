@@ -12,6 +12,8 @@ public interface TaskService {
 
     List<UserTask> getTasksForUser(String username) throws Exception;
 
+    List<UserTask> getUsersForTask(Long taskId) throws Exception;
+
     UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception;
 
     int getTimeSpentForUserTask(Long taskId, String username) throws Exception;
@@ -33,4 +35,6 @@ public interface TaskService {
     boolean isTaskEditable(Long taskId) throws Exception;
 
     void editTask(Task task) throws Exception;
+
+    void updateUserTask(Long taskId, String username, boolean assigned);
 }
