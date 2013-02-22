@@ -61,7 +61,7 @@
             </h:panelGroup>
 
             <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">
-                <h:panelGrid columns="2" cellpadding="2">
+                <h:panelGrid id="timeDialogContent" columns="3" cellpadding="2">
                     <h:outputLabel for="minutes" value="Minutes: *"/>
                     <p:inputText id="minutes" required="true" value="#{taskMB.selectedMinutes}">
                         <f:convertNumber/>
@@ -70,9 +70,9 @@
                 </h:panelGrid>
 
                 <f:facet name="footer">
-                    <p:commandButton value="Start" action="#{taskMB.startProcess}" update=":contentForm:taskTable" onsuccess="timeDialog.hide();"
+                    <p:commandButton value="Start" action="#{taskMB.startProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="if(!args.validationFailed) {timeDialog.hide();}"
                                  rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"/>
-                    <p:commandButton value="Extend" action="#{taskMB.extendProcess}" update=":contentForm:taskTable" onsuccess="timeDialog.hide();"
+                    <p:commandButton value="Extend" action="#{taskMB.extendProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="if(!args.validationFailed) {timeDialog.hide();}"
                                  rendered="#{taskMB.selectedTask.currentStatus == 'r'}"/>
                     <p:commandButton value="Close" onclick="timeDialog.hide();" update=":contentForm:taskTable"/>
                 </f:facet>

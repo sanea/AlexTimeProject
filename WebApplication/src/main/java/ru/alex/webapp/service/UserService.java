@@ -6,7 +6,7 @@ import ru.alex.webapp.model.User;
 import java.io.Serializable;
 import java.util.List;
 
-public interface UserService extends Serializable {
+public interface UserService {
     public User getUser(String username);
 
     public List<User> getAllUsers();

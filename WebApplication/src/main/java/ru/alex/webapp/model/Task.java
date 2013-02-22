@@ -16,14 +16,14 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "task_name", nullable = false, length = 50)
-    private String taskName;
-    @Column(name = "task_type", nullable = false, length = 1)
-    private String taskType;
-    @Column(name = "task_price", nullable = false, updatable = false)
-    private BigDecimal taskPrice;
-    @Column(name = "task_enabled", nullable = false)
-    private Boolean taskEnabled;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
+    @Column(name = "type", nullable = false, length = 1)
+    private String type;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTask> userTasksById;
 
@@ -35,36 +35,36 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getName() {
+        return name;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setName(String taskName) {
+        this.name = taskName;
     }
 
-    public String getTaskType() {
-        return taskType;
+    public String getType() {
+        return type;
     }
 
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
+    public void setType(String taskType) {
+        this.type = taskType;
     }
 
-    public BigDecimal getTaskPrice() {
-        return taskPrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setTaskPrice(BigDecimal taskPrice) {
-        this.taskPrice = taskPrice;
+    public void setPrice(BigDecimal taskPrice) {
+        this.price = taskPrice;
     }
 
-    public Boolean getTaskEnabled() {
-        return taskEnabled;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setTaskEnabled(Boolean taskEnabled) {
-        this.taskEnabled = taskEnabled;
+    public void setEnabled(Boolean taskEnabled) {
+        this.enabled = taskEnabled;
     }
 
     public Collection<UserTask> getUserTasksById() {
@@ -82,11 +82,11 @@ public class Task implements Serializable {
 
         Task task = (Task) o;
 
-        if (taskType != task.taskType) return false;
+        if (type != task.type) return false;
         if (id != null ? !id.equals(task.id) : task.id != null) return false;
-        if (taskEnabled != null ? !taskEnabled.equals(task.taskEnabled) : task.taskEnabled != null) return false;
-        if (taskName != null ? !taskName.equals(task.taskName) : task.taskName != null) return false;
-        if (taskPrice != null ? !taskPrice.equals(task.taskPrice) : task.taskPrice != null) return false;
+        if (enabled != null ? !enabled.equals(task.enabled) : task.enabled != null) return false;
+        if (name != null ? !name.equals(task.name) : task.name != null) return false;
+        if (price != null ? !price.equals(task.price) : task.price != null) return false;
 
         return true;
     }
@@ -94,10 +94,10 @@ public class Task implements Serializable {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
-        result = 31 * result + (taskType != null ? taskType.hashCode() : 0);
-        result = 31 * result + (taskPrice != null ? taskPrice.hashCode() : 0);
-        result = 31 * result + (taskEnabled != null ? taskEnabled.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
         return result;
     }
 
@@ -106,10 +106,10 @@ public class Task implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("Task");
         sb.append("{id=").append(id);
-        sb.append(", taskName='").append(taskName).append('\'');
-        sb.append(", taskType=").append(taskType);
-        sb.append(", taskPrice=").append(taskPrice);
-        sb.append(", taskEnabled='").append(taskEnabled).append('\'');
+        sb.append(", taskName='").append(name).append('\'');
+        sb.append(", taskType=").append(type);
+        sb.append(", taskPrice=").append(price);
+        sb.append(", taskEnabled='").append(enabled).append('\'');
         //sb.append(", userTasksById=").append(userTasksById); - LAZY
         sb.append('}');
         return sb.toString();

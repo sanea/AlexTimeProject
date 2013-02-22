@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.alex.webapp.beans.wrappers.TaskWrapper;
+import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
 import ru.alex.webapp.model.TaskStatus;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
@@ -34,9 +34,9 @@ public class TaskMB implements Serializable {
     @Autowired
     private UserService userService;
     private String userName;
-    private List<TaskWrapper> assignedTasks;
+    private List<UserTaskWrapper> assignedTasks;
     private int selectedMinutes;
-    private TaskWrapper selectedTask;
+    private UserTaskWrapper selectedTask;
     private boolean renderTableUpdater;
 
     @PostConstruct
@@ -52,13 +52,13 @@ public class TaskMB implements Serializable {
             renderTableUpdater = false;
             List<UserTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks=" + tasks);
-            List<TaskWrapper> taskWrappers = new ArrayList<TaskWrapper>(tasks.size());
+            List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
                 int timeSpent = taskService.getTimeSpentForUserTask(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("timeSpent=" + timeSpent);
-                taskWrappers.add(new TaskWrapper(ut, currentTime, timeSpent));
+                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpent));
                 if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
                     renderTableUpdater = true;
             }
@@ -69,7 +69,7 @@ public class TaskMB implements Serializable {
         }
     }
 
-    public List<TaskWrapper> getAssignedTasks() {
+    public List<UserTaskWrapper> getAssignedTasks() {
         return assignedTasks;
     }
 
@@ -147,19 +147,19 @@ public class TaskMB implements Serializable {
         this.selectedMinutes = selectedMinutes;
     }
 
-    public TaskWrapper getSelectedTask() {
+    public UserTaskWrapper getSelectedTask() {
         return selectedTask;
     }
 
     public void startListener(ActionEvent event) {
         selectedMinutes = 30;
-        selectedTask = (TaskWrapper) event.getComponent().getAttributes().get("task");
+        selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
         logger.debug("startListener selectedTask=" + selectedTask);
     }
 
     public void refreshTable() {
         boolean needInit = false;
-        for (TaskWrapper task : assignedTasks) {
+        for (UserTaskWrapper task : assignedTasks) {
             if (TaskStatus.getStatus(task.getCurrentStatus()) == TaskStatus.RUNNING) {
                 int timeLeft = task.getTimeLeft() - 1;
                 if (timeLeft > 0)

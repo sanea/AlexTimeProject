@@ -9,10 +9,7 @@ import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.TaskService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -129,7 +126,7 @@ public class TaskServiceImpl implements TaskService {
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         switch (taskStatus) {
             case RUNNING:
-                UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
+                UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId());
                 currentTimeSeq.setEndTime(finishTime);
                 currentTimeSeq = userTaskTimeSeqDao.merge(currentTimeSeq);
                 userTaskTimeSeqDao.flush();
@@ -226,7 +223,7 @@ public class TaskServiceImpl implements TaskService {
         Date now = new Date();
         Calendar endTime = Calendar.getInstance();
         endTime.add(Calendar.SECOND, seconds);
-        switch (TaskType.getType(userTask.getTaskByTaskId().getTaskType())) {
+        switch (TaskType.getType(userTask.getTaskByTaskId().getType())) {
             case PROCESS:
                 if (seconds < 0)
                     throw new IllegalArgumentException("Wrong Input Params for starting task");
@@ -290,7 +287,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(TaskStatus.RUNNING.getStatusStr()))
             throw new Exception("wrong status of task for user");
-        if (TaskType.getType(userTask.getTaskByTaskId().getTaskType()) == TaskType.TASK)
+        if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't pause Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
         logger.debug("pauseTask currentTime=" + currentTime);
@@ -316,7 +313,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("pauseTask timeSeqList=" + timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
-        UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
+        UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId());
         currentTimeSeq.setEndTime(now);
         userTaskTimeSeqDao.merge(currentTimeSeq);
         userTaskTimeSeqDao.flush();
@@ -344,7 +341,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(TaskStatus.PAUSED.getStatusStr()))
             throw new Exception("wrong status of task for user");
-        if (TaskType.getType(userTask.getTaskByTaskId().getTaskType()) == TaskType.TASK)
+        if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't resume Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
         logger.debug("resumeTask currentTime=" + currentTime);
@@ -381,7 +378,7 @@ public class TaskServiceImpl implements TaskService {
         //add user_task_time_seq to end of current user_task_time
         UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
         timeSeq.setStartTime(now);
-        UserTaskTimeSeq prevTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId(), false);
+        UserTaskTimeSeq prevTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId());
         timeSeq.setPrevTimeSeq(prevTimeSeq);
         prevTimeSeq.setNextTimeSeq(timeSeq);
         userTaskTimeSeqDao.persist(timeSeq);
@@ -410,7 +407,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("can't find user task");
         if (!userTask.getStatus().equals(TaskStatus.RUNNING.getStatusStr()))
             throw new Exception("wrong status of task for user");
-        if (TaskType.getType(userTask.getTaskByTaskId().getTaskType()) == TaskType.TASK)
+        if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't extend Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
         logger.debug("extendTask currentTime=" + currentTime);
@@ -458,7 +455,7 @@ public class TaskServiceImpl implements TaskService {
         if (!(userTask.getStatus().equals(TaskStatus.PAUSED.getStatusStr())
                 || userTask.getStatus().equals(TaskStatus.RUNNING.getStatusStr())))
             throw new Exception("wrong status of task for user");
-        if (TaskType.getType(userTask.getTaskByTaskId().getTaskType()) == TaskType.TASK)
+        if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't pause Task");
         UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
         logger.debug("stopTask currentTime=" + currentTime);
@@ -473,5 +470,76 @@ public class TaskServiceImpl implements TaskService {
 
         //force ending task
         endTask(userTask, new Date(), true);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void addTask(Task task) throws Exception {
+        logger.debug("addTask task=" + task);
+        if (task == null)
+            throw new IllegalArgumentException("Wrong task");
+        if (task.getName() == null || task.getName().equals(""))
+            throw new Exception("Name can't be empty");
+        if (task.getType() == null || task.getType().equals(""))
+            throw new Exception("Type can't be empty");
+        if (task.getPrice() == null)
+            throw new Exception("Price can't be empty");
+        taskDao.persist(task);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void removeTask(Long taskId) throws Exception {
+        logger.debug("removeTask taskId=" + taskId);
+        if (taskId == null)
+            throw new IllegalArgumentException("Wrong taskId");
+        Task task = taskDao.findById(taskId);
+        logger.debug("removeTask task=" + task);
+        if (task == null)
+            throw new Exception("Can't find task with id=" + taskId);
+        if (!isTaskEditable(taskId)) {
+            throw new Exception("Task is already stated, please disable this task, can't delete");
+        }
+        taskDao.makeTransient(task);
+    }
+
+    @Override
+    public boolean isTaskEditable(Long taskId) throws Exception {
+        logger.debug("removeTask taskId=" + taskId);
+        boolean result = true;
+        if (taskId == null)
+            throw new IllegalArgumentException("Wrong taskId");
+        Task task = taskDao.findById(taskId);
+        logger.debug("removeTask task=" + task);
+        if (task == null)
+            throw new Exception("Can't find task with id=" + taskId);
+        Collection<UserTask> userTasks = task.getUserTasksById();
+        for (UserTask userTask : userTasks) {
+            if (TaskStatus.getStatus(userTask.getStatus()) != TaskStatus.UNKNOWN
+                    || userTask.getUserTaskTimeList().size() > 0) {
+                result = false;
+            }
+        }
+        logger.debug("isTaskEditable " + result);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void editTask(Task task) throws Exception {
+        logger.debug("editTask task=" + task);
+        if (task == null)
+            throw new IllegalArgumentException("Wrong task");
+        Task taskEntity = taskDao.findById(task.getId());
+        if (taskEntity == null)
+            throw new Exception("Can't find task with id=" + task.getId());
+        boolean isEditable = isTaskEditable(task.getId());
+        if (isEditable) {
+            if (!taskEntity.getType().equals(task.getType()))
+                throw new Exception("Can't change type of not editable task");
+            if (!taskEntity.getPrice().equals(task.getPrice()))
+                throw new Exception("Can't change price of not editable task");
+        }
+        taskDao.merge(task);
     }
 }

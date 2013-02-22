@@ -23,6 +23,8 @@ public class UserTask implements Serializable {
     private Date updateTime;
     @Column(name = "create_time", nullable = false)
     private Date createTime;
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     private Task taskByTaskId;
@@ -80,6 +82,14 @@ public class UserTask implements Serializable {
         this.userByUsername = userByUsername;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Collection<UserTaskTime> getUserTaskTimeList() {
         return userTaskTimeList;
     }
@@ -108,6 +118,7 @@ public class UserTask implements Serializable {
         if (taskByTaskId != null ? !taskByTaskId.equals(userTask.taskByTaskId) : userTask.taskByTaskId != null)
             return false;
         if (updateTime != null ? !updateTime.equals(userTask.updateTime) : userTask.updateTime != null) return false;
+        if (enabled != null ? !enabled.equals(userTask.updateTime) : userTask.enabled != null) return false;
         if (userByUsername != null ? !userByUsername.equals(userTask.userByUsername) : userTask.userByUsername != null)
             return false;
 
@@ -120,6 +131,7 @@ public class UserTask implements Serializable {
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
+        result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
         result = 31 * result + (taskByTaskId != null ? taskByTaskId.hashCode() : 0);
         result = 31 * result + (userByUsername != null ? userByUsername.hashCode() : 0);
         return result;
@@ -133,7 +145,8 @@ public class UserTask implements Serializable {
         sb.append(", status='").append(status).append('\'');
         sb.append(", updateTime=").append(updateTime);
         sb.append(", createTime=").append(createTime);
-        sb.append(", taskByTaskId=").append(taskByTaskId == null ? null : taskByTaskId.getTaskName());
+        sb.append(", enabled=").append(enabled);
+        sb.append(", taskByTaskId=").append(taskByTaskId == null ? null : taskByTaskId.getName());
         sb.append(", userByUsername=").append(userByUsername == null ? null : userByUsername.getUsername());
         //sb.append(", userTaskTimeList=").append(userTaskTimeList); - LAZY
         sb.append('}');

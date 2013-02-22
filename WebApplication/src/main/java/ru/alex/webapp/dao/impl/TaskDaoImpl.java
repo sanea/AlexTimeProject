@@ -13,6 +13,6 @@ import java.util.List;
 public class TaskDaoImpl extends GenericDaoImpl<Task, Long> implements TaskDao {
     @Override
     public List<Task> getTasksForUser(String username) {
-        return getEntityManager().createQuery("select t from Task t join t.userTasksById ut where ut.userByUsername.username=:username order by t.taskType").setParameter("username", username).getResultList();
+        return getEntityManager().createQuery("select t from Task t join t.userTasksById ut where ut.userByUsername.username=:username order by t.type").setParameter("username", username).getResultList();
     }
 }

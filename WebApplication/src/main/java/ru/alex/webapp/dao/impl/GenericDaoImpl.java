@@ -33,15 +33,8 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     @Override
-    public T findById(ID id, boolean lock) {
-        T entity;
-        if (lock) {
-            entity = getEntityManager().find(getEntityBeanType(), id);
-            getEntityManager().lock(entity, LockModeType.WRITE);
-        } else {
-            entity = getEntityManager().find(getEntityBeanType(), id);
-        }
-        return entity;
+    public T findById(ID id) {
+       return getEntityManager().find(getEntityBeanType(), id);
     }
 
     public List<T> findAll() {
