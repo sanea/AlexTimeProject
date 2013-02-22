@@ -70,7 +70,7 @@
                     <p:rowEditor />
                 </p:column>
 
-                <p:column headerText="Assign">
+                <p:column>
                     <p:commandButton value="Remove" process="@this" actionListener="#{taskEditMB.removeListener}" oncomplete="removeConfirmDlg.show();"
                                      rendered="#{taskEditMB.taskEditable[task.id]}">
                         <f:attribute name="taskId" value="#{task.id}"/>

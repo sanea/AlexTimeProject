@@ -534,12 +534,13 @@ public class TaskServiceImpl implements TaskService {
         if (taskEntity == null)
             throw new Exception("Can't find task with id=" + task.getId());
         boolean isEditable = isTaskEditable(task.getId());
-        if (isEditable) {
+        if (!isEditable) {
             if (!taskEntity.getType().equals(task.getType()))
                 throw new Exception("Can't change type of not editable task");
             if (!taskEntity.getPrice().equals(task.getPrice()))
                 throw new Exception("Can't change price of not editable task");
         }
-        taskDao.merge(task);
+        task = taskDao.merge(task);
+        logger.debug("editTask merged_task=" + task);
     }
 }

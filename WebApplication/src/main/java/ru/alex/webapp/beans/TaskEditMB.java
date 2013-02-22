@@ -85,12 +85,20 @@ public class TaskEditMB implements Serializable {
         Task task = (Task) event.getObject();
         logger.debug("onEdit task=" + task);
         try {
+            taskService.editTask(task);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Edited", task.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
 
+        try {
+            initTasks();
+            logger.debug("onEdit taskList=" + taskList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
+        }
     }
 
     public void onCancel(RowEditEvent event) {
