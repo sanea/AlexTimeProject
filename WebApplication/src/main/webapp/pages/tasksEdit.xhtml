@@ -72,11 +72,12 @@
 
                 <p:column>
                     <p:commandButton value="Remove" process="@this" actionListener="#{taskEditMB.removeListener}" oncomplete="removeConfirmDlg.show();"
-                                     rendered="#{taskEditMB.taskEditable[task.id]}">
-                        <f:attribute name="taskId" value="#{task.id}"/>
+                                     update=":contentForm:removeConfirmDialog" rendered="#{taskEditMB.taskEditable[task.id]}">
+                        <f:attribute name="task" value="#{task}"/>
                     </p:commandButton>
-                    <p:commandButton value="Assign" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="assignDlg.show();">
-                        <f:attribute name="taskId" value="#{task.id}"/>
+                    <p:commandButton value="Assign" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="assignDlg.show();"
+                                     update=":contentForm:assignDialog">
+                        <f:attribute name="task" value="#{task}"/>
                     </p:commandButton>
                 </p:column>
 
@@ -109,26 +110,31 @@
                 </h:panelGrid>
                 <f:facet name="footer">
                     <p:commandButton value="Save" update=":contentForm:taskTable addDialogContent" oncomplete="if(!args.validationFailed) { addTaskDlg.hide();}"
-                                     action="#{taskEditMB.addNewTask}" />
+                                     action="#{taskEditMB.addNewTask}" process="addDialogContent"/>
                     <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
             </p:dialog>
 
             <p:dialog id="assignDialog" header="Assign Task" widgetVar="assignDlg" modal="true" closable="true" closeOnEscape="true">
-                <h:panelGrid id="assignDialogContent" columns="2" cellpadding="2">
-
-
-                </h:panelGrid>
+                <h:outputText value="#{taskEditMB.selectedTaskName}"/>
+                <p:dataTable value="#{taskEditMB.assignedList}" var="assigned">
+                    <p:column headerText="User">
+                        <h:outputText value="#{assigned.username}"/>
+                    </p:column>
+                    <p:column headerText="Assigned">
+                        <h:selectBooleanCheckbox value="#{assigned.assigned}" />
+                    </p:column>
+                </p:dataTable>
                 <f:facet name="footer">
-                    <p:commandButton value="Save" update=":contentForm:taskTable assignDialogContent" oncomplete="if(!args.validationFailed) { assignDlg.hide();}"
-                                     action="#{taskEditMB.assignTask}" />
+                    <p:commandButton value="Save" update=":contentForm:taskTable assignDialog" oncomplete="assignDlg.hide();"
+                                     action="#{taskEditMB.assignTask}" process="assignDialog" />
                     <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
             </p:dialog>
 
             <p:dialog id="removeConfirmDialog" header="Remove Task" widgetVar="removeConfirmDlg" modal="true" >
 
-                <h:outputText value="Are you sure you want to remove Task?"/>
+                <h:outputText value="Are you sure you want to remove #{taskEditMB.selectedTaskName}?"/>
 
                 <f:facet name="footer">
                     <p:commandButton value="Yes" update=":contentForm:taskTable" oncomplete="removeConfirmDlg.hide()"

@@ -563,7 +563,55 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updateUserTask(Long taskId, String username, boolean assigned) {
-        //TODO
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void updateUserTask(Long taskId, String username, boolean assigned) throws Exception {
+        logger.debug("updateUserTask taskId=" + taskId + ", username=" + username + ", assigned=" + assigned);
+        if (taskId == null || username == null || username.equals(""))
+            throw new IllegalArgumentException("Wrong params for updateUserTask");
+        List<UserTask> userTaskList = userTaskDao.getTaskForUserAll(username, taskId);
+        logger.debug("updateUserTask userTaskList=" + userTaskList);
+        if (userTaskList != null && userTaskList.size() > 1)
+            throw new Exception("Smth is wrong with database");
+        Date now = new Date();
+        if (userTaskList != null && userTaskList.size() == 1) {
+            if (assigned) {
+                if (!userTaskList.get(0).getEnabled()) {
+                    logger.debug("enable user task");
+                    UserTask ut = userTaskList.get(0);
+                    ut.setEnabled(true);
+                    ut.setUpdateTime(now);
+                    userTaskDao.merge(ut);
+                }
+            } else {
+                if (userTaskList.get(0).getEnabled()) {
+                    logger.debug("disable user task");
+                    UserTask ut = userTaskList.get(0);
+                    ut.setEnabled(false);
+                    ut.setUpdateTime(now);
+                    userTaskDao.merge(ut);
+                }
+            }
+        } else if (assigned) {
+            logger.debug("create new user task");
+            UserTask ut = new UserTask();
+            ut.setEnabled(true);
+            ut.setCreateTime(now);
+            ut.setUpdateTime(now);
+            ut.setStatus(TaskStatus.UNKNOWN.getStatusStr());
+
+            Task task = taskDao.findById(taskId);
+            logger.debug("updateUserTask task=" + task);
+            if (task == null)
+                throw new Exception("wrong task id");
+            ut.setTaskByTaskId(task);
+
+            User user = userDao.findById(username);
+            logger.debug("updateUserTask user=" + user);
+            if (task == null)
+                throw new Exception("wrong username");
+            ut.setUserByUsername(user);
+
+            userTaskDao.persist(ut);
+        }
     }
 }

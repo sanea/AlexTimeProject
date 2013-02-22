@@ -18,6 +18,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
+import java.lang.Long;
+import java.lang.Override;
+import java.lang.String;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +43,8 @@ public class TaskEditMB implements Serializable {
     private String userName;
     private Task newTask = new Task();
     private Long selectedTaskId;
-
-    private Map<User, Boolean> taskAssignUserMap;
+    private String selectedTaskName;
+    private List<UserTaskAssigned> assignedList;
 
     @PostConstruct
     private void init() {
@@ -85,8 +89,12 @@ public class TaskEditMB implements Serializable {
         return TaskType.getTypeFormatted(taskType);
     }
 
-    public Map<User, Boolean> getTaskAssignUserMap() {
-        return taskAssignUserMap;
+    public List<UserTaskAssigned> getAssignedList() {
+        return assignedList;
+    }
+
+    public String getSelectedTaskName() {
+        return selectedTaskName;
     }
 
     public void onEdit(RowEditEvent event) {
@@ -127,6 +135,7 @@ public class TaskEditMB implements Serializable {
             initTasks();
             logger.debug("addNewTask taskList=" + taskList);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Added", newTask.getName()));
+            newTask = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding task", e.toString()));
@@ -135,21 +144,31 @@ public class TaskEditMB implements Serializable {
 
     public void assignListener(ActionEvent event) {
         try {
-            selectedTaskId = (Long) event.getComponent().getAttributes().get("taskId");
-            logger.debug("assignListener selectedTaskId=" + selectedTaskId);
+            Task selectedTask = (Task) event.getComponent().getAttributes().get("task");
+            logger.debug("assignListener selectedTask=" + selectedTask);
+            selectedTaskId = selectedTask.getId();
+            selectedTaskName = selectedTask.getName();
 
             List<User> userList = userService.getAllUsers();
             logger.debug("assignListener userList=" + userList);
-            taskAssignUserMap = new HashMap<User, Boolean>(userList.size());
-            for (User u : userList)
-                taskAssignUserMap.put(u, false);
 
             List<UserTask> userTaskList = taskService.getUsersForTask(selectedTaskId);
             logger.debug("assignListener userTaskList=" + userTaskList);
-            for (UserTask ut : userTaskList)
-                taskAssignUserMap.put(ut.getUserByUsername(), true);
 
-            logger.debug("assignListener taskAssignUserMap=" + taskAssignUserMap);
+            assignedList = new ArrayList<UserTaskAssigned>(userList.size());
+
+            for (User u : userList) {
+                boolean isAssigned = false;
+                for (UserTask ut : userTaskList) {
+                    if (u.getUsername().equals(ut.getUserByUsername().getUsername())) {
+                        isAssigned = true;
+                        break;
+                    }
+                }
+                assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned));
+            }
+
+            logger.debug("assignListener assignedList=" + assignedList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in getting user list for task", e.toString()));
@@ -158,13 +177,17 @@ public class TaskEditMB implements Serializable {
 
     public void assignTask() {
         logger.debug("assignTask selectedTaskId=" + selectedTaskId);
-        //todo
         try {
-            //taskService.assignTask(Long.valueOf(selectedTaskId));
+            Long innerSelectedTaskId = selectedTaskId;
+            for (UserTaskAssigned assigned : assignedList) {
+                 taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
+            }
             initTasks();
             logger.debug("assignTask taskList=" + taskList);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned", selectedTaskName));
             selectedTaskId = null;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned"));
+            selectedTaskName = null;
+            assignedList = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
@@ -172,8 +195,10 @@ public class TaskEditMB implements Serializable {
     }
 
     public void removeListener(ActionEvent event) {
-        selectedTaskId = (Long) event.getComponent().getAttributes().get("taskId");
-        logger.debug("removeListener selectedTaskId=" + selectedTaskId);
+        Task selectedTask = (Task) event.getComponent().getAttributes().get("task");
+        logger.debug("removeListener selectedTask=" + selectedTask);
+        selectedTaskId = selectedTask.getId();
+        selectedTaskName = selectedTask.getName();
     }
 
     public void removeTask() {
@@ -182,11 +207,46 @@ public class TaskEditMB implements Serializable {
             taskService.removeTask(selectedTaskId);
             initTasks();
             logger.debug("removeTask taskList=" + taskList);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed", selectedTaskName));
             selectedTaskId = null;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed"));
+            selectedTaskName = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task", e.toString()));
+        }
+    }
+
+    public class UserTaskAssigned {
+        private String username;
+        private boolean assigned;
+
+        public UserTaskAssigned(String username, boolean assigned) {
+            this.username = username;
+            this.assigned = assigned;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public boolean getAssigned() {
+            return assigned;
+        }
+
+        public void setAssigned(boolean assigned) {
+            this.assigned = assigned;
+        }
+
+        @Override
+        public String toString() {
+            return "UserTaskAssigned{" +
+                    "username='" + username + '\'' +
+                    ", assigned=" + assigned +
+                    '}';
         }
     }
 

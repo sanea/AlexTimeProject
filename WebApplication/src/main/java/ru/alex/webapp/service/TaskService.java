@@ -36,5 +36,5 @@ public interface TaskService {
 
     void editTask(Task task) throws Exception;
 
-    void updateUserTask(Long taskId, String username, boolean assigned);
+    void updateUserTask(Long taskId, String username, boolean assigned) throws Exception;
 }
