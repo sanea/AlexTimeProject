@@ -510,6 +510,8 @@ public class TaskServiceImpl implements TaskService {
         if (!isTaskEditable(taskId)) {
             throw new Exception("Task is already stated, please disable this task, can't delete");
         }
+        for (UserTask userTask : task.getUserTasksById())
+            userTaskDao.makeTransient(userTask);
         taskDao.makeTransient(task);
     }
 

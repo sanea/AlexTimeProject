@@ -110,7 +110,7 @@
                 </h:panelGrid>
                 <f:facet name="footer">
                     <p:commandButton value="Save" update=":contentForm:taskTable addDialogContent" oncomplete="if(!args.validationFailed) { addTaskDlg.hide();}"
-                                     action="#{taskEditMB.addNewTask}" process="addDialogContent"/>
+                                     action="#{taskEditMB.addNewTask}" process=":contentForm:addDialog"/>
                     <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
             </p:dialog>
