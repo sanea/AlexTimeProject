@@ -37,7 +37,6 @@ public class TaskMB implements Serializable {
     private List<UserTaskWrapper> assignedTasks;
     private int selectedMinutes;
     private UserTaskWrapper selectedTask;
-    private boolean renderTableUpdater;
 
     @PostConstruct
     private void init() {
@@ -49,7 +48,7 @@ public class TaskMB implements Serializable {
     private void initAssignedTasks() {
         logger.debug("initAssignedTasks");
         try {
-            renderTableUpdater = false;
+            boolean startTableUpdater = false;
             List<UserTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks=" + tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
@@ -60,9 +59,15 @@ public class TaskMB implements Serializable {
                 logger.debug("timeSpent=" + timeSpent);
                 taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpent));
                 if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
-                    renderTableUpdater = true;
+                    startTableUpdater = true;
             }
             assignedTasks = taskWrappers;
+            logger.debug("startTableUpdater=" + startTableUpdater);
+            RequestContext reqCtx = RequestContext.getCurrentInstance();
+            if (startTableUpdater)
+                reqCtx.execute("if (!tableUpdater.isActive()) { tableUpdater.start(); }");
+            else
+                reqCtx.execute("tableUpdater.stop();");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
@@ -170,14 +175,7 @@ public class TaskMB implements Serializable {
         }
         if (needInit)
             initAssignedTasks();
-        if (!renderTableUpdater) {
-            RequestContext reqCtx = RequestContext.getCurrentInstance();
-            reqCtx.execute("tableUpdater.stop();");
-        }
     }
 
-    public boolean isRenderTableUpdater() {
-        return renderTableUpdater;
-    }
 }
 

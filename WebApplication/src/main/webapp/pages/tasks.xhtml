@@ -8,57 +8,59 @@
         <ui:define name="content">
 
             <h2>Assigned Tasks</h2>
-            <h:panelGroup id="taskTable">
-                <p:dataTable id="taskDataTable" var="task" value="#{taskMB.assignedTasks}"
-                             rowStyleClass="#{task.currentStatus eq 'r' ? 'taks-running' : null}">
-                    <p:column headerText="Name">
-                        <h:outputText value="#{task.taskName}"/>
-                    </p:column>
+            <p:dataTable id="taskTable" var="task" value="#{taskMB.assignedTasks}"
+                         rowStyleClass="#{task.currentStatus eq 'r' ? 'taks-running' : null}">
+                <p:column headerText="Name">
+                    <h:outputText value="#{task.taskName}"/>
+                </p:column>
 
-                    <p:column headerText="Type">
-                        <h:outputText value="#{task.taskTypeStr}"/>
-                    </p:column>
+                <p:column headerText="Type">
+                    <h:outputText value="#{task.taskTypeStr}"/>
+                </p:column>
 
-                    <p:column headerText="Price">
-                        <h:outputText value="#{task.taskPrice}"/>
-                    </p:column>
+                <p:column headerText="Price">
+                    <h:outputText value="#{task.taskPrice}"/>
+                </p:column>
 
-                    <p:column headerText="Status">
-                        <h:outputText value="#{task.currentStatusFormatted}"/>
-                    </p:column>
+                <p:column headerText="Status">
+                    <h:outputText value="#{task.currentStatusFormatted}"/>
+                </p:column>
 
-                    <p:column headerText="Time Left (sec)">
-                        <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType eq 'p'}"/>
-                    </p:column>
+                <p:column headerText="Time Left (sec)">
+                    <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType eq 'p'}"/>
+                </p:column>
 
-                    <p:column headerText="Duration">
-                        <h:outputText value="#{task.duration}" rendered="#{task.taskType eq 'p'}"/>
-                    </p:column>
+                <p:column headerText="Duration">
+                    <h:outputText value="#{task.duration}" rendered="#{task.taskType eq 'p'}"/>
+                </p:column>
 
-                    <p:column headerText="Finish Time">
-                        <h:outputText value="#{task.finishTime}" rendered="#{task.taskType eq 'p'}"/>
-                    </p:column>
+                <p:column headerText="Finish Time">
+                    <h:outputText value="#{task.finishTime}" rendered="#{task.taskType eq 'p'}"/>
+                </p:column>
 
-                    <p:column>
-                        <p:commandButton value="start" rendered="#{task.taskType eq 't'}" action="#{taskMB.startTask(task.taskId)}" update=":contentForm:taskTable"/>
-                        <h:panelGroup rendered="#{task.taskType eq 'p'}">
-                            <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
-                                             rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}">
-                                <f:attribute name="task" value="#{task}"/>
-                            </p:commandButton>
-                            <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}" rendered="#{task.currentStatus == 'r'}" update=":contentForm:taskTable"/>
-                            <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}" rendered="#{task.currentStatus == 'p'}" update=":contentForm:taskTable"/>
-                            <p:commandButton value="extend" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
-                                             rendered="#{task.currentStatus == 'r'}">
-                                <f:attribute name="task" value="#{task}"/>
-                            </p:commandButton>
-                            <p:commandButton value="stop" action="#{taskMB.stop(task.taskId)}" rendered="#{task.currentStatus == 'r' or task.currentStatus == 'p'}" update=":contentForm:taskTable"/>
-                        </h:panelGroup>
-                    </p:column>
-                </p:dataTable>
-                <!-- TODO relace poll with normal javascript timer withou databse update, database update should be once in a minute, just in case to check all tasks -->
-                <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskDataTable" rendered="#{taskMB.renderTableUpdater}" widgetVar="tableUpdater" />
-            </h:panelGroup>
+                <p:column>
+                    <p:commandButton value="start" rendered="#{task.taskType eq 't'}" action="#{taskMB.startTask(task.taskId)}"
+                                     update=":contentForm:taskTable" process="@this"/>
+                    <h:panelGroup rendered="#{task.taskType eq 'p'}">
+                        <p:commandButton value="start" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
+                                         rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}"
+                                         process="@this">
+                            <f:attribute name="task" value="#{task}"/>
+                        </p:commandButton>
+                        <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}" rendered="#{task.currentStatus == 'r'}"
+                                         update=":contentForm:taskTable" process="@this"/>
+                        <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}" rendered="#{task.currentStatus == 'p'}"
+                                         update=":contentForm:taskTable" process="@this"/>
+                        <p:commandButton value="extend" oncomplete="timeDialog.show();" actionListener="#{taskMB.startListener}" update=":contentForm:timeDialog"
+                                         rendered="#{task.currentStatus == 'r'}" process="@this">
+                            <f:attribute name="task" value="#{task}"/>
+                        </p:commandButton>
+                        <p:commandButton value="stop" action="#{taskMB.stop(task.taskId)}" rendered="#{task.currentStatus == 'r' or task.currentStatus == 'p'}"
+                                         update=":contentForm:taskTable" process="@this"/>
+                    </h:panelGroup>
+                </p:column>
+            </p:dataTable>
+            <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskTable" autoStart="false" widgetVar="tableUpdater" />
 
             <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">
                 <h:panelGrid id="timeDialogContent" columns="3" cellpadding="2">
@@ -70,10 +72,11 @@
                 </h:panelGrid>
 
                 <f:facet name="footer">
-                    <p:commandButton value="Start" action="#{taskMB.startProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="if(!args.validationFailed) {timeDialog.hide();}"
-                                 rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"/>
-                    <p:commandButton value="Extend" action="#{taskMB.extendProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="if(!args.validationFailed) {timeDialog.hide();}"
-                                 rendered="#{taskMB.selectedTask.currentStatus == 'r'}"/>
+                    <p:commandButton value="Start" action="#{taskMB.startProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="executeTaskTimeDialogClick(args);"
+                                 rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"
+                                 process=":contentForm:timeDialog"/>
+                    <p:commandButton value="Extend" action="#{taskMB.extendProcess}" update=":contentForm:taskTable timeDialogContent" oncomplete="executeTaskTimeDialogClick(args);"
+                                 rendered="#{taskMB.selectedTask.currentStatus == 'r'}" process=":contentForm:timeDialog"/>
                     <p:commandButton value="Close" onclick="timeDialog.hide();" update=":contentForm:taskTable"/>
                 </f:facet>
             </p:dialog>

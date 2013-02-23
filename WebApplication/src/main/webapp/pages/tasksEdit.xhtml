@@ -32,10 +32,11 @@
                             <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}" />
                         </f:facet>
                         <f:facet name="input">
-                            <h:selectOneMenu value="#{task.type}" rendered="#{taskEditMB.taskEditable[task.id]}">
+                            <p:selectOneMenu value="#{task.type}" rendered="#{taskEditMB.taskEditable[task.id]}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Select One" />
                                 <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
                                                itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}" />
-                            </h:selectOneMenu>
+                            </p:selectOneMenu>
                             <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}" rendered="#{not taskEditMB.taskEditable[task.id]}"/>
                         </f:facet>
                     </p:cellEditor>
@@ -61,7 +62,7 @@
                             <h:outputText value="#{task.enabled}" />
                         </f:facet>
                         <f:facet name="input">
-                            <h:selectBooleanCheckbox id="taskEnabled" value="#{task.enabled}" />
+                            <p:selectBooleanCheckbox id="taskEnabled" value="#{task.enabled}" />
                         </f:facet>
                     </p:cellEditor>
                 </p:column>
@@ -90,11 +91,11 @@
                     <p:message for="taskName"/>
 
                     <h:outputLabel for="taskType" value="Type:" />
-                    <h:selectOneMenu id="taskType" value="#{taskEditMB.newTask.type}" required="true">
+                    <p:selectOneMenu id="taskType" value="#{taskEditMB.newTask.type}" required="true">
                         <f:selectItem itemLabel="Select One" itemValue="" />
                         <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
                                        itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}" />
-                    </h:selectOneMenu>
+                    </p:selectOneMenu>
                     <p:message for="taskType"/>
 
                     <h:outputLabel for="taskPrice" value="Price:" />
@@ -104,12 +105,12 @@
                     <p:message for="taskPrice"/>
 
                     <h:outputLabel for="taskEnabled" value="Enabled:" />
-                    <h:selectBooleanCheckbox id="taskEnabled" value="#{taskEditMB.newTask.enabled}" />
+                    <p:selectBooleanCheckbox id="taskEnabled" value="#{taskEditMB.newTask.enabled}" />
                     <p:message for="taskEnabled"/>
 
                 </h:panelGrid>
                 <f:facet name="footer">
-                    <p:commandButton value="Save" update=":contentForm:taskTable addDialogContent" oncomplete="if(!args.validationFailed) { addTaskDlg.hide();}"
+                    <p:commandButton value="Save" update=":contentForm:taskTable addDialogContent" oncomplete="addTaskDialogSaveClick(args);"
                                      action="#{taskEditMB.addNewTask}" process=":contentForm:addDialog"/>
                     <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
@@ -122,7 +123,7 @@
                         <h:outputText value="#{assigned.username}"/>
                     </p:column>
                     <p:column headerText="Assigned">
-                        <h:selectBooleanCheckbox value="#{assigned.assigned}" />
+                        <p:selectBooleanCheckbox value="#{assigned.assigned}" />
                     </p:column>
                 </p:dataTable>
                 <f:facet name="footer">

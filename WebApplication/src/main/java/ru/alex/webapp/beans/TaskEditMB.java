@@ -135,7 +135,6 @@ public class TaskEditMB implements Serializable {
             initTasks();
             logger.debug("addNewTask taskList=" + taskList);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Added", newTask.getName()));
-            newTask = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding task", e.toString()));
