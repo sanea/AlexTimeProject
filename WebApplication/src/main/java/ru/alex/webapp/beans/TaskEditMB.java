@@ -215,7 +215,7 @@ public class TaskEditMB implements Serializable {
         }
     }
 
-    public class UserTaskAssigned {
+    public static class UserTaskAssigned {
         private String username;
         private boolean assigned;
 

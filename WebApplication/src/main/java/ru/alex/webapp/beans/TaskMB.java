@@ -11,7 +11,6 @@ import ru.alex.webapp.model.TaskStatus;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
-import ru.alex.webapp.service.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -31,12 +30,11 @@ public class TaskMB implements Serializable {
     private static final Logger logger = Logger.getLogger(TaskMB.class);
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private UserService userService;
     private String userName;
     private List<UserTaskWrapper> assignedTasks;
     private int selectedMinutes;
     private UserTaskWrapper selectedTask;
+    private boolean startTableUpdater;
 
     @PostConstruct
     private void init() {
@@ -48,7 +46,7 @@ public class TaskMB implements Serializable {
     private void initAssignedTasks() {
         logger.debug("initAssignedTasks");
         try {
-            boolean startTableUpdater = false;
+            startTableUpdater = false;
             List<UserTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks=" + tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
@@ -154,6 +152,10 @@ public class TaskMB implements Serializable {
 
     public UserTaskWrapper getSelectedTask() {
         return selectedTask;
+    }
+
+    public boolean isStartTableUpdater() {
+        return startTableUpdater;
     }
 
     public void startListener(ActionEvent event) {

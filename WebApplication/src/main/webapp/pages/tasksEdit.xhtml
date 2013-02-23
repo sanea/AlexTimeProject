@@ -8,7 +8,7 @@
         <ui:define name="content">
 
             <h2>Edit Tasks</h2>
-            <p:commandButton value="Add task" update="addDialog" actionListener="#{taskEditMB.addNewTaskListener}"
+            <p:commandButton value="Add task" update=":contentForm:addDialog" actionListener="#{taskEditMB.addNewTaskListener}"
                              oncomplete="addTaskDlg.show();" process="@this"/>
             <p:dataTable var="task" value="#{taskEditMB.taskList}" id="taskTable" editable="true" editMode="row">
 
@@ -110,7 +110,7 @@
 
                 </h:panelGrid>
                 <f:facet name="footer">
-                    <p:commandButton value="Save" update=":contentForm:taskTable addDialogContent" oncomplete="addTaskDialogSaveClick(args);"
+                    <p:commandButton value="Save" update=":contentForm:taskTable :contentForm:addDialog" oncomplete="addTaskDialogSaveClick(args);"
                                      action="#{taskEditMB.addNewTask}" process=":contentForm:addDialog"/>
                     <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
@@ -127,8 +127,8 @@
                     </p:column>
                 </p:dataTable>
                 <f:facet name="footer">
-                    <p:commandButton value="Save" update=":contentForm:taskTable assignDialog" oncomplete="assignDlg.hide();"
-                                     action="#{taskEditMB.assignTask}" process="assignDialog" />
+                    <p:commandButton value="Save" update=":contentForm:taskTable :contentForm:assignDialog" oncomplete="assignDlg.hide();"
+                                     action="#{taskEditMB.assignTask}" process=":contentForm:assignDialog" />
                     <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
                 </f:facet>
             </p:dialog>

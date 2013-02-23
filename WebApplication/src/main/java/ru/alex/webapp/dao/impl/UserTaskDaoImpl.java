@@ -18,7 +18,7 @@ public class UserTaskDaoImpl extends GenericDaoImpl<UserTask, Long> implements U
 
     @Override
     public List<UserTask> getUsersForTask(Long taskId) {
-        return getEntityManager().createQuery("select ut from UserTask ut where ut.enabled = true and ut.taskByTaskId.id = :taskId and ut.taskByTaskId.enabled = true", UserTask.class).setParameter("taskId", taskId).getResultList();
+        return getEntityManager().createQuery("select ut from UserTask ut where ut.enabled = true and ut.taskByTaskId.id = :taskId and ut.userByUsername.enabled = true", UserTask.class).setParameter("taskId", taskId).getResultList();
     }
 
     @Override

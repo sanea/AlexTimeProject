@@ -60,7 +60,7 @@
                     </h:panelGroup>
                 </p:column>
             </p:dataTable>
-            <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskTable" autoStart="false" widgetVar="tableUpdater" />
+            <p:poll interval="1" listener="#{taskMB.refreshTable}" update="taskTable" autoStart="#{taskMB.startTableUpdater}" widgetVar="tableUpdater" />
 
             <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">
                 <h:panelGrid id="timeDialogContent" columns="3" cellpadding="2">
