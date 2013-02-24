@@ -59,11 +59,11 @@
     </logger>
 
     <logger name="log4j.logger.org.hibernate.SQL">
-        <level value="debug" />
+        <level value="info" />
     </logger>
 
     <logger name="log4j.logger.org.type">
-        <level value="trace" />
+        <level value="info" />
     </logger>
 
     <logger name="log4j.logger.org.hibernate.hql.ast.AST">
@@ -71,11 +71,11 @@
     </logger>
 
     <logger name="log4j.logger.org.hibernate.tool.hbm2ddl">
-        <level value="warn" />
+        <level value="info" />
     </logger>
 
     <logger name="log4j.logger.org.hibernate.hql">
-        <level value="debug" />
+        <level value="info" />
     </logger>
 
     <logger name="log4j.logger.org.hibernate.cache">
@@ -83,7 +83,7 @@
     </logger>
 
     <logger name="log4j.logger.org.hibernate.jdbc">
-        <level value="debug" />
+        <level value="info" />
     </logger>
 
     <!-- Root Logger -->

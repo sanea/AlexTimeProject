@@ -2,6 +2,7 @@ package ru.alex.webapp.service.impl;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.TaskService;
 
+import javax.persistence.LockModeType;
 import java.util.*;
 
 @Service
@@ -49,8 +51,8 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Wrong username");
         List<UserTask> tasks = userTaskDao.getTasksForUser(username);
         logger.debug("getTasksForUser tasks=" + tasks);
-        for (UserTask task : tasks)
-            checkTask(task);
+//        for (UserTask task : tasks)
+//            checkTask(task);
         return tasks;
     }
 
@@ -65,13 +67,15 @@ public class TaskServiceImpl implements TaskService {
     public List<UserTask> getOnlineTasks() throws Exception {
         logger.debug("getOnlineTasks");
         List<UserTask> tasks = userTaskDao.getRunningTasks();
-        List<UserTask> result = new ArrayList<UserTask>(tasks.size());
-        for (UserTask task : tasks) {
-            boolean ended = checkTask(task);
-            if (!ended)
-                result.add(task);
-        }
-        return result;
+        logger.debug("getOnlineTasks runningTasks=" + tasks);
+//        List<UserTask> result = new ArrayList<UserTask>(tasks.size());
+//        for (UserTask task : tasks) {
+//            boolean ended = checkTask(task);
+//            if (!ended)
+//                result.add(task);
+//        }
+//        return result;
+        return tasks;
     }
 
     @Override
@@ -139,7 +143,7 @@ public class TaskServiceImpl implements TaskService {
                 throw new Exception("Running task should have current time");
             Date now = new Date();
             if (now.after(currentTime.getFinishTime())) {
-                endTask(task, currentTime.getFinishTime(), false);
+                endTask(task, currentTime, currentTime.getFinishTime(), false);
                 return true;
             }
         } else if (status != TaskStatus.PAUSED && currentTime != null) {
@@ -149,10 +153,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    private void endTask(UserTask task, Date finishTime, boolean stop) throws Exception {
+    private void endTask(UserTask task, UserTaskTime currentTime, Date finishTime, boolean stop) throws Exception {
         logger.debug("endTask task=" + task + ", finishTime=" + finishTime + ", stop=" + stop);
-        UserTaskTime currentTime = getCurrentTimeForUserTask(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
         logger.debug("endTask currentTime=" + currentTime);
+        userTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
+        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
@@ -164,6 +169,7 @@ public class TaskServiceImpl implements TaskService {
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         switch (taskStatus) {
             case RUNNING:
+                //set the last time_seq end_time value
                 UserTaskTimeSeq currentTimeSeq = userTaskTimeSeqDao.findById(timeSeqList.get(0).getId());
                 currentTimeSeq.setEndTime(finishTime);
                 currentTimeSeq = userTaskTimeSeqDao.merge(currentTimeSeq);
@@ -186,7 +192,7 @@ public class TaskServiceImpl implements TaskService {
         userTaskDao.flush();
         userTaskDao.clear();
 
-        //change user_tak_time current value and if stop - duration
+        //change user_tak_time duration
         if (stop) {
             int timeSpentSec = 0;
             //timeSeqList is updated
@@ -198,6 +204,7 @@ public class TaskServiceImpl implements TaskService {
             }
             currentTime.setDurationSec(timeSpentSec);
         }
+        //change user_tak_time current value
         currentTime.setCurrent(false);
         currentTime.setFinishTime(finishTime);
         currentTime = userTaskTimeDao.merge(currentTime);
@@ -333,10 +340,10 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("task should have current time and time seq");
 
         //close task if time is finished
-        boolean isClosed = checkTask(userTask);
-        logger.debug("pauseTask isClosed=" + isClosed);
-        if (isClosed)
-            return;
+//        boolean isClosed = checkTask(userTask);
+//        logger.debug("pauseTask isClosed=" + isClosed);
+//        if (isClosed)
+//            return;
 
         Date now = new Date();
         //change user_task status
@@ -453,10 +460,10 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("task should have current time and time seq");
 
         //close task if time is finished
-        boolean isClosed = checkTask(userTask);
-        logger.debug("extendTask isClosed=" + isClosed);
-        if (isClosed)
-            return;
+//        boolean isClosed = checkTask(userTask);
+//        logger.debug("extendTask isClosed=" + isClosed);
+//        if (isClosed)
+//            return;
 
         Date now = new Date();
         //change user_task status no needed, has RUNNING status
@@ -501,13 +508,13 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("task should have current time and time seq");
 
         //check if task should be ended
-        boolean isClosed = checkTask(userTask);
-        logger.debug("stopTask isClosed=" + isClosed);
-        if (isClosed)
-            return;
+//        boolean isClosed = checkTask(userTask);
+//        logger.debug("stopTask isClosed=" + isClosed);
+//        if (isClosed)
+//            return;
 
         //force ending task
-        endTask(userTask, new Date(), true);
+        endTask(userTask, currentTime, new Date(), true);
     }
 
     @Override
@@ -616,6 +623,8 @@ public class TaskServiceImpl implements TaskService {
                 if (userTaskList.get(0).getEnabled()) {
                     logger.debug("disable user task");
                     UserTask ut = userTaskList.get(0);
+                    if(TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
+                        throw new Exception("Can't disable running task");
                     ut.setEnabled(false);
                     ut.setUpdateTime(now);
                     userTaskDao.merge(ut);
@@ -642,6 +651,23 @@ public class TaskServiceImpl implements TaskService {
             ut.setUserByUsername(user);
 
             userTaskDao.persist(ut);
+        }
+    }
+
+    /**
+     * Repeats every second
+     */
+    @Scheduled(fixedDelay = 1000)
+    public void checkAllTasks() {
+        logger.debug("checkAllTasks");
+        List<UserTask> runningTasks = userTaskDao.getRunningTasks();
+        logger.debug("checkAllTasks runningTasks=" + runningTasks);
+        try {
+            for (UserTask task : runningTasks) {
+                checkTask(task);
+            }
+        } catch (Exception ex) {
+            logger.error("checkAllTasks " + ex.getMessage(), ex);
         }
     }
 }

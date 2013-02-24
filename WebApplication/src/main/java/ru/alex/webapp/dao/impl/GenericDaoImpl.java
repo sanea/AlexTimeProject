@@ -34,7 +34,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
 
     @Override
     public T findById(ID id) {
-       return getEntityManager().find(getEntityBeanType(), id);
+        return getEntityManager().find(getEntityBeanType(), id);
     }
 
     public List<T> findAll() {
@@ -66,5 +66,9 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         getEntityManager().clear();
     }
 
+    @Override
+    public void lock(T entity, LockModeType lockModeType) {
+        getEntityManager().lock(entity, lockModeType);
+    }
 }
 

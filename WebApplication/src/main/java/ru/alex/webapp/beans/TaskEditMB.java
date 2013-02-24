@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.TaskType;
-import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 
@@ -158,13 +155,15 @@ public class TaskEditMB implements Serializable {
 
             for (User u : userList) {
                 boolean isAssigned = false;
+                boolean isRunning = false;
                 for (UserTask ut : userTaskList) {
                     if (u.getUsername().equals(ut.getUserByUsername().getUsername())) {
                         isAssigned = true;
+                        isRunning = TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING;
                         break;
                     }
                 }
-                assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned));
+                assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned, isRunning));
             }
 
             logger.debug("assignListener assignedList=" + assignedList);
@@ -218,10 +217,12 @@ public class TaskEditMB implements Serializable {
     public static class UserTaskAssigned {
         private String username;
         private boolean assigned;
+        private boolean disabled;
 
-        public UserTaskAssigned(String username, boolean assigned) {
+        public UserTaskAssigned(String username, boolean assigned, boolean disabled) {
             this.username = username;
             this.assigned = assigned;
+            this.disabled = disabled;
         }
 
         public String getUsername() {
@@ -240,11 +241,20 @@ public class TaskEditMB implements Serializable {
             this.assigned = assigned;
         }
 
+        public boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(boolean disabled) {
+            this.disabled = disabled;
+        }
+
         @Override
         public String toString() {
             return "UserTaskAssigned{" +
                     "username='" + username + '\'' +
                     ", assigned=" + assigned +
+                    ", disabled=" + disabled +
                     '}';
         }
     }

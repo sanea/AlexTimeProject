@@ -1,5 +1,6 @@
 package ru.alex.webapp.dao;
 
+import javax.persistence.LockModeType;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface GenericDao<T, ID extends Serializable> {
     public void flush();
 
     public void clear();
+
+    public void lock(T entity, LockModeType lockModeType);
+
 }
