@@ -12,9 +12,11 @@ public interface TaskService {
 
     List<UserTask> getTasksForUser(String username) throws Exception;
 
+    List<UserTask> getOnlineTasks() throws Exception;
+
     List<UserTask> getUsersForTask(Long taskId) throws Exception;
 
-    UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception;
+    UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception;
 
     int getTimeSpentForUserTask(Long taskId, String username) throws Exception;
 

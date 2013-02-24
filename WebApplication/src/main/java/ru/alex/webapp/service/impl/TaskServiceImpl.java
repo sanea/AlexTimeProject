@@ -34,6 +34,14 @@ public class TaskServiceImpl implements TaskService {
         return taskDao.findAll();
     }
 
+    /**
+     * Returns list of enable tasks for user
+     * checks and ends tasks
+     *
+     * @param username
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<UserTask> getTasksForUser(String username) throws Exception {
         logger.debug("getTasksForUser username=" + username);
@@ -44,6 +52,26 @@ public class TaskServiceImpl implements TaskService {
         for (UserTask task : tasks)
             checkTask(task);
         return tasks;
+    }
+
+    /**
+     * Returns list of task with status 'r'
+     * checks and ends tasks
+     *
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<UserTask> getOnlineTasks() throws Exception {
+        logger.debug("getOnlineTasks");
+        List<UserTask> tasks = userTaskDao.getRunningTasks();
+        List<UserTask> result = new ArrayList<UserTask>(tasks.size());
+        for (UserTask task : tasks) {
+            boolean ended = checkTask(task);
+            if (!ended)
+                result.add(task);
+        }
+        return result;
     }
 
     @Override
@@ -57,10 +85,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public UserTaskTime getCurrentTimeForUser(Long taskId, String username) throws Exception {
-        logger.debug("getCurrentTimeForUser taskId=" + taskId + ", username=" + username);
+    public UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception {
+        logger.debug("getCurrentTimeForUserTask taskId=" + taskId + ", username=" + username);
         List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
-        logger.debug("getCurrentTimeForUser currentTimeList=" + currentTimeList);
+        logger.debug("getCurrentTimeForUserTask currentTimeList=" + currentTimeList);
         if (currentTimeList.size() > 1)
             throw new Exception("current time list should have size <= 1");
         return currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
@@ -77,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int getTimeSpentForUserTask(Long taskId, String username) throws Exception {
         logger.debug("getTimeSpentForUserTask taskId=" + taskId + ", username=" + username);
-        UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
         logger.debug("getTimeSpentForUserTask currentTime=" + currentTime);
         int timeSpentSec = 0;
         if (currentTime != null) {
@@ -104,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
     private boolean checkTask(UserTask task) throws Exception {
         logger.debug("checkTask task=" + task);
         TaskStatus status = TaskStatus.getStatus(task.getStatus());
-        UserTaskTime currentTime = getCurrentTimeForUser(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
+        UserTaskTime currentTime = getCurrentTimeForUserTask(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
         logger.debug("checkTask currentTime=" + currentTime);
         if (status == TaskStatus.RUNNING) {
             if (currentTime == null)
@@ -123,7 +151,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     private void endTask(UserTask task, Date finishTime, boolean stop) throws Exception {
         logger.debug("endTask task=" + task + ", finishTime=" + finishTime + ", stop=" + stop);
-        UserTaskTime currentTime = getCurrentTimeForUser(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
+        UserTaskTime currentTime = getCurrentTimeForUserTask(task.getTaskByTaskId().getId(), task.getUserByUsername().getUsername());
         logger.debug("endTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
@@ -299,7 +327,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("wrong status of task for user");
         if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't pause Task");
-        UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
         logger.debug("pauseTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
@@ -353,7 +381,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("wrong status of task for user");
         if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't resume Task");
-        UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
         logger.debug("resumeTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
@@ -419,7 +447,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("wrong status of task for user");
         if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't extend Task");
-        UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
         logger.debug("extendTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
@@ -467,7 +495,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("wrong status of task for user");
         if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.TASK)
             throw new Exception("can't pause Task");
-        UserTaskTime currentTime = getCurrentTimeForUser(taskId, username);
+        UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
         logger.debug("stopTask currentTime=" + currentTime);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");

@@ -27,11 +27,15 @@ public class UserTaskWrapper implements Serializable {
         }
     }
 
+    public String getUsername() {
+        return userTask.getUserByUsername().getUsername();
+    }
+
     public String getTaskName() {
         return userTask.getTaskByTaskId().getName();
     }
 
-    public String getTaskTypeStr() {
+    public String getTaskTypeFormatted() {
         return TaskType.getTypeFormatted(userTask.getTaskByTaskId().getType());
     }
 

@@ -35,6 +35,7 @@ public class TaskMB implements Serializable {
     private int selectedMinutes;
     private UserTaskWrapper selectedTask;
     private boolean startTableUpdater;
+    private int updateIntervalSec = 1;
 
     @PostConstruct
     private void init() {
@@ -51,7 +52,7 @@ public class TaskMB implements Serializable {
             logger.debug("tasks=" + tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
-                UserTaskTime currentTime = taskService.getCurrentTimeForUser(ut.getTaskByTaskId().getId(), userName);
+                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
                 int timeSpent = taskService.getTimeSpentForUserTask(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("timeSpent=" + timeSpent);
@@ -154,8 +155,12 @@ public class TaskMB implements Serializable {
         return selectedTask;
     }
 
-    public boolean isStartTableUpdater() {
+    public boolean getStartTableUpdater() {
         return startTableUpdater;
+    }
+
+    public int getUpdateIntervalSec() {
+        return updateIntervalSec;
     }
 
     public void startListener(ActionEvent event) {
@@ -168,7 +173,7 @@ public class TaskMB implements Serializable {
         boolean needInit = false;
         for (UserTaskWrapper task : assignedTasks) {
             if (TaskStatus.getStatus(task.getCurrentStatus()) == TaskStatus.RUNNING) {
-                int timeLeft = task.getTimeLeft() - 1;
+                int timeLeft = task.getTimeLeft() - updateIntervalSec;
                 if (timeLeft > 0)
                     task.setTimeLeft(timeLeft);
                 else
