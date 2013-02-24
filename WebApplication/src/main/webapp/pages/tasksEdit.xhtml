@@ -15,7 +15,7 @@
                 <p:ajax event="rowEdit" listener="#{taskEditMB.onEdit}" update=":contentForm:messages" />
                 <p:ajax event="rowEditCancel" listener="#{taskEditMB.onCancel}" update=":contentForm:messages" />
 
-                <p:column headerText="Name">
+                <p:column headerText="Name" sortBy="#{task.name}">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputText value="#{task.name}" />
@@ -26,7 +26,7 @@
                     </p:cellEditor>
                 </p:column>
 
-                <p:column headerText="Type">
+                <p:column headerText="Type" sortBy="#{task.type}">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}" />
@@ -42,7 +42,7 @@
                     </p:cellEditor>
                 </p:column>
 
-                <p:column headerText="Price">
+                <p:column headerText="Price" sortBy="#{task.price}">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputText value="#{task.price}" />
@@ -56,7 +56,7 @@
                     </p:cellEditor>
                 </p:column>
 
-                <p:column headerText="Enabled">
+                <p:column headerText="Enabled" sortBy="#{task.enabled}">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputText value="#{task.enabled}" />

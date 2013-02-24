@@ -270,7 +270,7 @@ public class TaskServiceImpl implements TaskService {
         endTime.add(Calendar.SECOND, seconds);
         switch (TaskType.getType(userTask.getTaskByTaskId().getType())) {
             case PROCESS:
-                if (seconds < 0)
+                if (seconds <= 0)
                     throw new IllegalArgumentException("Wrong Input Params for starting task");
                 //change user_task status
                 userTask.setStatus(TaskStatus.RUNNING.getStatusStr());
