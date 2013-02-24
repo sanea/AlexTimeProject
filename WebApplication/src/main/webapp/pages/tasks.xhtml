@@ -26,8 +26,8 @@
                     <h:outputText value="#{task.currentStatusFormatted}"/>
                 </p:column>
 
-                <p:column headerText="Time Left (sec)">
-                    <h:outputText value="#{task.timeLeft}" rendered="#{task.taskType eq 'p'}"/>
+                <p:column headerText="Time Left">
+                    <h:outputText value="#{task.timeLeftFormatted}" rendered="#{task.taskType eq 'p'}"/>
                 </p:column>
 
                 <p:column headerText="Duration">

@@ -103,14 +103,14 @@ public class TaskServiceImpl implements TaskService {
      * @throws Exception
      */
     @Override
-    public int getTimeSpentForUserTask(Long taskId, String username) throws Exception {
-        logger.debug("getTimeSpentForUserTask taskId=" + taskId + ", username=" + username);
+    public int getTimeSpentSecForUserTask(Long taskId, String username) throws Exception {
+        logger.debug("getTimeSpentSecForUserTask taskId=" + taskId + ", username=" + username);
         UserTaskTime currentTime = getCurrentTimeForUserTask(taskId, username);
-        logger.debug("getTimeSpentForUserTask currentTime=" + currentTime);
+        logger.debug("getTimeSpentSecForUserTask currentTime=" + currentTime);
         int timeSpentSec = 0;
         if (currentTime != null) {
             List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
-            logger.debug("getTimeSpentForUserTask timeSeqList=" + timeSeqList);
+            logger.debug("getTimeSpentSecForUserTask timeSeqList=" + timeSeqList);
             for (UserTaskTimeSeq ts : timeSeqList) {
                 Date endTime = ts.getEndTime() == null ? new Date() : ts.getEndTime();
                 if (endTime.before(ts.getStartTime()))

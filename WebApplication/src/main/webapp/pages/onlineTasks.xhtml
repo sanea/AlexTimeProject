@@ -26,8 +26,8 @@
                     <h:outputText value="#{task.taskPrice}"/>
                 </p:column>
 
-                <p:column headerText="Time Left (sec)" sortBy="#{task.timeLeft}">
-                    <h:outputText value="#{task.timeLeft}"/>
+                <p:column headerText="Time Left" sortBy="#{task.timeLeftSec}">
+                    <h:outputText value="#{task.timeLeftFormatted}"/>
                 </p:column>
 
                 <p:column headerText="Duration" sortBy="#{task.duration}">

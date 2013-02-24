@@ -18,7 +18,7 @@ public interface TaskService {
 
     UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception;
 
-    int getTimeSpentForUserTask(Long taskId, String username) throws Exception;
+    int getTimeSpentSecForUserTask(Long taskId, String username) throws Exception;
 
     void startTask(Long taskId, String username, int seconds) throws Exception;
 

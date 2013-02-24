@@ -44,9 +44,9 @@ public class OnlineTaskMB implements Serializable {
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
                 logger.debug("currentTime=" + currentTime);
-                int timeSpent = taskService.getTimeSpentForUserTask(ut.getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
-                logger.debug("timeSpent=" + timeSpent);
-                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpent));
+                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
+                logger.debug("timeSpentSec=" + timeSpentSec);
+                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
             }
             onlineTasks = taskWrappers;
         } catch (Exception e) {
@@ -66,9 +66,9 @@ public class OnlineTaskMB implements Serializable {
     public void refreshTable() {
         boolean needInit = false;
         for (UserTaskWrapper task : onlineTasks) {
-            int timeLeft = task.getTimeLeft() - updateIntervalSec;
+            int timeLeft = task.getTimeLeftSec() - updateIntervalSec;
             if (timeLeft > 0)
-                task.setTimeLeft(timeLeft);
+                task.setTimeLeftSec(timeLeft);
             else
                 needInit = true;
         }

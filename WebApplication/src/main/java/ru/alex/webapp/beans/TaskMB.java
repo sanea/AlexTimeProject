@@ -54,9 +54,9 @@ public class TaskMB implements Serializable {
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime=" + currentTime);
-                int timeSpent = taskService.getTimeSpentForUserTask(ut.getTaskByTaskId().getId(), userName);
-                logger.debug("timeSpent=" + timeSpent);
-                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpent));
+                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getTaskByTaskId().getId(), userName);
+                logger.debug("timeSpentSec=" + timeSpentSec);
+                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
                 if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
                     startTableUpdater = true;
             }
@@ -173,9 +173,9 @@ public class TaskMB implements Serializable {
         boolean needInit = false;
         for (UserTaskWrapper task : assignedTasks) {
             if (TaskStatus.getStatus(task.getCurrentStatus()) == TaskStatus.RUNNING) {
-                int timeLeft = task.getTimeLeft() - updateIntervalSec;
+                int timeLeft = task.getTimeLeftSec() - updateIntervalSec;
                 if (timeLeft > 0)
-                    task.setTimeLeft(timeLeft);
+                    task.setTimeLeftSec(timeLeft);
                 else
                     needInit = true;
             }

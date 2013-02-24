@@ -15,15 +15,15 @@ public class UserTaskWrapper implements Serializable {
     private static final Logger logger = Logger.getLogger(UserTaskWrapper.class);
     private UserTask userTask;
     private UserTaskTime currentTime;
-    private int timeLeft;
+    private int timeLeftSec;
 
-    public UserTaskWrapper(UserTask userTask, UserTaskTime currentTime, int timeSpent) {
+    public UserTaskWrapper(UserTask userTask, UserTaskTime currentTime, int timeSpentSeq) {
         logger.debug("init UserTaskWrapper " + userTask + " " + currentTime);
         this.userTask = userTask;
         this.currentTime = currentTime;
         if (currentTime != null) {
-            this.timeLeft = currentTime.getDurationSec() - timeSpent;
-            logger.debug("init UserTaskWrapper timeLeft=" + this.timeLeft);
+            this.timeLeftSec = currentTime.getDurationSec() - timeSpentSeq;
+            logger.debug("init UserTaskWrapper timeLeftSec=" + this.timeLeftSec);
         }
     }
 
@@ -47,12 +47,12 @@ public class UserTaskWrapper implements Serializable {
         return userTask.getTaskByTaskId().getPrice();
     }
 
-    public int getTimeLeft() {
-        return timeLeft;
+    public int getTimeLeftSec() {
+        return timeLeftSec;
     }
 
-    public void setTimeLeft(int timeLeft) {
-        this.timeLeft = timeLeft;
+    public void setTimeLeftSec(int timeLeftSec) {
+        this.timeLeftSec = timeLeftSec;
     }
 
     public String getCurrentStatusFormatted() {
@@ -75,13 +75,27 @@ public class UserTaskWrapper implements Serializable {
         return currentTime != null ? Integer.valueOf(currentTime.getDurationSec()) : null;
     }
 
+    public String getTimeLeftFormatted() {
+        return formattTimeSec(timeLeftSec);
+    }
+
+    private String formattTimeSec(int timeSec) {
+        int hours = timeSec / 3600;
+        timeSec = timeSec - hours * 3600;
+        int minutes = timeSec / 60;
+        int seconds = timeSec - minutes * 60;
+        return (hours != 0 ? String.valueOf(hours) + " hours ": "")
+                + (minutes != 0 ? String.valueOf(minutes) + " minutes " : "")
+                + (seconds != 0 ? String.valueOf(seconds) + " seconds" : "0 seconds");
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskWrapper");
         sb.append("{userTask=").append(userTask);
         sb.append(", currentTime=").append(currentTime);
-        sb.append(", timeLeft=").append(timeLeft);
+        sb.append(", timeLeftSec=").append(timeLeftSec);
         sb.append('}');
         return sb.toString();
     }
