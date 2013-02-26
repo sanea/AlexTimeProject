@@ -39,8 +39,7 @@ public class TaskEditMB implements Serializable {
     private UserService userService;
     private String userName;
     private Task newTask = new Task();
-    private Long selectedTaskId;
-    private String selectedTaskName;
+    private Task selectedTask;
     private List<UserTaskAssigned> assignedList;
 
     @PostConstruct
@@ -90,8 +89,12 @@ public class TaskEditMB implements Serializable {
         return assignedList;
     }
 
-    public String getSelectedTaskName() {
-        return selectedTaskName;
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
     }
 
     public void onEdit(RowEditEvent event) {
@@ -140,15 +143,13 @@ public class TaskEditMB implements Serializable {
 
     public void assignListener(ActionEvent event) {
         try {
-            Task selectedTask = (Task) event.getComponent().getAttributes().get("task");
+            selectedTask = (Task) event.getComponent().getAttributes().get("task");
             logger.debug("assignListener selectedTask=" + selectedTask);
-            selectedTaskId = selectedTask.getId();
-            selectedTaskName = selectedTask.getName();
 
             List<User> userList = userService.getAllUsers();
             logger.debug("assignListener userList=" + userList);
 
-            List<UserTask> userTaskList = taskService.getUsersForTask(selectedTaskId);
+            List<UserTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
             logger.debug("assignListener userTaskList=" + userTaskList);
 
             assignedList = new ArrayList<UserTaskAssigned>(userList.size());
@@ -174,17 +175,15 @@ public class TaskEditMB implements Serializable {
     }
 
     public void assignTask() {
-        logger.debug("assignTask selectedTaskId=" + selectedTaskId);
+        logger.debug("assignTask selectedTask=" + selectedTask);
         try {
-            Long innerSelectedTaskId = selectedTaskId;
+            Long innerSelectedTaskId = selectedTask.getId();
             for (UserTaskAssigned assigned : assignedList) {
                  taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
             }
             initTasks();
             logger.debug("assignTask taskList=" + taskList);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned", selectedTaskName));
-            selectedTaskId = null;
-            selectedTaskName = null;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned", selectedTask.getName()));
             assignedList = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -192,22 +191,13 @@ public class TaskEditMB implements Serializable {
         }
     }
 
-    public void removeListener(ActionEvent event) {
-        Task selectedTask = (Task) event.getComponent().getAttributes().get("task");
-        logger.debug("removeListener selectedTask=" + selectedTask);
-        selectedTaskId = selectedTask.getId();
-        selectedTaskName = selectedTask.getName();
-    }
-
     public void removeTask() {
-        logger.debug("removeTask selectedTaskId=" + selectedTaskId);
+        logger.debug("removeTask selectedTask=" + selectedTask);
         try {
-            taskService.removeTask(selectedTaskId);
+            taskService.removeTask(selectedTask.getId());
             initTasks();
             logger.debug("removeTask taskList=" + taskList);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed", selectedTaskName));
-            selectedTaskId = null;
-            selectedTaskName = null;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task", e.toString()));
