@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
 import org.apache.log4j.Logger;
+import org.primefaces.event.data.FilterEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +35,13 @@ public class AllTaskMB implements Serializable {
     @Autowired
     private TaskService taskService;
     private List<UserTaskWrapper> allTasks;
+    private BigDecimal total = new BigDecimal(0);
     private List<UserTaskWrapper> filteredTasks;
     private UserTaskWrapper selectedTask;
     private List<TimeSequence> selectedTimeSeqList;
     private SelectItem[] taskTypeOptions;
+
+    //TODO implement LazyDataModel
 
     @PostConstruct
     private void init() {
@@ -59,8 +65,11 @@ public class AllTaskMB implements Serializable {
             List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime();
             logger.debug("initAllTasks taskTimeList=" + taskTimeList);
             List<UserTaskWrapper> allTasksLocal = new ArrayList<UserTaskWrapper>(taskTimeList.size());
-            for (UserTaskTime taskTime : taskTimeList)
-                allTasksLocal.add(new UserTaskWrapper(taskTime.getUserTaskById(), taskTime));
+            for (UserTaskTime taskTime : taskTimeList) {
+                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserTaskById(), taskTime);
+                allTasksLocal.add(taskWrapper);
+                total = total.add(taskWrapper.getSum());
+            }
             allTasks = allTasksLocal;
             logger.debug("initAllTasks allTasks=" + allTasks);
         } catch (Exception e) {
@@ -71,6 +80,10 @@ public class AllTaskMB implements Serializable {
 
     public List<UserTaskWrapper> getAllTasks() {
         return allTasks;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
     }
 
     public List<UserTaskWrapper> getFilteredTasks() {
@@ -97,6 +110,13 @@ public class AllTaskMB implements Serializable {
         return taskTypeOptions;
     }
 
+    public String getRowsPerPageTemplate() {
+        String size = "";
+        if (allTasks != null)
+            size = allTasks.size() > 50 ? "," + allTasks.size() : "";
+        return "5,10,15,20,25,50" + size;
+    }
+
     public void selectTaskListener(ActionEvent event) {
         try {
             selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
@@ -112,6 +132,14 @@ public class AllTaskMB implements Serializable {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in select task", e.toString()));
         }
+    }
+
+    public void filterListener(FilterEvent event) {
+        logger.debug("filterListener filteredTasks=" + filteredTasks);
+        total = new BigDecimal(0);
+        for (UserTaskWrapper taskWrapper : filteredTasks)
+            total = total.add(taskWrapper.getSum());
+        logger.debug("filterListener total=" + total);
     }
 
     private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {

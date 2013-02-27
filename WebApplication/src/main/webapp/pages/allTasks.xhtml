@@ -9,8 +9,12 @@
 
             <h2>All Tasks</h2>
 
-            <p:dataTable id="onlineTasks" var="task" value="#{allTaskMB.allTasks}" paginator="true" rows="10"
-                         filteredValue="#{allTaskMB.filteredTasks}">
+            <p:dataTable id="allTasks" var="task" value="#{allTaskMB.allTasks}" paginator="true" rows="10"
+                         filteredValue="#{allTaskMB.filteredTasks}"
+                         rowsPerPageTemplate="#{allTaskMB.rowsPerPageTemplate}" paginatorPosition="top"
+                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                <p:ajax event="filter" listener="#{allTaskMB.filterListener}" update=":contentForm:allTaskTotal"/>
+
                 <p:column headerText="User Name" sortBy="#{task.username}" filterBy="#{task.username}">
                     <h:outputText value="#{task.username}"/>
                 </p:column>
@@ -46,7 +50,7 @@
                     <h:outputText value="#{task.sum}"/>
                 </p:column>
 
-                <p:column style="width:4%">
+                <p:column style="width: 40px;">
                     <p:commandButton id="selectButton" update=":contentForm:taskDialog" oncomplete="taskDlg.show()" icon="ui-icon-search" title="Details"
                             actionListener="#{allTaskMB.selectTaskListener}">
                         <f:attribute name="task" value="#{task}"/>
@@ -54,6 +58,13 @@
                 </p:column>
 
             </p:dataTable>
+
+            <p:panelGrid columns="1" id="allTaskTotal" style="float: right; margin-right: 61px;">
+                <p:outputPanel style="font-weight: bold;">
+                    <h:outputText value="Total:  "/>
+                    <h:outputText value="#{allTaskMB.total}" />
+                </p:outputPanel>
+            </p:panelGrid>
 
             <p:dialog id="taskDialog" header="Task Details" widgetVar="taskDlg" resizable="false" modal="true" closeOnEscape="true">
                 <h:outputText value="#{allTaskMB.selectedTask.username} - #{allTaskMB.selectedTask.taskName}"/>
@@ -73,6 +84,13 @@
                     <p:column headerText="Duration" >
                         <h:outputText value="#{timeSeq.durationFormatted}"/>
                     </p:column>
+
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column footerText="Total: " colspan="2" style="text-align:right"/>
+                            <p:column footerText="#{allTaskMB.selectedTask.durationFormatted}" />
+                        </p:row>
+                    </p:columnGroup>
 
                 </p:dataTable>
                 <h:panelGrid columns="2" rendered="#{allTaskMB.selectedTask.taskType eq 't'}" >
