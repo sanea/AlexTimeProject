@@ -543,7 +543,7 @@ public class TaskServiceImpl implements TaskService {
             throw new Exception("Name can't be empty");
         if (task.getType() == null || task.getType().equals(""))
             throw new Exception("Type can't be empty");
-        if (task.getPrice() == null)
+        if (task.getPriceHour() == null)
             throw new Exception("Price can't be empty");
         taskDao.persist(task);
     }
@@ -608,7 +608,7 @@ public class TaskServiceImpl implements TaskService {
         if (!isEditable) {
             if (!taskEntity.getType().equals(task.getType()))
                 throw new Exception("Can't change type of not editable task");
-            if (!taskEntity.getPrice().equals(task.getPrice()))
+            if (!taskEntity.getPriceHour().equals(task.getPriceHour()))
                 throw new Exception("Can't change price of not editable task");
         }
         task = taskDao.merge(task);

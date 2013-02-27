@@ -42,16 +42,16 @@
                     </p:cellEditor>
                 </p:column>
 
-                <p:column headerText="Price" sortBy="#{task.price}">
+                <p:column headerText="Price" sortBy="#{task.priceHour}">
                     <p:cellEditor>
                         <f:facet name="output">
-                            <h:outputText value="#{task.price}" />
+                            <h:outputText value="#{task.priceHour}" />
                         </f:facet>
                         <f:facet name="input">
-                            <p:inputText value="#{task.price}" style="width:100%" required="true" rendered="#{taskEditMB.taskEditable[task.id]}">
+                            <p:inputText value="#{task.priceHour}" style="width:100%" required="true" rendered="#{taskEditMB.taskEditable[task.id]}">
                                 <f:convertNumber maxFractionDigits="2" maxIntegerDigits="10"/>
                             </p:inputText>
-                            <h:outputText value="#{task.price}" rendered="#{not taskEditMB.taskEditable[task.id]}"/>
+                            <h:outputText value="#{task.priceHour}" rendered="#{not taskEditMB.taskEditable[task.id]}"/>
                         </f:facet>
                     </p:cellEditor>
                 </p:column>
@@ -99,7 +99,7 @@
                     <p:message for="taskType"/>
 
                     <h:outputLabel for="taskPrice" value="Price:" />
-                    <p:inputText value="#{taskEditMB.newTask.price}" id="taskPrice" required="true">
+                    <p:inputText value="#{taskEditMB.newTask.priceHour}" id="taskPrice" required="true">
                         <f:convertNumber maxFractionDigits="2" maxIntegerDigits="10"/>
                     </p:inputText>
                     <p:message for="taskPrice"/>

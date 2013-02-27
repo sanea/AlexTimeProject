@@ -21,7 +21,7 @@ public class Task implements Serializable {
     @Column(name = "type", nullable = false, length = 1)
     private String type;
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private BigDecimal priceHour;
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
     @OneToMany(mappedBy = "taskByTaskId", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -51,12 +51,12 @@ public class Task implements Serializable {
         this.type = taskType;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getPriceHour() {
+        return priceHour;
     }
 
-    public void setPrice(BigDecimal taskPrice) {
-        this.price = taskPrice;
+    public void setPriceHour(BigDecimal taskPrice) {
+        this.priceHour = taskPrice;
     }
 
     public Boolean getEnabled() {
@@ -86,7 +86,7 @@ public class Task implements Serializable {
         if (id != null ? !id.equals(task.id) : task.id != null) return false;
         if (enabled != null ? !enabled.equals(task.enabled) : task.enabled != null) return false;
         if (name != null ? !name.equals(task.name) : task.name != null) return false;
-        if (price != null ? !price.equals(task.price) : task.price != null) return false;
+        if (priceHour != null ? !priceHour.equals(task.priceHour) : task.priceHour != null) return false;
 
         return true;
     }
@@ -96,7 +96,7 @@ public class Task implements Serializable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (priceHour != null ? priceHour.hashCode() : 0);
         result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
         return result;
     }
@@ -108,7 +108,7 @@ public class Task implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", taskName='").append(name).append('\'');
         sb.append(", taskType=").append(type);
-        sb.append(", taskPrice=").append(price);
+        sb.append(", taskPrice=").append(priceHour);
         sb.append(", taskEnabled='").append(enabled).append('\'');
         //sb.append(", userTasksById=").append(userTasksById); - LAZY
         sb.append('}');

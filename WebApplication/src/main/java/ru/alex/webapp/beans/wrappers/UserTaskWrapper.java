@@ -9,6 +9,7 @@ import ru.alex.webapp.util.TimeUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 /**
@@ -34,12 +35,12 @@ public class UserTaskWrapper implements Serializable {
         this.userTask = userTask;
         this.taskTime = taskTime;
         if (taskTime != null) {
-            Integer duration = getDurationSec();
-            this.timeLeftSec = duration - timeSpentSeq;
+            Integer durationSec = getDurationSec();
+            this.timeLeftSec = durationSec - timeSpentSeq;
             if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.PROCESS)
-                this.sum = duration != null ? getTaskPrice().multiply(new BigDecimal(duration)) : null;
+                this.sum = durationSec != null ? getTaskPriceHour().multiply(new BigDecimal((double) durationSec / 3600)).setScale(2, RoundingMode.HALF_UP) : null;
             else
-                this.sum = getTaskPrice();
+                this.sum = getTaskPriceHour();
             logger.debug("init UserTaskWrapper timeLeftSec=" + this.timeLeftSec + ", sum=" + this.sum);
         }
     }
@@ -60,8 +61,8 @@ public class UserTaskWrapper implements Serializable {
         return userTask.getTaskByTaskId().getType();
     }
 
-    public BigDecimal getTaskPrice() {
-        return userTask.getTaskByTaskId().getPrice();
+    public BigDecimal getTaskPriceHour() {
+        return userTask.getTaskByTaskId().getPriceHour();
     }
 
     public int getTimeLeftSec() {
