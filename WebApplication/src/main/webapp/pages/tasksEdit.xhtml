@@ -9,7 +9,7 @@
 
             <h2>Edit Tasks</h2>
             <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent" actionListener="#{taskEditMB.addNewTaskListener}"
-                             oncomplete="addTaskDlg.show();" process="@this"/>
+                             oncomplete="addTaskDlg.show();" process="@this" title="add new task"/>
             <p:dataTable var="task" value="#{taskEditMB.taskList}" id="taskTable" editable="true" editMode="row">
 
                 <p:ajax event="rowEdit" listener="#{taskEditMB.onEdit}" update=":contentForm:messages" />
@@ -73,10 +73,10 @@
 
                 <p:column>
                     <p:commandButton icon="ui-icon-transfer-e-w" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="assignDlg.show();"
-                                     update=":contentForm:assignDialog">
+                                     update=":contentForm:assignDialog" title="assign">
                         <f:attribute name="task" value="#{task}"/>
                     </p:commandButton>
-                    <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
+                    <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();" title="delete"
                                      update=":contentForm:removeConfirmDialog" rendered="#{taskEditMB.taskEditable[task.id]}">
                         <f:setPropertyActionListener value="#{task}" target="#{taskEditMB.selectedTask}" />
                     </p:commandButton>

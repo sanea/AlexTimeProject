@@ -78,6 +78,8 @@ public class TaskServiceImpl implements TaskService {
         return tasks;
     }
 
+
+
     @Override
     public List<UserTask> getUsersForTask(Long taskId) throws Exception {
         logger.debug("getUsersForTask taskId=" + taskId);
@@ -96,6 +98,20 @@ public class TaskServiceImpl implements TaskService {
         if (currentTimeList.size() > 1)
             throw new Exception("current time list should have size <= 1");
         return currentTimeList.size() == 1 ? currentTimeList.get(0) : null;
+    }
+
+
+    /**
+     * Returns list of task_time with user_task status not 'r'
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<UserTaskTime> getAllNotCurrentTime() throws Exception {
+        logger.debug("getAllNotCurrentTime");
+        List<UserTaskTime> tasks = userTaskTimeDao.getAllNotCurrentTime();
+        logger.debug("getAllNotCurrentTime tasks=" + tasks);
+        return tasks;
     }
 
     /**
@@ -657,7 +673,7 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Repeats every second
      */
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 10000)
     public void checkAllTasks() {
         logger.debug("checkAllTasks");
         List<UserTask> runningTasks = userTaskDao.getRunningTasks();

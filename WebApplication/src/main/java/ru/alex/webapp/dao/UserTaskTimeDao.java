@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface UserTaskTimeDao extends GenericDao<UserTaskTime, Long> {
     List<UserTaskTime> getCurrentTime(Long taskId, String username);
+    List<UserTaskTime> getAllNotCurrentTime();
 }

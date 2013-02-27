@@ -1,7 +1,11 @@
 package ru.alex.webapp.beans.wrappers;
 
 import org.apache.log4j.Logger;
-import ru.alex.webapp.model.*;
+import ru.alex.webapp.model.TaskStatus;
+import ru.alex.webapp.model.TaskType;
+import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.util.TimeUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,16 +18,29 @@ public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(UserTaskWrapper.class);
     private UserTask userTask;
-    private UserTaskTime currentTime;
+    private UserTaskTime taskTime;
     private int timeLeftSec;
 
-    public UserTaskWrapper(UserTask userTask, UserTaskTime currentTime, int timeSpentSeq) {
-        logger.debug("init UserTaskWrapper " + userTask + " " + currentTime);
+    private BigDecimal sum;
+
+    public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime) {
+        this(userTask, taskTime, 0);
+    }
+
+    public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime, int timeSpentSeq) {
+        logger.debug("init UserTaskWrapper " + userTask + " " + taskTime);
+        if (userTask == null)
+            throw new IllegalArgumentException("User task can't be null");
         this.userTask = userTask;
-        this.currentTime = currentTime;
-        if (currentTime != null) {
-            this.timeLeftSec = currentTime.getDurationSec() - timeSpentSeq;
-            logger.debug("init UserTaskWrapper timeLeftSec=" + this.timeLeftSec);
+        this.taskTime = taskTime;
+        if (taskTime != null) {
+            Integer duration = getDurationSec();
+            this.timeLeftSec = duration - timeSpentSeq;
+            if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.PROCESS)
+                this.sum = duration != null ? getTaskPrice().multiply(new BigDecimal(duration)) : null;
+            else
+                this.sum = getTaskPrice();
+            logger.debug("init UserTaskWrapper timeLeftSec=" + this.timeLeftSec + ", sum=" + this.sum);
         }
     }
 
@@ -67,26 +84,33 @@ public class UserTaskWrapper implements Serializable {
         return userTask.getTaskByTaskId().getId();
     }
 
-    public Date getFinishTime() {
-        return currentTime != null ? currentTime.getFinishTime() : null;
+    public Date getStartTime() {
+        return taskTime != null ? taskTime.getStartTime() : null;
     }
 
-    public Integer getDuration() {
-        return currentTime != null ? Integer.valueOf(currentTime.getDurationSec()) : null;
+    public Date getFinishTime() {
+        return taskTime != null ? taskTime.getFinishTime() : null;
+    }
+
+    public Integer getDurationSec() {
+        return taskTime != null ? Integer.valueOf(taskTime.getDurationSec()) : null;
+    }
+
+    public String getDurationFormatted() {
+        Integer durationSec = taskTime != null ? Integer.valueOf(taskTime.getDurationSec()) : null;
+        return durationSec != null ? TimeUtils.formatTimeSec(durationSec) : "";
     }
 
     public String getTimeLeftFormatted() {
-        return formattTimeSec(timeLeftSec);
+        return TimeUtils.formatTimeSec(timeLeftSec);
     }
 
-    private String formattTimeSec(int timeSec) {
-        int hours = timeSec / 3600;
-        timeSec = timeSec - hours * 3600;
-        int minutes = timeSec / 60;
-        int seconds = timeSec - minutes * 60;
-        return (hours != 0 ? String.valueOf(hours) + " hours ": "")
-                + (minutes != 0 ? String.valueOf(minutes) + " minutes " : "")
-                + (seconds != 0 ? String.valueOf(seconds) + " seconds" : "0 seconds");
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public UserTaskTime getTaskTime() {
+        return taskTime;
     }
 
     @Override
@@ -94,9 +118,10 @@ public class UserTaskWrapper implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskWrapper");
         sb.append("{userTask=").append(userTask);
-        sb.append(", currentTime=").append(currentTime);
+        sb.append(", taskTime=").append(taskTime);
         sb.append(", timeLeftSec=").append(timeLeftSec);
         sb.append('}');
         return sb.toString();
     }
+
 }

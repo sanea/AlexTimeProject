@@ -16,4 +16,9 @@ public class UserTaskTimeDaoImpl extends GenericDaoImpl<UserTaskTime, Long> impl
         return getEntityManager().createQuery("select t from UserTaskTime t where t.current = true and t.userTaskById.userByUsername.username = :username and t.userTaskById.taskByTaskId.id = :taskId", UserTaskTime.class)
                 .setParameter("username", username).setParameter("taskId", taskId).getResultList();
     }
+
+    @Override
+    public List<UserTaskTime> getAllNotCurrentTime() {
+        return getEntityManager().createQuery("select  t from UserTaskTime t where t.current != true", UserTaskTime.class).getResultList();
+    }
 }

@@ -3,6 +3,7 @@ package ru.alex.webapp.service;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.UserTaskTimeSeq;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +18,8 @@ public interface TaskService {
     List<UserTask> getUsersForTask(Long taskId) throws Exception;
 
     UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception;
+
+    List<UserTaskTime> getAllNotCurrentTime() throws Exception;
 
     int getTimeSpentSecForUserTask(Long taskId, String username) throws Exception;
 
