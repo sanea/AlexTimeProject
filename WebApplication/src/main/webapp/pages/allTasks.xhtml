@@ -9,6 +9,17 @@
 
             <h2>All Tasks</h2>
 
+            <p:panel header="Choose Date">
+                <h:panelGrid columns="3">
+                    <h:outputText value="Date From" />
+                    <h:outputText value="Date To" />
+                    <h:panelGroup/>
+                    <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm" />
+                    <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm" />
+                    <p:commandButton value="Choose" update="allTasks" action="#{allTaskMB.updateTable}"/>
+                </h:panelGrid>
+            </p:panel>
+
             <p:dataTable id="allTasks" var="task" value="#{allTaskMB.allTasks}" paginator="true" rows="10"
                          filteredValue="#{allTaskMB.filteredTasks}"
                          rowsPerPageTemplate="#{allTaskMB.rowsPerPageTemplate}" paginatorPosition="top"

@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -40,6 +39,8 @@ public class AllTaskMB implements Serializable {
     private UserTaskWrapper selectedTask;
     private List<TimeSequence> selectedTimeSeqList;
     private SelectItem[] taskTypeOptions;
+    private Date dateFrom;
+    private Date dateTo;
 
     //TODO implement LazyDataModel
 
@@ -62,7 +63,7 @@ public class AllTaskMB implements Serializable {
     private void initAllTasks() {
         logger.debug("initAllTasks");
         try {
-            List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime();
+            List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
             logger.debug("initAllTasks taskTimeList=" + taskTimeList);
             List<UserTaskWrapper> allTasksLocal = new ArrayList<UserTaskWrapper>(taskTimeList.size());
             for (UserTaskTime taskTime : taskTimeList) {
@@ -117,6 +118,22 @@ public class AllTaskMB implements Serializable {
         return "5,10,15,20,25,50" + size;
     }
 
+    public Date getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(Date dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    public Date getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(Date dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
     public void selectTaskListener(ActionEvent event) {
         try {
             selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
@@ -140,6 +157,11 @@ public class AllTaskMB implements Serializable {
         for (UserTaskWrapper taskWrapper : filteredTasks)
             total = total.add(taskWrapper.getSum());
         logger.debug("filterListener total=" + total);
+    }
+
+    public void updateTable() {
+        logger.debug("updateTable dateFrom=" + dateFrom + ", dateTo=" + dateTo);
+        initAllTasks();
     }
 
     private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {

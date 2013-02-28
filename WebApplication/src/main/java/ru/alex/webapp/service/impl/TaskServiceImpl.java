@@ -107,9 +107,13 @@ public class TaskServiceImpl implements TaskService {
      * @throws Exception
      */
     @Override
-    public List<UserTaskTime> getAllNotCurrentTime() throws Exception {
-        logger.debug("getAllNotCurrentTime");
-        List<UserTaskTime> tasks = userTaskTimeDao.getAllNotCurrentTime();
+    public List<UserTaskTime> getAllNotCurrentTime(Date from, Date to) throws Exception {
+        logger.debug("getAllNotCurrentTime from=" + from + ", to=" + to);
+        List<UserTaskTime> tasks;
+        if (from == null && to == null)
+            tasks = userTaskTimeDao.getAllNotCurrentTime();
+        else
+            tasks = userTaskTimeDao.getNotCurrentTime(from, to);
         logger.debug("getAllNotCurrentTime tasks=" + tasks);
         return tasks;
     }

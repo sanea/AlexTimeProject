@@ -2,6 +2,7 @@ package ru.alex.webapp.dao;
 
 import ru.alex.webapp.model.UserTaskTime;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,5 +10,8 @@ import java.util.List;
  */
 public interface UserTaskTimeDao extends GenericDao<UserTaskTime, Long> {
     List<UserTaskTime> getCurrentTime(Long taskId, String username);
+
     List<UserTaskTime> getAllNotCurrentTime();
+
+    List<UserTaskTime> getNotCurrentTime(Date from, Date to);
 }

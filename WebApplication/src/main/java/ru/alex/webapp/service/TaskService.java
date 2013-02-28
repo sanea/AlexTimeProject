@@ -6,6 +6,7 @@ import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public interface TaskService {
@@ -19,7 +20,7 @@ public interface TaskService {
 
     UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception;
 
-    List<UserTaskTime> getAllNotCurrentTime() throws Exception;
+    List<UserTaskTime> getAllNotCurrentTime(Date from, Date to) throws Exception;
 
     int getTimeSpentSecForUserTask(Long taskId, String username) throws Exception;
 
