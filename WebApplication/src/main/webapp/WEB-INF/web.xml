@@ -53,16 +53,34 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
-    <!-- Project Stage Level -->
+    <!-- JSF Params -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
     </context-param>
 
     <!-- Welcome Page -->
     <welcome-file-list>
         <welcome-file>/pages/index.jsf</welcome-file>
     </welcome-file-list>
+
+    <session-config>
+        <session-timeout>2</session-timeout>
+    </session-config>
+
+    <!-- Error pages handling -->
+    <error-page>
+        <exception-type>com.sun.faces.context.FacesFileNotFoundException</exception-type>
+        <location>/pages/index.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/pages/index.xhtml</location>
+    </error-page>
 
     <!-- Handles all requests into the application -->
     <servlet>
@@ -77,6 +95,10 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Login Servlet</servlet-name>

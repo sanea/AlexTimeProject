@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.*;
+import ru.alex.webapp.model.enums.Action;
+import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
 
 import javax.persistence.LockModeType;
@@ -677,7 +680,7 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Repeats every second
      */
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000)
     public void checkAllTasks() {
         logger.debug("checkAllTasks");
         List<UserTask> runningTasks = userTaskDao.getRunningTasks();

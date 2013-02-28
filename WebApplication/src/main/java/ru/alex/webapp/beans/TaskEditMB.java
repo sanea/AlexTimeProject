@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.*;
+import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 

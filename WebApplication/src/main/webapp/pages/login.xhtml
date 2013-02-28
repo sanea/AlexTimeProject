@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:body>
+    <ui:composition template="templates/template.xhtml">
+        <ui:define name="menu">
+        </ui:define>
+        <ui:define name="content">
+            <h:form id="formLogin" prependId="false">
+                <p:messages showDetail="true" closable="true"/>
+                <h:outputText value="#{loginMB.loggedIn}"/>
+                <h:panelGrid columns="3" cellpadding="5" style="margin: 0 auto; padding-top: 50px;">
+
+                    <h:outputLabel for="j_username" value="Username:"/>
+                    <p:inputText id="j_username" label="User Name" value="#{loginMB.userName}" required="true"/>
+                    <p:message for="j_username" display="icon"/>
+
+                    <h:outputLabel for="j_password" value="Password:"/>
+                    <p:password id="j_password" label="Password" value="#{loginMB.password}" required="true"/>
+                    <p:message for="j_password" display="icon"/>
+
+                    <p:commandButton type="submit" id="login" action="#{loginMB.login}" value="Login"
+                                     icon="ui-icon-person" ajax="false" />
+                    <h:inputHidden value="#{loginMB.logoutHidden}" />
+                </h:panelGrid>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>

@@ -2,7 +2,7 @@ package ru.alex.webapp.dao.impl;
 
 import org.springframework.stereotype.Repository;
 import ru.alex.webapp.dao.UserTaskDao;
-import ru.alex.webapp.model.TaskStatus;
+import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.UserTask;
 
 import java.util.List;

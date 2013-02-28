@@ -17,14 +17,14 @@
 <h:body>
     <div id="menu">
         <div class="container">
-            <comp:menu/>
+            <ui:insert name="menu">
+                <comp:menu/>
+            </ui:insert>
         </div>
     </div>
     <div class="container">
-        <h:form id="contentForm">
-            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
-            <ui:insert name="content">Main Content</ui:insert>
-        </h:form>
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
+        <ui:insert name="content">Main Content</ui:insert>
     </div>
     <p:ajaxStatus style="width: 64px; height: 64px; position: fixed; right: 10px; bottom: 10px;">
         <f:facet name="start">

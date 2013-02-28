@@ -60,6 +60,9 @@
     <!-- bean_exception_translation_post_processor -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
-    <!-- enable @Scheduled annotation -->
-    <task:annotation-driven/>
+    <!-- enable @Scheduled and @Execute annotation -->
+    <task:scheduler id="myScheduler" pool-size="10" />
+    <task:executor id="myExecutor" pool-size="5" />
+    <task:annotation-driven scheduler="myScheduler" executor="myExecutor" />
+
 </beans>

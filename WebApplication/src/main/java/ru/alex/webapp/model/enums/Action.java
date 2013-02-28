@@ -1,4 +1,4 @@
-package ru.alex.webapp.model;
+package ru.alex.webapp.model.enums;
 
 /**
  * @author Alexander.Isaenco

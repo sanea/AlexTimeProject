@@ -1,8 +1,8 @@
 package ru.alex.webapp.beans.wrappers;
 
 import org.apache.log4j.Logger;
-import ru.alex.webapp.model.TaskStatus;
-import ru.alex.webapp.model.TaskType;
+import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.util.TimeUtils;

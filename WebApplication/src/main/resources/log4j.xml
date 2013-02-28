@@ -49,10 +49,6 @@
         <level value="info"/>
     </logger>
 
-    <logger name="org.springframework.security">
-        <level value="info"/>
-    </logger>
-
     <!-- hibernate Loggers -->
     <logger name="log4j.logger.org.hibernate">
         <level value="info" />
@@ -88,7 +84,7 @@
 
     <!-- Root Logger -->
     <root>
-        <priority value="debug"/>
+        <priority value="info"/>
         <appender-ref ref="fileappender"/>
         <appender-ref ref="consoleappender"/>
     </root>
