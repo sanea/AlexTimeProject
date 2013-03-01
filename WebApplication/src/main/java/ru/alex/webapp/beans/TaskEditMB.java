@@ -1,7 +1,8 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
 import org.primefaces.event.RowEditEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +33,7 @@ import java.util.Map;
 @Scope(value = "view")
 public class TaskEditMB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(TaskEditMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskEditMB.class);
     List<Task> taskList;
     Map<Long, Boolean> taskEditable;
     @Autowired
@@ -47,7 +48,7 @@ public class TaskEditMB implements Serializable {
     @PostConstruct
     private void init() {
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.debug("init username=" + userName);
+        logger.debug("init username={}", userName);
         try {
             initTasks();
         } catch (Exception e) {
@@ -58,13 +59,13 @@ public class TaskEditMB implements Serializable {
 
     private void initTasks() throws Exception {
         taskList = taskService.getAllTasks();
-        logger.debug("initTasks taskList=" + taskList);
+        logger.debug("initTasks taskList={}", taskList);
         taskEditable = new HashMap<Long, Boolean>(taskList.size());
         for (Task t : taskList) {
             boolean editable = taskService.isTaskEditable(t.getId());
             taskEditable.put(t.getId(), editable);
         }
-        logger.debug("initTasks taskEditable=" + taskEditable);
+        logger.debug("initTasks taskEditable={}", taskEditable);
     }
 
     public List<Task> getTaskList() {
@@ -101,7 +102,7 @@ public class TaskEditMB implements Serializable {
 
     public void onEdit(RowEditEvent event) {
         Task task = (Task) event.getObject();
-        logger.debug("onEdit task=" + task);
+        logger.debug("onEdit task={}", task);
         try {
             taskService.editTask(task);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Edited", task.getName()));
@@ -112,7 +113,7 @@ public class TaskEditMB implements Serializable {
 
         try {
             initTasks();
-            logger.debug("onEdit taskList=" + taskList);
+            logger.debug("onEdit taskList={}", taskList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
@@ -121,7 +122,7 @@ public class TaskEditMB implements Serializable {
 
     public void onCancel(RowEditEvent event) {
         Task task = (Task) event.getObject();
-        logger.debug("onCancel task=" + task);
+        logger.debug("onCancel task={}", task);
     }
 
     public void addNewTaskListener(ActionEvent event) {
@@ -131,11 +132,11 @@ public class TaskEditMB implements Serializable {
     }
 
     public void addNewTask() {
-        logger.debug("addNewTask newTask=" + newTask);
+        logger.debug("addNewTask newTask={}", newTask);
         try {
             taskService.addTask(newTask);
             initTasks();
-            logger.debug("addNewTask taskList=" + taskList);
+            logger.debug("addNewTask taskList={}", taskList);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Added", newTask.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -146,13 +147,13 @@ public class TaskEditMB implements Serializable {
     public void assignListener(ActionEvent event) {
         try {
             selectedTask = (Task) event.getComponent().getAttributes().get("task");
-            logger.debug("assignListener selectedTask=" + selectedTask);
+            logger.debug("assignListener selectedTask={}", selectedTask);
 
             List<User> userList = userService.getAllUsers();
-            logger.debug("assignListener userList=" + userList);
+            logger.debug("assignListener userList={}", userList);
 
             List<UserTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
-            logger.debug("assignListener userTaskList=" + userTaskList);
+            logger.debug("assignListener userTaskList={}", userTaskList);
 
             assignedList = new ArrayList<UserTaskAssigned>(userList.size());
 
@@ -169,7 +170,7 @@ public class TaskEditMB implements Serializable {
                 assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned, isRunning));
             }
 
-            logger.debug("assignListener assignedList=" + assignedList);
+            logger.debug("assignListener assignedList={}", assignedList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
@@ -177,14 +178,14 @@ public class TaskEditMB implements Serializable {
     }
 
     public void assignTask() {
-        logger.debug("assignTask selectedTask=" + selectedTask);
+        logger.debug("assignTask selectedTask={}", selectedTask);
         try {
             Long innerSelectedTaskId = selectedTask.getId();
             for (UserTaskAssigned assigned : assignedList) {
                  taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
             }
             initTasks();
-            logger.debug("assignTask taskList=" + taskList);
+            logger.debug("assignTask taskList={}", taskList);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned", selectedTask.getName()));
             assignedList = null;
         } catch (Exception e) {
@@ -194,11 +195,11 @@ public class TaskEditMB implements Serializable {
     }
 
     public void removeTask() {
-        logger.debug("removeTask selectedTask=" + selectedTask);
+        logger.debug("removeTask selectedTask={}", selectedTask);
         try {
             taskService.removeTask(selectedTask.getId());
             initTasks();
-            logger.debug("removeTask taskList=" + taskList);
+            logger.debug("removeTask taskList={}", taskList);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

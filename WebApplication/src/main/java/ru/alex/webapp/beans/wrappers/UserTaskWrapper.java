@@ -1,10 +1,11 @@
 package ru.alex.webapp.beans.wrappers;
 
-import org.apache.log4j.Logger;
-import ru.alex.webapp.model.enums.TaskStatus;
-import ru.alex.webapp.model.enums.TaskType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.util.TimeUtils;
 
 import java.io.Serializable;
@@ -17,11 +18,10 @@ import java.util.Date;
  */
 public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(UserTaskWrapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserTaskWrapper.class);
     private UserTask userTask;
     private UserTaskTime taskTime;
     private int timeLeftSec;
-
     private BigDecimal sum;
 
     public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime) {
@@ -29,7 +29,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime, int timeSpentSeq) {
-        logger.debug("init UserTaskWrapper " + userTask + " " + taskTime);
+        logger.debug("init UserTaskWrapper userTask={}, taskTime={}", userTask, taskTime);
         if (userTask == null)
             throw new IllegalArgumentException("User task can't be null");
         this.userTask = userTask;
@@ -41,7 +41,7 @@ public class UserTaskWrapper implements Serializable {
                 this.sum = durationSec != null ? getTaskPriceHour().multiply(new BigDecimal((double) durationSec / 3600)).setScale(2, RoundingMode.HALF_UP) : null;
             else
                 this.sum = getTaskPriceHour();
-            logger.debug("init UserTaskWrapper timeLeftSec=" + this.timeLeftSec + ", sum=" + this.sum);
+            logger.debug("init UserTaskWrapper timeLeftSec={}, sum={}", this.timeLeftSec, this.sum);
         }
     }
 

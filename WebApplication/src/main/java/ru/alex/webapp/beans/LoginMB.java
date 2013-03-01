@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +23,7 @@ import java.io.Serializable;
 public class LoginMB implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(LoginMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginMB.class);
     private String userName;
     private String password;
     @Resource(name = "authenticationManager")
@@ -53,7 +54,7 @@ public class LoginMB implements Serializable {
             Authentication request = new UsernamePasswordAuthenticationToken(this.getUserName(), getPassword());
             Authentication result = am.authenticate(request);
             SecurityContextHolder.getContext().setAuthentication(result);
-            logger.info("Login Success: " + result.getName());
+            logger.info("Login Success: {}", result.getName());
             return "/pages/index?faces-redirect=true";
         } catch (AuthenticationException ex) {
             System.out.println("Login Failed");
@@ -69,5 +70,6 @@ public class LoginMB implements Serializable {
     }
 
     public void setLogoutHidden(String logoutHidden) {
+        //empty
     }
 }

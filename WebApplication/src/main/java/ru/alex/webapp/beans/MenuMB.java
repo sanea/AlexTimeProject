@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +20,7 @@ import java.util.Collection;
 public class MenuMB implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(MenuMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(MenuMB.class);
     private String userName;
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -28,7 +29,7 @@ public class MenuMB implements Serializable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         userName = auth.getName();
         authorities = auth.getAuthorities();
-        logger.debug("userName= " + userName + ", authorities=" + authorities);
+        logger.debug("userName={}, authorities={}", userName, authorities);
     }
 
     public String getUserName() {
@@ -43,7 +44,7 @@ public class MenuMB implements Serializable {
                 break;
             }
         }
-        logger.debug("hasRole " + roleName + " " + result);
+        logger.debug("hasRole {} {}", roleName, result);
         return result;
     }
 

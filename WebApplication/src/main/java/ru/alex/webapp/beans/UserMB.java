@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ import java.util.List;
 @Scope(value = "view")
 public class UserMB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(UserMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
     @Autowired
     UserService userService;
     List<User> userList;
@@ -27,6 +28,7 @@ public class UserMB implements Serializable {
     private void init() {
         logger.debug("init");
         userList = userService.getAllUsers();
+        logger.debug("init userList={}", userList);
     }
 
     public List<User> getUserList() {

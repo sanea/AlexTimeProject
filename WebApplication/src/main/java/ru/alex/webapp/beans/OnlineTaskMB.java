@@ -1,6 +1,7 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ import java.util.List;
 @Scope(value = "view")
 public class OnlineTaskMB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(OnlineTaskMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnlineTaskMB.class);
     @Autowired
     private TaskService taskService;
     private List<UserTaskWrapper> onlineTasks;
@@ -39,13 +40,13 @@ public class OnlineTaskMB implements Serializable {
         logger.debug("initOnlineTasks");
         try {
             List<UserTask> tasks = taskService.getOnlineTasks();
-            logger.debug("tasks=" + tasks);
+            logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
-                logger.debug("currentTime=" + currentTime);
+                logger.debug("currentTime={}", currentTime);
                 int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
-                logger.debug("timeSpentSec=" + timeSpentSec);
+                logger.debug("timeSpentSec={}", timeSpentSec);
                 taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
             }
             onlineTasks = taskWrappers;

@@ -1,15 +1,16 @@
 package ru.alex.webapp.beans;
 
-import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
-import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.service.TaskService;
 
 import javax.annotation.PostConstruct;
@@ -27,7 +28,7 @@ import java.util.List;
 @Scope(value = "view")
 public class TaskMB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(TaskMB.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskMB.class);
     @Autowired
     private TaskService taskService;
     private String userName;
@@ -40,7 +41,7 @@ public class TaskMB implements Serializable {
     @PostConstruct
     private void init() {
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.debug("init username=" + userName);
+        logger.debug("init username={}", userName);
         initAssignedTasks();
     }
 
@@ -49,19 +50,19 @@ public class TaskMB implements Serializable {
         try {
             startTableUpdater = false;
             List<UserTask> tasks = taskService.getTasksForUser(userName);
-            logger.debug("tasks=" + tasks);
+            logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), userName);
-                logger.debug("currentTime=" + currentTime);
+                logger.debug("currentTime={}", currentTime);
                 int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getTaskByTaskId().getId(), userName);
-                logger.debug("timeSpentSec=" + timeSpentSec);
+                logger.debug("timeSpentSec={}", timeSpentSec);
                 taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
                 if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
                     startTableUpdater = true;
             }
             assignedTasks = taskWrappers;
-            logger.debug("startTableUpdater=" + startTableUpdater);
+            logger.debug("startTableUpdater={}", startTableUpdater);
             RequestContext reqCtx = RequestContext.getCurrentInstance();
             if (startTableUpdater)
                 reqCtx.execute("if (!tableUpdater.isActive()) { tableUpdater.start(); }");
@@ -78,7 +79,7 @@ public class TaskMB implements Serializable {
     }
 
     public void startProcess() {
-        logger.debug("startProcess " + selectedTask + " " + userName + " " + selectedMinutes);
+        logger.debug("startProcess selectedTask={}, userName={}, selectedMinutes={}", selectedTask, userName, selectedMinutes);
         if (selectedMinutes <= 0) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", "minutes should be > 0"));
             return;
@@ -94,7 +95,7 @@ public class TaskMB implements Serializable {
     }
 
     public void startTask(String taskId) {
-        logger.debug("startTask " + taskId);
+        logger.debug("startTask {}", taskId);
         try {
             taskService.startTask(Long.valueOf(taskId), userName, 0);
         } catch (Exception e) {
@@ -106,7 +107,7 @@ public class TaskMB implements Serializable {
     }
 
     public void pause(String taskId) {
-        logger.debug("pause " + taskId);
+        logger.debug("pause {}", taskId);
         try {
             taskService.pauseTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
@@ -118,7 +119,7 @@ public class TaskMB implements Serializable {
     }
 
     public void resume(String taskId) {
-        logger.debug("resume " + taskId);
+        logger.debug("resume {}", taskId);
         try {
             taskService.resumeTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
@@ -130,7 +131,7 @@ public class TaskMB implements Serializable {
     }
 
     public void extendProcess() {
-        logger.debug("extendProcess " + selectedTask + " " + userName + " " + selectedMinutes);
+        logger.debug("extendProcess selectedTask={}, userName={}, selectedMinutes={}", selectedTask, userName, selectedMinutes);
         try {
             taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
         } catch (Exception e) {
@@ -142,7 +143,7 @@ public class TaskMB implements Serializable {
     }
 
     public void stop(String taskId) {
-        logger.debug("stop " + taskId);
+        logger.debug("stop {}", taskId);
         try {
             taskService.stopTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
@@ -176,7 +177,7 @@ public class TaskMB implements Serializable {
     public void startListener(ActionEvent event) {
         selectedMinutes = 30;
         selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
-        logger.debug("startListener selectedTask=" + selectedTask);
+        logger.debug("startListener selectedTask={}", selectedTask);
     }
 
     public void refreshTable() {
