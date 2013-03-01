@@ -27,7 +27,7 @@ public class UserMB implements Serializable {
     @PostConstruct
     private void init() {
         logger.debug("init");
-        userList = userService.getAllUsers();
+        userList = userService.getAllEnabledUsers();
         logger.debug("init userList={}", userList);
     }
 

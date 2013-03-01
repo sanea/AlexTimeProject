@@ -13,11 +13,12 @@
 
     <http use-expressions="true">
         <!--<intercept-url pattern="/" access="permitAll" />-->
-        <intercept-url pattern="/pages/usersEdit.jsf" access="hasRole('EDIT_USERS')"/>
-        <intercept-url pattern="/pages/tasks.jsf" access="hasRole('MANAGE_TASK')"/>
-        <intercept-url pattern="/pages/tasksEdit.jsf" access="hasRole('EDIT_TASKS')"/>
-        <intercept-url pattern="/pages/onlineTasks.jsf" access="hasRole('STAT')"/>
-        <intercept-url pattern="/pages/allTasks.jsf" access="hasRole('STAT')"/>
+        <intercept-url pattern="/pages/usersEdit*" access="hasRole('EDIT_USERS')"/>
+        <intercept-url pattern="/pages/groupsEdit*" access="hasRole('EDIT_GROUPS')"/>
+        <intercept-url pattern="/pages/tasks*" access="hasRole('MANAGE_TASK')"/>
+        <intercept-url pattern="/pages/tasksEdit*" access="hasRole('EDIT_TASKS')"/>
+        <intercept-url pattern="/pages/onlineTasks*" access="hasRole('STAT_ONLINE')"/>
+        <intercept-url pattern="/pages/allTasks*" access="hasRole('STAT_ALL')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <form-login login-page="/login" default-target-url="/" always-use-default-target="true"
                     login-processing-url="/postlogin" authentication-failure-url="/login?login_error"/>

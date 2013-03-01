@@ -3,19 +3,20 @@ package ru.alex.webapp.service;
 
 import ru.alex.webapp.model.User;
 
-import java.io.Serializable;
 import java.util.List;
 
 public interface UserService {
-    public User getUser(String username);
+    public User getUser(String username) throws Exception;
 
-    public List<User> getAllUsers();
+    public List<User> getAllEnabledUsers() throws Exception;
 
-//    public User authenticate(String username, String password);
+    public List<User> getAllUsers() throws Exception;
 
-    public void addUser(User user);
+    public void addUser(User user) throws Exception;
 
-    public void saveUser(User user);
+    public void updateUser(User user) throws Exception;
 
-    public void deleteUser(User user);
+    public void deleteUser(User user) throws Exception;
+
+    public boolean isDeletableUser(User user) throws Exception;
 }

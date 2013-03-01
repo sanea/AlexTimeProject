@@ -108,7 +108,7 @@ public class TaskEditMB implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Edited", task.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in editing task", e.toString()));
         }
 
         try {
@@ -149,7 +149,7 @@ public class TaskEditMB implements Serializable {
             selectedTask = (Task) event.getComponent().getAttributes().get("task");
             logger.debug("assignListener selectedTask={}", selectedTask);
 
-            List<User> userList = userService.getAllUsers();
+            List<User> userList = userService.getAllEnabledUsers();
             logger.debug("assignListener userList={}", userList);
 
             List<UserTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());

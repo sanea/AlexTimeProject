@@ -2,8 +2,8 @@ package ru.alex.webapp.dao.impl;
 
 import org.springframework.stereotype.Repository;
 import ru.alex.webapp.dao.UserTaskDao;
-import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.enums.TaskStatus;
 
 import java.util.List;
 
@@ -15,6 +15,11 @@ public class UserTaskDaoImpl extends GenericDaoImpl<UserTask, Long> implements U
     @Override
     public List<UserTask> getTasksForUser(String username) {
         return getEntityManager().createQuery("select ut from UserTask ut where ut.enabled = true and ut.userByUsername.username = :username and ut.taskByTaskId.enabled = true", UserTask.class).setParameter("username", username).getResultList();
+    }
+
+    @Override
+    public List<UserTask> getTasksAllForUser(String username) {
+        return getEntityManager().createQuery("select ut from UserTask ut where ut.userByUsername.username = :username", UserTask.class).setParameter("username", username).getResultList();
     }
 
     @Override
