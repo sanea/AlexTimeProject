@@ -64,6 +64,7 @@ public class AllTaskMB implements Serializable {
     private void initAllTasks() {
         logger.debug("initAllTasks");
         try {
+            total = new BigDecimal(0);
             List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
             logger.debug("initAllTasks taskTimeList={}", taskTimeList);
             List<UserTaskWrapper> allTasksLocal = new ArrayList<UserTaskWrapper>(taskTimeList.size());

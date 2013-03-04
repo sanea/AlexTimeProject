@@ -16,7 +16,7 @@
                         <h:panelGroup/>
                         <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm" />
                         <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm" />
-                        <p:commandButton value="Choose" update="allTasks" action="#{allTaskMB.updateTable}"/>
+                        <p:commandButton value="Choose" update="allTasks allTaskTotal" action="#{allTaskMB.updateTable}"/>
                     </h:panelGrid>
                 </p:panel>
 
