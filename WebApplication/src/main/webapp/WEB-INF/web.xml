@@ -37,6 +37,12 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- Primefaces Theme -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
+
     <!-- Context config files location -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
