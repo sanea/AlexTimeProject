@@ -1,12 +1,9 @@
 body {
-    margin: 0;
     background-color: #ffffff;
 }
 
 .container {
-    width: 940px;
-    margin-right: auto;
-    margin-left: auto;
+
 }
 
 .ui-widget {

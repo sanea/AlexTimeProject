@@ -13,11 +13,15 @@ public interface GenericDao<T, ID extends Serializable> {
 
     List<T> findAll();
 
+    Long count();
+
     T merge(T entity);
 
     void persist(T entity);
 
     void makeTransient(T entity);
+
+    void refresh(T entity);
 
     public void flush();
 

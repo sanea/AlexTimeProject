@@ -13,6 +13,7 @@
     <title>Alex time Project</title>
     <h:outputScript library="js" name="script.js"/>
     <h:outputStylesheet library="styles" name="main.css"/>
+
 </h:head>
 <h:body>
     <div id="menu">
@@ -32,8 +33,24 @@
         </f:facet>
 
         <f:facet name="complete">
-            <h:outputText value="" />
+            <h:outputText value=""/>
+        </f:facet>
+
+        <f:facet name="error">
+            <h:panelGroup layout="block" styleClass="ui-message-error ui-widget ui-corner-all">
+                <h:outputText value="An error has occurred!"/><br/>
+                <h:outputLink value="#" onclick="window.location.reload(true)"><h:outputText
+                        value="Please reload page and retry"/></h:outputLink><br/>
+                <h:outputLink value="mailto:support@example.com?subject=Ajax%20Error"><h:outputText
+                        value="If in vain, please contact support"/></h:outputLink>
+            </h:panelGroup>
         </f:facet>
     </p:ajaxStatus>
+    <h:form>
+        <p:confirmDialog header="Oooops!!!" severity="alert" visible="#{not empty param['expired']}"
+                         message="View has expired." widgetVar="confirmDlg">
+            <p:commandButton type="button" value="Ok" onclick="confirmDlg.hide()"/>
+        </p:confirmDialog>
+    </h:form>
 </h:body>
 </html>

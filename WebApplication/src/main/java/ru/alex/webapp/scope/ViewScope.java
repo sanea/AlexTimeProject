@@ -17,7 +17,7 @@ public class ViewScope implements Scope {
     @Override
     public Object get(String name, ObjectFactory objectFactory) {
         Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
-        logger.debug("get name={}, viewMap={}", name, viewMap);
+        //logger.debug("get name={}, viewMap={}", name, viewMap);
         if (viewMap.containsKey(name)) {
             return viewMap.get(name);
         } else {
@@ -29,7 +29,7 @@ public class ViewScope implements Scope {
 
     @Override
     public Object remove(String name) {
-        logger.debug("remove name={}", name);
+        //logger.debug("remove name={}", name);
         return FacesContext.getCurrentInstance().getViewRoot().getViewMap().remove(name);
     }
 

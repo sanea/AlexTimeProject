@@ -8,10 +8,13 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-    <http pattern="/resources/**" security="none"/>
-    <http pattern="/login*" security="none"/>
+    <http pattern="/javax.faces.resource/**" security="none"/>
+    <http pattern="/pages/login.xhtml" security="none"/>
+    <http pattern="/pages/login.jsf" security="none"/>
+    <http pattern="/pages/404.xhtml" security="none"/>
+    <http pattern="/pages/error.xhtml" security="none"/>
 
-    <http use-expressions="true">
+    <http use-expressions="true" access-denied-page="/pages/login.xhtml">
         <!--<intercept-url pattern="/" access="permitAll" />-->
         <intercept-url pattern="/pages/usersEdit*" access="hasRole('EDIT_USERS')"/>
         <intercept-url pattern="/pages/groupsEdit*" access="hasRole('EDIT_GROUPS')"/>
@@ -20,9 +23,9 @@
         <intercept-url pattern="/pages/onlineTasks*" access="hasRole('STAT_ONLINE')"/>
         <intercept-url pattern="/pages/allTasks*" access="hasRole('STAT_ALL')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
-        <form-login login-page="/login" default-target-url="/" always-use-default-target="true"
-                    login-processing-url="/postlogin" authentication-failure-url="/login?login_error"/>
-        <logout logout-url="/logout" logout-success-url="/"/>
+        <form-login login-page="/pages/login.xhtml" default-target-url="/pages/index.xhtml" always-use-default-target="true"
+                    authentication-failure-url="/pages/login.xhtml" />
+        <logout logout-url="/logout" logout-success-url="/pages/login.xhtml" invalidate-session="true"/>
         <!--<remember-me key="mssKey" token-validity-seconds="60"/>-->
     </http>
 
@@ -49,6 +52,6 @@
     />
 
     <!--Enable @Secured({"ROLE_1", "ROLE_2"}) annotation-->
-    <global-method-security secured-annotations="enabled"/>
+    <global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>
 
 </beans:beans>

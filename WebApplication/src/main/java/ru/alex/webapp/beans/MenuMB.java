@@ -27,8 +27,10 @@ public class MenuMB implements Serializable {
     @PostConstruct
     private void init() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        userName = auth.getName();
-        authorities = auth.getAuthorities();
+        if (auth != null) {
+            userName = auth.getName();
+            authorities = auth.getAuthorities();
+        }
         logger.debug("userName={}, authorities={}", userName, authorities);
     }
 
@@ -38,10 +40,12 @@ public class MenuMB implements Serializable {
 
     public boolean hasRole(String roleName) {
         boolean result = false;
-        for (GrantedAuthority authority : authorities) {
-            if (authority.getAuthority().equals(roleName)) {
-                result = true;
-                break;
+        if (authorities != null) {
+            for (GrantedAuthority authority : authorities) {
+                if (authority.getAuthority().equals(roleName)) {
+                    result = true;
+                    break;
+                }
             }
         }
         logger.debug("hasRole {} {}", roleName, result);

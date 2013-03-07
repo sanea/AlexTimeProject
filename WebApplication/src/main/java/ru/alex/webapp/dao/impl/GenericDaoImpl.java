@@ -5,6 +5,8 @@ import ru.alex.webapp.dao.GenericDao;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -38,7 +40,15 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     public List<T> findAll() {
-        return getEntityManager().createQuery("from " + getEntityBeanType().getName(), entityBeanType).getResultList();
+        return getEntityManager().createQuery("from " + getEntityBeanType().getName(), getEntityBeanType()).getResultList();
+    }
+
+    @Override
+    public Long count() {
+        CriteriaBuilder qb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        cq.select(qb.count(cq.from(getEntityBeanType())));
+        return getEntityManager().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -54,6 +64,13 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     @Override
     public void makeTransient(T entity) {
         getEntityManager().remove(entity);
+    }
+
+    @Override
+    public void refresh(T entity) {
+        if (getEntityManager().contains(entity)) {
+            getEntityManager().refresh(entity);
+        }
     }
 
     @Override

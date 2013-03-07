@@ -8,11 +8,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
@@ -45,22 +47,24 @@ public class LoginMB implements Serializable {
         this.password = password;
     }
 
-    public String getLoggedIn() {
-        return SecurityContextHolder.getContext().getAuthentication() != null ? String.valueOf(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) : "null";
-    }
-
-    public String login() throws java.io.IOException {
+    public String login() {
+        logger.debug("Login username={}, password={}", userName, password);
         try {
-            Authentication request = new UsernamePasswordAuthenticationToken(this.getUserName(), getPassword());
-            Authentication result = am.authenticate(request);
-            SecurityContextHolder.getContext().setAuthentication(result);
-            logger.info("Login Success: {}", result.getName());
+            Authentication authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+            Authentication auth = am.authenticate(authRequest);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            logger.info("Login Success: {}", auth.getName());
+
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+
             return "/pages/index?faces-redirect=true";
         } catch (AuthenticationException ex) {
-            System.out.println("Login Failed");
+            logger.info("Login Failed");
             FacesContext.getCurrentInstance().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
-            return "/pages/login";
+            return null;
         }
+
     }
 
     public String getLogoutHidden() {
