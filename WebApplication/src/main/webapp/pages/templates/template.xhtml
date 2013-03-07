@@ -47,9 +47,10 @@
         </f:facet>
     </p:ajaxStatus>
     <h:form>
-        <p:confirmDialog header="Oooops!!!" severity="alert" visible="#{not empty param['expired']}"
+        <p:confirmDialog header="Error!" severity="alert" visible="#{not empty param['expired']}"
                          message="View has expired." widgetVar="confirmDlg">
-            <p:commandButton type="button" value="Ok" onclick="confirmDlg.hide()"/>
+            <p:commandButton type="button" value="Reload"
+                             onclick="confirmDlg.hide(); window.location.replace(window.location.href.replace('?expired=true', ''));"/>
         </p:confirmDialog>
     </h:form>
 </h:body>
