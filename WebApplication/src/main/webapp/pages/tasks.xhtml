@@ -65,8 +65,10 @@
                         autoStart="#{taskMB.startTableUpdater}" widgetVar="tableUpdater" />
 
                 <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false" closeOnEscape="true">
-                    <h:outputText value="#{taskMB.selectedTask.taskName}" />
                     <h:panelGrid id="timeDialogContent" columns="3" cellpadding="2">
+                        <h:outputText value="Task: "/>
+                        <h:outputText value="#{taskMB.selectedTask.taskName}"/>
+                        <h:panelGroup/>
                         <h:outputLabel for="minutes" value="Minutes: *"/>
                         <p:inputText id="minutes" required="true" value="#{taskMB.selectedMinutes}">
                             <f:convertNumber/>
