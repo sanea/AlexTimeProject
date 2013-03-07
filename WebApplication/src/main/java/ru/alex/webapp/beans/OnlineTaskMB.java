@@ -9,6 +9,7 @@ import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -52,7 +53,7 @@ public class OnlineTaskMB implements Serializable {
             onlineTasks = taskWrappers;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
         }
     }
 

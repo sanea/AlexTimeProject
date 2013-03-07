@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
@@ -55,13 +56,13 @@ public class LoginMB implements Serializable {
             SecurityContextHolder.getContext().setAuthentication(auth);
             logger.info("Login Success: {}", auth.getName());
 
-            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            HttpServletRequest request = (HttpServletRequest) FacesUtil.getRequest();
             request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
             return "/pages/index?faces-redirect=true";
         } catch (AuthenticationException ex) {
             logger.info("Login Failed");
-            FacesContext.getCurrentInstance().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
+            FacesUtil.getFacesContext().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
             return null;
         }
 
@@ -69,7 +70,7 @@ public class LoginMB implements Serializable {
 
     public String getLogoutHidden() {
         SecurityContextHolder.getContext().setAuthentication(null);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
+        FacesUtil.getFacesContext().getExternalContext().getSessionMap().clear();
         return "logout";
     }
 

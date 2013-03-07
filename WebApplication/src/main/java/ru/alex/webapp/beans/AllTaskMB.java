@@ -11,6 +11,7 @@ import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.util.FacesUtil;
 import ru.alex.webapp.util.TimeUtils;
 
 import javax.annotation.PostConstruct;
@@ -77,7 +78,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("initAllTasks allTasks={}", allTasks);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
         }
     }
 
@@ -149,7 +150,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in select task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in select task", e.toString()));
         }
     }
 

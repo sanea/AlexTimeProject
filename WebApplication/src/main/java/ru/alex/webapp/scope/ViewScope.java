@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.faces.context.FacesContext;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class ViewScope implements Scope {
 
     @Override
     public Object get(String name, ObjectFactory objectFactory) {
-        Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
+        Map<String, Object> viewMap = FacesUtil.getViewRoot().getViewMap();
         //logger.debug("get name={}, viewMap={}", name, viewMap);
         if (viewMap.containsKey(name)) {
             return viewMap.get(name);
@@ -30,7 +31,7 @@ public class ViewScope implements Scope {
     @Override
     public Object remove(String name) {
         //logger.debug("remove name={}", name);
-        return FacesContext.getCurrentInstance().getViewRoot().getViewMap().remove(name);
+        return FacesUtil.getViewRoot().getViewMap().remove(name);
     }
 
     @Override

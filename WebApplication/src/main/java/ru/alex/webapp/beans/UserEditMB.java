@@ -13,6 +13,7 @@ import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -50,7 +51,7 @@ public class UserEditMB implements Serializable {
             intiUsers();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
         }
     }
 
@@ -70,17 +71,17 @@ public class UserEditMB implements Serializable {
         logger.debug("onEdit user={}", user);
         try {
             userService.updateUser(user);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("User Edited", user.getUsername()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Edited", user.getUsername()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in editing task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in editing task", e.toString()));
         }
 
         try {
             intiUsers();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
         }
     }
 
@@ -100,10 +101,10 @@ public class UserEditMB implements Serializable {
         try {
             userService.addUser(newUser);
             intiUsers();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("User Added", newUser.getUsername()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Added", newUser.getUsername()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding user", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding user", e.toString()));
         }
     }
 
@@ -137,7 +138,7 @@ public class UserEditMB implements Serializable {
 //            logger.debug("assignListener assignedList={}", assignedList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
     }
 
@@ -151,11 +152,11 @@ public class UserEditMB implements Serializable {
 //            }
 //            initTasks();
 //            logger.debug("assignTask taskList={}", taskList);
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Assigned", selectedTask.getName()));
+//            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Assigned", selectedTask.getName()));
 //            assignedList = null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
     }
 
@@ -166,10 +167,10 @@ public class UserEditMB implements Serializable {
 //            taskService.removeTask(selectedTask.getId());
 //            initTasks();
 //            logger.debug("removeTask taskList={}", taskList);
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
+//            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task", e.toString()));
         }
     }
 

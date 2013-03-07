@@ -12,6 +12,7 @@ import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -70,7 +71,7 @@ public class TaskMB implements Serializable {
                 reqCtx.execute("tableUpdater.stop();");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
         }
     }
 
@@ -81,14 +82,14 @@ public class TaskMB implements Serializable {
     public void startProcess() {
         logger.debug("startProcess selectedTask={}, userName={}, selectedMinutes={}", selectedTask, userName, selectedMinutes);
         if (selectedMinutes <= 0) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", "minutes should be > 0"));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", "minutes should be > 0"));
             return;
         }
         try {
             taskService.startTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
         } finally {
             initAssignedTasks();
         }
@@ -100,7 +101,7 @@ public class TaskMB implements Serializable {
             taskService.startTask(Long.valueOf(taskId), userName, 0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting task", e.toString()));
         } finally {
             initAssignedTasks();
         }
@@ -112,7 +113,7 @@ public class TaskMB implements Serializable {
             taskService.pauseTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error pausing task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error pausing task", e.toString()));
         } finally {
             initAssignedTasks();
         }
@@ -124,7 +125,7 @@ public class TaskMB implements Serializable {
             taskService.resumeTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error resuming task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error resuming task", e.toString()));
         } finally {
             initAssignedTasks();
         }
@@ -136,7 +137,7 @@ public class TaskMB implements Serializable {
             taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error extending task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error extending task", e.toString()));
         } finally {
             initAssignedTasks();
         }
@@ -148,7 +149,7 @@ public class TaskMB implements Serializable {
             taskService.stopTask(Long.valueOf(taskId), userName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
         } finally {
             initAssignedTasks();
         }
