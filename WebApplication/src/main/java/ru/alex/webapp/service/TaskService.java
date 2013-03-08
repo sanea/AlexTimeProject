@@ -3,9 +3,7 @@ package ru.alex.webapp.service;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.UserTaskTime;
-import ru.alex.webapp.model.UserTaskTimeSeq;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 

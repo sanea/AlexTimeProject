@@ -7,90 +7,76 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
-public class FacesUtil implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class FacesUtil implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    public static ExternalContext getExternalContext()
-	{
-		FacesContext facesContext = getFacesContext();
-		ExternalContext externalContext = null;
+    public static ExternalContext getExternalContext() {
+        FacesContext facesContext = getFacesContext();
+        ExternalContext externalContext = null;
 
-		if (facesContext != null)
-		{
-			externalContext = facesContext.getExternalContext();
-		}
+        if (facesContext != null) {
+            externalContext = facesContext.getExternalContext();
+        }
 
-		return externalContext;
-	}
+        return externalContext;
+    }
 
-	public static FacesContext getFacesContext()
-	{
-		return FacesContext.getCurrentInstance();
-	}
+    public static FacesContext getFacesContext() {
+        return FacesContext.getCurrentInstance();
+    }
 
-	public static HttpServletRequest getHttpServletRequest()
-	{
-		Object request = getRequest();
-		HttpServletRequest servletRequest = null;
+    public static HttpServletRequest getHttpServletRequest() {
+        Object request = getRequest();
+        HttpServletRequest servletRequest = null;
 
-		if (request != null)
-		{
-			servletRequest = (HttpServletRequest) request;
-		}
+        if (request != null) {
+            servletRequest = (HttpServletRequest) request;
+        }
 
-		return servletRequest;
-	}
+        return servletRequest;
+    }
 
-	public static HttpServletResponse getHttpServletResponse()
-	{
-		Object response = getResponse();
-		HttpServletResponse servletResponse = null;
+    public static HttpServletResponse getHttpServletResponse() {
+        Object response = getResponse();
+        HttpServletResponse servletResponse = null;
 
-		if (response != null)
-		{
-			servletResponse = (HttpServletResponse) response;
-		}
+        if (response != null) {
+            servletResponse = (HttpServletResponse) response;
+        }
 
-		return servletResponse;
-	}
+        return servletResponse;
+    }
 
-	public static Object getRequest()
-	{
-		ExternalContext externalContext = getExternalContext();
-		Object request = null;
+    public static Object getRequest() {
+        ExternalContext externalContext = getExternalContext();
+        Object request = null;
 
-		if (externalContext != null)
-		{
-			request = externalContext.getRequest();
-		}
+        if (externalContext != null) {
+            request = externalContext.getRequest();
+        }
 
-		return request;
-	}
+        return request;
+    }
 
-	public static Object getResponse()
-	{
-		ExternalContext externalContext = getExternalContext();
-		Object response = null;
+    public static Object getResponse() {
+        ExternalContext externalContext = getExternalContext();
+        Object response = null;
 
-		if (externalContext != null)
-		{
-			response = externalContext.getResponse();
-		}
+        if (externalContext != null) {
+            response = externalContext.getResponse();
+        }
 
-		return response;
-	}
+        return response;
+    }
 
-	public static UIViewRoot getViewRoot()
-	{
-		FacesContext facesContext = getFacesContext();
-		UIViewRoot uiViewRoot = null;
+    public static UIViewRoot getViewRoot() {
+        FacesContext facesContext = getFacesContext();
+        UIViewRoot uiViewRoot = null;
 
-		if (facesContext != null)
-		{
-			uiViewRoot = facesContext.getViewRoot();
-		}
+        if (facesContext != null) {
+            uiViewRoot = facesContext.getViewRoot();
+        }
 
-		return uiViewRoot;
-	}
+        return uiViewRoot;
+    }
 }

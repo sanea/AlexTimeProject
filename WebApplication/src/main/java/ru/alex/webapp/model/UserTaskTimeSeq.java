@@ -3,7 +3,6 @@ package ru.alex.webapp.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import static ru.alex.webapp.util.TimeUtils.formatTimeSec;
 
 /**
  * @author Alexander.Isaenco

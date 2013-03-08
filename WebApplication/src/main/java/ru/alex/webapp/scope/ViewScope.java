@@ -6,7 +6,6 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 import ru.alex.webapp.util.FacesUtil;
 
-import javax.faces.context.FacesContext;
 import java.util.Map;
 
 /**

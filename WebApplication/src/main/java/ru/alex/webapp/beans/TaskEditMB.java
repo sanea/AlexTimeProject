@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.alex.webapp.model.*;
+import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.UserTask;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
@@ -16,12 +18,8 @@ import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
-import java.lang.Long;
-import java.lang.Override;
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +33,8 @@ import java.util.Map;
 public class TaskEditMB implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(TaskEditMB.class);
-    List<Task> taskList;
-    Map<Long, Boolean> taskEditable;
+    private List<Task> taskList;
+    private Map<Long, Boolean> taskEditable;
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -183,7 +181,7 @@ public class TaskEditMB implements Serializable {
         try {
             Long innerSelectedTaskId = selectedTask.getId();
             for (UserTaskAssigned assigned : assignedList) {
-                 taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
+                taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
             }
             initTasks();
             logger.debug("assignTask taskList={}", taskList);

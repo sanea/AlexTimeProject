@@ -14,7 +14,6 @@ import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
@@ -61,6 +60,7 @@ public class LoginMB implements Serializable {
 
             return "/pages/index?faces-redirect=true";
         } catch (AuthenticationException ex) {
+            logger.debug("Login Failed {}", ex.getMessage(), ex);
             logger.info("Login Failed");
             FacesUtil.getFacesContext().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
             return null;

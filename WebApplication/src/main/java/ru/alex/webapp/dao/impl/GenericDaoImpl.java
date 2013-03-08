@@ -20,6 +20,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     @PersistenceContext
     private EntityManager em;
 
+    @SuppressWarnings("unchecked")
     public GenericDaoImpl() {
         this.entityBeanType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }

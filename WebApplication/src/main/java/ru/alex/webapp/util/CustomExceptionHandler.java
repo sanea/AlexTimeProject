@@ -43,7 +43,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
                 logger.debug("handle ViewExpiredException");
                 FacesContext fc = context.getContext();
 
-                HttpServletRequest req = (HttpServletRequest)fc.getExternalContext().getRequest();
+                HttpServletRequest req = (HttpServletRequest) fc.getExternalContext().getRequest();
                 String path = req.getServletPath().replace(".xhtml", "").replace(".jsf", "");
                 logger.info("redirect to " + path);
 
