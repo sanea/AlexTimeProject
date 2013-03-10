@@ -18,7 +18,7 @@ public class UserTaskTime implements Serializable {
     @Column(name = "id")
     private Long id;
     @Column(name = "duration", length = 11, nullable = false)
-    private int durationSec;
+    private Integer durationSec;
     @Column(name = "start_time", nullable = false)
     private Date startTime;
     @Column(name = "finish_time", nullable = false)
@@ -42,11 +42,11 @@ public class UserTaskTime implements Serializable {
         this.id = id;
     }
 
-    public int getDurationSec() {
+    public Integer getDurationSec() {
         return durationSec;
     }
 
-    public void setDurationSec(int durationSec) {
+    public void setDurationSec(Integer durationSec) {
         this.durationSec = durationSec;
     }
 
@@ -108,17 +108,15 @@ public class UserTaskTime implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserTaskTime)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        UserTaskTime taskTime = (UserTaskTime) o;
+        UserTaskTime that = (UserTaskTime) o;
 
-        if (durationSec != taskTime.durationSec) return false;
-        if (finishTime != null ? !finishTime.equals(taskTime.finishTime) : taskTime.finishTime != null) return false;
-        if (id != null ? !id.equals(taskTime.id) : taskTime.id != null) return false;
-        if (startTime != null ? !startTime.equals(taskTime.startTime) : taskTime.startTime != null) return false;
-        if (userTaskById != null ? !userTaskById.equals(taskTime.userTaskById) : taskTime.userTaskById != null)
-            return false;
-        if (current != null ? current.equals(taskTime.current) : taskTime.current != null) return false;
+        if (current != null ? !current.equals(that.current) : that.current != null) return false;
+        if (durationSec != null ? !durationSec.equals(that.durationSec) : that.durationSec != null) return false;
+        if (finishTime != null ? !finishTime.equals(that.finishTime) : that.finishTime != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) return false;
 
         return true;
     }

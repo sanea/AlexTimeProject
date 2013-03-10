@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * @author Alexander.Isaenco
  */
-@Table(name = "group_members")
+@Table(name = "group_members", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "group_id"}))
 @Entity
 public class GroupMember implements Serializable {
     private static final long serialVersionUID = 1L;
