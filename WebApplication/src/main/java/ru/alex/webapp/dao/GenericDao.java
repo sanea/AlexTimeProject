@@ -3,6 +3,7 @@ package ru.alex.webapp.dao;
 import javax.persistence.LockModeType;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alexander.Isaenco
@@ -19,14 +20,24 @@ public interface GenericDao<T, ID extends Serializable> {
 
     void persist(T entity);
 
-    void makeTransient(T entity);
+    void remove(T entity);
 
     void refresh(T entity);
 
-    public void flush();
+    void flush();
 
-    public void clear();
+    void clear();
 
-    public void lock(T entity, LockModeType lockModeType);
+    void lock(T entity, LockModeType lockModeType);
+
+    List<T> findWithNamedQuery(String namedQueryName);
+
+    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters);
+
+    List<T> findWithNamedQuery(String namedQueryName, int resultLimit);
+
+    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit);
+
+    List<T> findWithNamedQuery(String namedQueryName, int start, int end);
 
 }

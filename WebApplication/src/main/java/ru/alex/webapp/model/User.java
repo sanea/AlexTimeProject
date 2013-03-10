@@ -9,7 +9,12 @@ import java.util.Collection;
  */
 @Table(name = "users")
 @Entity
+@NamedQueries({
+        @NamedQuery(name = User.ALL, query = "SELECT u FROM User u "),
+        @NamedQuery(name = User.TOTAL, query = "SELECT COUNT(u) FROM User u")})
 public class User implements Serializable {
+    public static final String ALL = "User.getAll";
+    public static final String TOTAL = "User.countAll";
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "username")

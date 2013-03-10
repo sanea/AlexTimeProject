@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         boolean isDeletable = isDeletableUser(userEntity);
         logger.debug("deleteUser isDeletable={}", isDeletable);
         if (isDeletable)
-            userDao.makeTransient(userEntity);
+            userDao.remove(userEntity);
         else
             throw new Exception("Can't delete user " + user.getUsername() + " (only disable)");
     }

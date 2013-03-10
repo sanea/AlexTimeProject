@@ -5,11 +5,14 @@ import ru.alex.webapp.dao.GenericDao;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alexander.Isaenco
@@ -63,7 +66,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     @Override
-    public void makeTransient(T entity) {
+    public void remove(T entity) {
         getEntityManager().remove(entity);
     }
 
@@ -87,6 +90,41 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     @Override
     public void lock(T entity, LockModeType lockModeType) {
         getEntityManager().lock(entity, lockModeType);
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName) {
+        return getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType()).getResultList();
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters) {
+        return findWithNamedQuery(namedQueryName, parameters, 0);
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, int resultLimit) {
+        return getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType()).setMaxResults(resultLimit).getResultList();
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit) {
+        Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
+        TypedQuery<T> query = getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType());
+        if (resultLimit > 0) {
+            query.setMaxResults(resultLimit);
+        }
+        for (Map.Entry<String, Object> entry : rawParameters) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query.getResultList();
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, int start, int end) {
+        TypedQuery<T> query = this.em.createNamedQuery(namedQueryName, getEntityBeanType());
+        query.setMaxResults(end - start).setFirstResult(start);
+        return query.getResultList();
     }
 }
 
