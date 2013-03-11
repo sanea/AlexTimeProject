@@ -21,6 +21,9 @@
         <mapping class="ru.alex.webapp.model.Group"/>
         <mapping class="ru.alex.webapp.model.User"/>
         <mapping class="ru.alex.webapp.model.UserAction"/>
+        <mapping class="ru.alex.webapp.model.Site"/>
+        <mapping class="ru.alex.webapp.model.SiteTask"/>
+        <mapping class="ru.alex.webapp.model.UserChange"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>

@@ -2,7 +2,7 @@ package ru.alex.webapp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -17,21 +17,32 @@ public class UserTaskTime implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "duration", length = 11, nullable = false)
-    private Integer durationSec;
     @Column(name = "start_time", nullable = false)
     private Date startTime;
     @Column(name = "finish_time", nullable = false)
     private Date finishTime;
-    @Column(name = "current", nullable = false)
-    private Boolean current;
+    @Column(name = "duration_play", length = 11, nullable = false)
+    private Integer durationPlaySec;
+    @Column(name = "duration_custom1", length = 11, nullable = true)
+    private Integer durationCustom1Sec;
+    @Column(name = "duration_custom2", length = 11, nullable = true)
+    private Integer durationCustom2Sec;
+    @Column(name = "duration_custom3", length = 11, nullable = true)
+    private Integer durationCustom3Sec;
+    @Column(name = "price", nullable = false)
+    private BigDecimal priceHour;
+    @Column(name = "total", nullable = true)
+    private BigDecimal total;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_task_id", referencedColumnName = "id", nullable = false)
     private UserTask userTaskById;
-    @OneToMany(mappedBy = "userTaskTimeById", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_change_id", referencedColumnName = "id", nullable = false)
+    private UserChange userChange;
+    @OneToMany(mappedBy = "userTaskTimeById", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserAction> userActionsById;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "time_seq_id")
+    @JoinColumn(name = "time_seq_id", referencedColumnName = "id", nullable = false)
     private UserTaskTimeSeq timeSeq;
 
     public Long getId() {
@@ -40,14 +51,6 @@ public class UserTaskTime implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getDurationSec() {
-        return durationSec;
-    }
-
-    public void setDurationSec(Integer durationSec) {
-        this.durationSec = durationSec;
     }
 
     public Date getStartTime() {
@@ -66,12 +69,52 @@ public class UserTaskTime implements Serializable {
         this.finishTime = finishTime;
     }
 
-    public Boolean getCurrent() {
-        return current;
+    public Integer getDurationPlaySec() {
+        return durationPlaySec;
     }
 
-    public void setCurrent(Boolean current) {
-        this.current = current;
+    public void setDurationPlaySec(Integer durationPlaySec) {
+        this.durationPlaySec = durationPlaySec;
+    }
+
+    public Integer getDurationCustom1Sec() {
+        return durationCustom1Sec;
+    }
+
+    public void setDurationCustom1Sec(Integer durationCustom1Sec) {
+        this.durationCustom1Sec = durationCustom1Sec;
+    }
+
+    public Integer getDurationCustom2Sec() {
+        return durationCustom2Sec;
+    }
+
+    public void setDurationCustom2Sec(Integer durationCustom2Sec) {
+        this.durationCustom2Sec = durationCustom2Sec;
+    }
+
+    public Integer getDurationCustom3Sec() {
+        return durationCustom3Sec;
+    }
+
+    public void setDurationCustom3Sec(Integer durationCustom3Sec) {
+        this.durationCustom3Sec = durationCustom3Sec;
+    }
+
+    public BigDecimal getPriceHour() {
+        return priceHour;
+    }
+
+    public void setPriceHour(BigDecimal priceHour) {
+        this.priceHour = priceHour;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     public UserTask getUserTaskById() {
@@ -80,6 +123,14 @@ public class UserTaskTime implements Serializable {
 
     public void setUserTaskById(UserTask userTaskById) {
         this.userTaskById = userTaskById;
+    }
+
+    public UserChange getUserChange() {
+        return userChange;
+    }
+
+    public void setUserChange(UserChange userChange) {
+        this.userChange = userChange;
     }
 
     public Collection<UserAction> getUserActionsById() {
@@ -98,38 +149,21 @@ public class UserTaskTime implements Serializable {
         this.timeSeq = timeSeq;
     }
 
-    public void addUserAction(UserAction userAction) {
-        userAction.setUserTaskTimeById(this);
-        if (userActionsById == null)
-            userActionsById = new ArrayList<UserAction>();
-        userActionsById.add(userAction);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserTaskTime that = (UserTaskTime) o;
+        UserTaskTime taskTime = (UserTaskTime) o;
 
-        if (current != null ? !current.equals(that.current) : that.current != null) return false;
-        if (durationSec != null ? !durationSec.equals(that.durationSec) : that.durationSec != null) return false;
-        if (finishTime != null ? !finishTime.equals(that.finishTime) : that.finishTime != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) return false;
+        if (id != null ? !id.equals(taskTime.id) : taskTime.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + durationSec;
-        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
-        result = 31 * result + (finishTime != null ? finishTime.hashCode() : 0);
-        result = 31 * result + (userTaskById != null ? userTaskById.hashCode() : 0);
-        result = 31 * result + (current != null ? current.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
@@ -137,16 +171,17 @@ public class UserTaskTime implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskTime");
         sb.append("{id=").append(id);
-        sb.append(", durationSec=").append(durationSec);
         sb.append(", startTime=").append(startTime);
         sb.append(", finishTime=").append(finishTime);
-        sb.append(", current=").append(current);
-        sb.append(", userTaskById=").append(userTaskById == null ? null : userTaskById.getId());
-        sb.append("userActionsById[");
-        for (UserAction action : userActionsById)
-            sb.append(", ").append(action.getId());
-        sb.append("]");
-        sb.append(", timeSeq=").append(timeSeq == null ? null : timeSeq.getId());
+        sb.append(", durationPlaySec=").append(durationPlaySec);
+        sb.append(", durationCustom1Sec=").append(durationCustom1Sec);
+        sb.append(", durationCustom2Sec=").append(durationCustom2Sec);
+        sb.append(", durationCustom3Sec=").append(durationCustom3Sec);
+        sb.append(", priceHour=").append(priceHour);
+        sb.append(", total=").append(total);
+        sb.append(", userTaskById=").append(userTaskById);
+        sb.append(", userChange=").append(userChange);
+        sb.append(", timeSeq=").append(timeSeq);
         sb.append('}');
         return sb.toString();
     }

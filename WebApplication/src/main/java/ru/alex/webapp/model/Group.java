@@ -1,6 +1,14 @@
 package ru.alex.webapp.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -15,9 +23,9 @@ public class Group implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "group_name", nullable = false, length = 50)
+    @Column(name = "group_name", nullable = false, length = 255)
     private String groupName;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupByGroupId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Collection<GroupAuthority> groupAuthorityById;
     @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Collection<GroupMember> groupMemberById;
@@ -77,11 +85,6 @@ public class Group implements Serializable {
         sb.append("Group");
         sb.append("{id=").append(id);
         sb.append(", groupName='").append(groupName).append('\'');
-        sb.append(", GroupAuthority[");
-        for (GroupAuthority ga : groupAuthorityById)
-            sb.append(", ").append(ga.getAuthority());
-        sb.append("]");
-        //sb.append(", groupMemberById=").append(groupMemberById); - LAZY
         sb.append('}');
         return sb.toString();
     }

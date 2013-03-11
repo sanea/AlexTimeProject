@@ -25,6 +25,8 @@ public class UserTaskTimeSeq implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "prev_id")
     private UserTaskTimeSeq prevTimeSeq;
+    @OneToOne(mappedBy = "timeSeq", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private UserTaskTime user;
 
     public Long getId() {
         return id;
@@ -64,6 +66,14 @@ public class UserTaskTimeSeq implements Serializable {
 
     public void setPrevTimeSeq(UserTaskTimeSeq prevTimeSeq) {
         this.prevTimeSeq = prevTimeSeq;
+    }
+
+    public UserTaskTime getUser() {
+        return user;
+    }
+
+    public void setUser(UserTaskTime user) {
+        this.user = user;
     }
 
     @Override

@@ -20,8 +20,8 @@ public class UserAction implements Serializable {
     private Date timestamp;
     @Column(name = "action", nullable = false, updatable = false, length = 1)
     private String action;
-    @Column(name = "time_seconds", nullable = true, length = 11)
-    private Integer timeSeconds;
+    @Column(name = "params", nullable = true, length = 255)
+    private String params;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_time_id", referencedColumnName = "id", nullable = false)
     private UserTaskTime userTaskTimeById;
@@ -50,12 +50,12 @@ public class UserAction implements Serializable {
         this.action = action;
     }
 
-    public Integer getTimeSeconds() {
-        return timeSeconds;
+    public String getParams() {
+        return params;
     }
 
-    public void setTimeSeconds(Integer timeSeconds) {
-        this.timeSeconds = timeSeconds;
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public UserTaskTime getUserTaskTimeById() {
@@ -69,28 +69,18 @@ public class UserAction implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserAction)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         UserAction that = (UserAction) o;
 
-        if (action != null ? !action.equals(that.action) : that.action != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (timeSeconds != null ? !timeSeconds.equals(that.timeSeconds) : that.timeSeconds != null) return false;
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
-        if (userTaskTimeById != null ? !userTaskTimeById.equals(that.userTaskTimeById) : that.userTaskTimeById != null)
-            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + (timeSeconds != null ? timeSeconds.hashCode() : 0);
-        result = 31 * result + (userTaskTimeById != null ? userTaskTimeById.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
@@ -100,10 +90,9 @@ public class UserAction implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", timestamp=").append(timestamp);
         sb.append(", action='").append(action).append('\'');
-        sb.append(", timeSeconds=").append(timeSeconds);
-        sb.append(", userTaskTimeById=").append(userTaskTimeById == null ? null : userTaskTimeById.getId());
+        sb.append(", params='").append(params).append('\'');
+        sb.append(", userTaskTimeById=").append(userTaskTimeById);
         sb.append('}');
         return sb.toString();
     }
-
 }
