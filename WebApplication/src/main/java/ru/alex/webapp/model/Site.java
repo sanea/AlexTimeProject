@@ -35,6 +35,8 @@ public class Site implements Serializable {
     private Boolean deleted;
     @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Collection<SiteTask> siteTaskList;
+    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private Collection<UserChange> userChangeList;
 
     public Site() {
     }
@@ -93,6 +95,14 @@ public class Site implements Serializable {
 
     public void setSiteTaskList(Collection<SiteTask> siteTaskList) {
         this.siteTaskList = siteTaskList;
+    }
+
+    public Collection<UserChange> getUserChangeList() {
+        return userChangeList;
+    }
+
+    public void setUserChangeList(Collection<UserChange> userChangeList) {
+        this.userChangeList = userChangeList;
     }
 
     @Override

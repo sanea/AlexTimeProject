@@ -24,6 +24,9 @@ public class UserChange implements Serializable {
     private User user;
     @OneToMany(mappedBy = "userChange", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserTaskTime> userTaskTimeList;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
+    private Site siteBySiteId;
 
     public Long getId() {
         return id;
@@ -65,6 +68,14 @@ public class UserChange implements Serializable {
         this.userTaskTimeList = userTaskTimeList;
     }
 
+    public Site getSiteBySiteId() {
+        return siteBySiteId;
+    }
+
+    public void setSiteBySiteId(Site siteBySiteId) {
+        this.siteBySiteId = siteBySiteId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,6 +100,7 @@ public class UserChange implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", siteBySiteId=").append(siteBySiteId);
         sb.append('}');
         return sb.toString();
     }

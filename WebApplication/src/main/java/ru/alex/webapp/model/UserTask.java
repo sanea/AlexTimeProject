@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @author Alexander.Isaenco
  */
-@Table(name = "user_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "site_task_id"}))
+@Table(name = "user_site_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "site_task_id"}))
 @Entity
 public class UserTask implements Serializable {
     private static final long serialVersionUID = 1L;

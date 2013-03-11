@@ -223,7 +223,10 @@ CREATE TABLE `user_change` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `site_id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_change_site_idx` (`site_id`),
+  CONSTRAINT `fk_change_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -237,13 +240,13 @@ LOCK TABLES `user_change` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_task`
+-- Table structure for table `user_site_task`
 --
 
-DROP TABLE IF EXISTS `user_task`;
+DROP TABLE IF EXISTS `user_site_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_task` (
+CREATE TABLE `user_site_task` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `site_task_id` bigint(20) unsigned NOT NULL,
@@ -264,12 +267,12 @@ CREATE TABLE `user_task` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_task`
+-- Dumping data for table `user_site_task`
 --
 
-LOCK TABLES `user_task` WRITE;
-/*!40000 ALTER TABLE `user_task` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_task` ENABLE KEYS */;
+LOCK TABLES `user_site_task` WRITE;
+/*!40000 ALTER TABLE `user_site_task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -298,7 +301,7 @@ CREATE TABLE `user_task_time` (
   KEY `FK_TIME_SEQ_idx` (`time_seq_id`),
   KEY `fk_time_change_idx` (`user_change_id`),
   CONSTRAINT `FK_TIME_SEQ` FOREIGN KEY (`time_seq_id`) REFERENCES `user_task_time_seq` (`id`),
-  CONSTRAINT `fk_time_task` FOREIGN KEY (`user_task_id`) REFERENCES `user_task` (`id`)
+  CONSTRAINT `fk_time_task` FOREIGN KEY (`user_task_id`) REFERENCES `user_site_task` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -394,4 +397,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-11 16:35:24
+-- Dump completed on 2013-03-12  1:20:08
