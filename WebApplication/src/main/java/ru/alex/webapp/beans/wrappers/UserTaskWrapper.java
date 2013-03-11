@@ -37,7 +37,7 @@ public class UserTaskWrapper implements Serializable {
         if (taskTime != null) {
             Integer durationSec = getDurationSec();
             this.timeLeftSec = durationSec - timeSpentSeq;
-            if (TaskType.getType(userTask.getTaskByTaskId().getType()) == TaskType.PROCESS)
+            if (TaskType.getType(userTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.PROCESS)
                 this.sum = durationSec != null ? getTaskPriceHour().multiply(new BigDecimal((double) durationSec / 3600)).setScale(2, RoundingMode.HALF_UP) : null;
             else
                 this.sum = getTaskPriceHour();
@@ -50,19 +50,19 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getTaskName() {
-        return userTask.getTaskByTaskId().getName();
+        return userTask.getSiteTask().getTaskByTaskId().getName();
     }
 
     public String getTaskTypeFormatted() {
-        return TaskType.getTypeFormatted(userTask.getTaskByTaskId().getType());
+        return TaskType.getTypeFormatted(userTask.getSiteTask().getTaskByTaskId().getType());
     }
 
     public String getTaskType() {
-        return userTask.getTaskByTaskId().getType();
+        return userTask.getSiteTask().getTaskByTaskId().getType();
     }
 
     public BigDecimal getTaskPriceHour() {
-        return userTask.getTaskByTaskId().getPriceHour();
+        return userTask.getSiteTask().getTaskByTaskId().getPriceHour();
     }
 
     public int getTimeLeftSec() {
@@ -82,7 +82,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public Long getTaskId() {
-        return userTask.getTaskByTaskId().getId();
+        return userTask.getSiteTask().getTaskByTaskId().getId();
     }
 
     public Date getStartTime() {
@@ -94,11 +94,11 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public Integer getDurationSec() {
-        return taskTime != null ? Integer.valueOf(taskTime.getDurationSec()) : null;
+        return taskTime != null ? Integer.valueOf(taskTime.getDurationPlaySec()) : null;
     }
 
     public String getDurationFormatted() {
-        Integer durationSec = taskTime != null ? Integer.valueOf(taskTime.getDurationSec()) : null;
+        Integer durationSec = taskTime != null ? Integer.valueOf(taskTime.getDurationPlaySec()) : null;
         return durationSec != null ? TimeUtils.formatTimeSec(durationSec) : "";
     }
 

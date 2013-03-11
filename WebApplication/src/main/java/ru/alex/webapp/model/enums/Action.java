@@ -4,7 +4,7 @@ package ru.alex.webapp.model.enums;
  * @author Alexander.Isaenco
  */
 public enum Action {
-    START('r'), PAUSE('p'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s');
+    START('r'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');
     private char action;
 
     private Action(char action) {
@@ -21,8 +21,6 @@ public enum Action {
         switch (getChar(action)) {
             case 'r':
                 return START;
-            case 'p':
-                return PAUSE;
             case 'c':
                 return RESUME;
             case 'e':
@@ -31,25 +29,35 @@ public enum Action {
                 return FINISH;
             case 's':
                 return STOP;
+            case '1':
+                return CUSTOM1;
+            case '2':
+                return CUSTOM2;
+            case '3':
+                return CUSTOM3;
             default:
                 throw new IllegalArgumentException("wrong action");
         }
     }
 
     public static String getActionFormatted(String action) {
-        switch (getChar(action)) {
-            case 'r':
+        switch (getAction(action)) {
+            case START:
                 return "Start";
-            case 'p':
-                return "Pause";
-            case 'c':
+            case RESUME:
                 return "Resume";
-            case 'e':
+            case EXTEND:
                 return "Extend";
-            case 'f':
+            case FINISH:
                 return "Finish";
-            case 's':
+            case STOP:
                 return "Stop";
+            case CUSTOM1:
+                return "Custom 1";
+            case CUSTOM2:
+                return "Custom 2";
+            case CUSTOM3:
+                return "Custom 3";
             default:
                 throw new IllegalArgumentException("wrong action");
         }

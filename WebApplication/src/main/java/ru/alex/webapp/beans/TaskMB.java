@@ -53,9 +53,9 @@ public class TaskMB implements Serializable {
             logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
             for (UserTask ut : tasks) {
-                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getTaskByTaskId().getId(), userName);
+                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime={}", currentTime);
-                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getTaskByTaskId().getId(), userName);
+                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
                 logger.debug("timeSpentSec={}", timeSpentSec);
                 taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
                 if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)

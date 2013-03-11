@@ -4,7 +4,7 @@ package ru.alex.webapp.model.enums;
  * @author Alexander.Isaenco
  */
 public enum TaskStatus {
-    RUNNING('r'), COMPLETED('c'), PAUSED('p'), STOPPED('s'), UNKNOWN('u');
+    RUNNING('r'), COMPLETED('c'), STOPPED('s'), UNKNOWN('u'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');
     private char status;
 
     private TaskStatus(char status) {
@@ -23,29 +23,37 @@ public enum TaskStatus {
                 return RUNNING;
             case 'c':
                 return COMPLETED;
-            case 'p':
-                return PAUSED;
             case 's':
                 return STOPPED;
             case 'u':
                 return UNKNOWN;
+            case '1':
+                return CUSTOM1;
+            case '2':
+                return CUSTOM2;
+            case '3':
+                return CUSTOM3;
             default:
                 throw new IllegalArgumentException("wrong status");
         }
     }
 
     public static String getStatusFormatted(String status) {
-        switch (getChar(status)) {
-            case 'r':
+        switch (getStatus(status)) {
+            case RUNNING:
                 return "Running";
-            case 'c':
+            case COMPLETED:
                 return "Completed";
-            case 'p':
-                return "Paused";
-            case 's':
+            case STOPPED:
                 return "Stopped";
-            case 'u':
+            case UNKNOWN:
                 return "Unknown";
+            case CUSTOM1:
+                return "Custom1";
+            case CUSTOM2:
+                return "Custom2";
+            case CUSTOM3:
+                return "Custom3";
             default:
                 throw new IllegalArgumentException("wrong status");
         }
