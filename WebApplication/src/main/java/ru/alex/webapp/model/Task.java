@@ -26,15 +26,15 @@ public class Task implements Serializable {
     private Long id;
     @Column(name = "name", nullable = false, length = 255)
     private String name;
-    @Column(name = "type", nullable = false, length = 1)
+    @Column(name = "type", nullable = false, length = 1, columnDefinition = "CHAR")
     private String type;
     @Column(name = "price", nullable = false)
     private BigDecimal priceHour;
-    @Column(name = "enabled", nullable = false)
+    @Column(name = "enabled", nullable = false, columnDefinition = "BIT")
     private Boolean enabled;
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
     private Boolean deleted;
-    @Column(name = "income", nullable = false)
+    @Column(name = "income", nullable = false, columnDefinition = "BIT")
     private Boolean income;
     @Column(name = "repeat", nullable = true, length = 1)
     private Integer repeat;

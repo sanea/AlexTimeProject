@@ -18,7 +18,7 @@ public class UserAction implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "timestamp", nullable = false, updatable = false)
     private Date timestamp;
-    @Column(name = "action", nullable = false, updatable = false, length = 1)
+    @Column(name = "action", nullable = false, updatable = false, length = 1, columnDefinition = "CHAR")
     private String action;
     @Column(name = "params", nullable = true, length = 255)
     private String params;

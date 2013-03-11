@@ -21,9 +21,9 @@ public class User implements Serializable {
     private String username;
     @Column(name = "password", length = 50, nullable = false)
     private String password;
-    @Column(name = "enabled", nullable = false)
+    @Column(name = "enabled", nullable = false, columnDefinition = "BIT")
     private boolean enabled;
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
     private boolean deleted;
     @Column(name = "address", length = 255, nullable = true)
     private String address;

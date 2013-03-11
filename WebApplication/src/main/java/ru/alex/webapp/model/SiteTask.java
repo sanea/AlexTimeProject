@@ -15,7 +15,7 @@ public class SiteTask implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
     private Boolean deleted;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)

@@ -16,13 +16,13 @@ public class UserSiteTask implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "status", nullable = false, length = 1)
+    @Column(name = "status", nullable = false, length = 1, columnDefinition = "CHAR")
     private String status;
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
     @Column(name = "create_time", nullable = false)
     private Date createTime;
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
     private Boolean deleted;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "site_task_id", referencedColumnName = "id", nullable = false)
