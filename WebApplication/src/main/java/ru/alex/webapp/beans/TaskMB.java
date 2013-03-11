@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.service.TaskService;
@@ -49,10 +49,10 @@ public class TaskMB implements Serializable {
         logger.debug("initAssignedTasks");
         try {
             startTableUpdater = false;
-            List<UserTask> tasks = taskService.getTasksForUser(userName);
+            List<UserSiteTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
-            for (UserTask ut : tasks) {
+            for (UserSiteTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime={}", currentTime);
                 int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);

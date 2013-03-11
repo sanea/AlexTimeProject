@@ -1,22 +1,22 @@
 package ru.alex.webapp.dao;
 
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 
 import java.util.List;
 
 /**
  * @author Alexander.Isaenco
  */
-public interface UserTaskDao extends GenericDao<UserTask, Long> {
-    List<UserTask> getTasksForUser(String username);
+public interface UserTaskDao extends GenericDao<UserSiteTask, Long> {
+    List<UserSiteTask> getTasksForUser(String username);
 
-    List<UserTask> getTasksAllForUser(String username);
+    List<UserSiteTask> getTasksAllForUser(String username);
 
-    List<UserTask> getUsersForTask(Long taskId);
+    List<UserSiteTask> getUsersForTask(Long taskId);
 
-    UserTask getTaskForUser(String username, Long taskId);
+    UserSiteTask getTaskForUser(String username, Long taskId);
 
-    List<UserTask> getTaskForUserAll(String username, Long taskId);
+    List<UserSiteTask> getTaskForUserAll(String username, Long taskId);
 
-    List<UserTask> getRunningTasks();
+    List<UserSiteTask> getRunningTasks();
 }

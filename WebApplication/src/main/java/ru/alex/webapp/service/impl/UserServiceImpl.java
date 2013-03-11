@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.UserDao;
 import ru.alex.webapp.dao.UserTaskDao;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.service.UserService;
 
 import java.util.List;
@@ -93,10 +93,10 @@ public class UserServiceImpl implements UserService {
         logger.debug("isDeletableUser user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        List<UserTask> userTaskList = userTaskDao.getTasksAllForUser(user.getUsername());
-        logger.debug("isDeletableUser userTaskList={}", userTaskList);
+        List<UserSiteTask> userSiteTaskList = userTaskDao.getTasksAllForUser(user.getUsername());
+        logger.debug("isDeletableUser userSiteTaskList={}", userSiteTaskList);
         boolean result;
-        if (userTaskList != null || userTaskList.size() > 0)
+        if (userSiteTaskList != null || userSiteTaskList.size() > 0)
             result = false;
         else
             result = true;

@@ -46,7 +46,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<GroupMember> groupMemberByUsername;
     @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<UserTask> userTasksByUsername;
+    private Collection<UserSiteTask> userSiteTasksByUsername;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "current_change", referencedColumnName = "id", nullable = true)
     private UserChange currentChange;
@@ -163,12 +163,12 @@ public class User implements Serializable {
         this.groupMemberByUsername = groupMemberByUsername;
     }
 
-    public Collection<UserTask> getUserTasksByUsername() {
-        return userTasksByUsername;
+    public Collection<UserSiteTask> getUserSiteTasksByUsername() {
+        return userSiteTasksByUsername;
     }
 
-    public void setUserTasksByUsername(Collection<UserTask> userTasksByUsername) {
-        this.userTasksByUsername = userTasksByUsername;
+    public void setUserSiteTasksByUsername(Collection<UserSiteTask> userSiteTasksByUsername) {
+        this.userSiteTasksByUsername = userSiteTasksByUsername;
     }
 
     public UserChange getCurrentChange() {

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Table(name = "user_site_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "site_task_id"}))
 @Entity
-public class UserTask implements Serializable {
+public class UserSiteTask implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +30,7 @@ public class UserTask implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User userByUsername;
-    @OneToMany(mappedBy = "userTaskById", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "userSiteTaskById", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTaskTime> userTaskTimeList;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "current_time", referencedColumnName = "id", nullable = true)
@@ -113,9 +113,9 @@ public class UserTask implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserTask userTask = (UserTask) o;
+        UserSiteTask userSiteTask = (UserSiteTask) o;
 
-        if (id != null ? !id.equals(userTask.id) : userTask.id != null) return false;
+        if (id != null ? !id.equals(userSiteTask.id) : userSiteTask.id != null) return false;
 
         return true;
     }
@@ -128,7 +128,7 @@ public class UserTask implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("UserTask");
+        sb.append("UserSiteTask");
         sb.append("{id=").append(id);
         sb.append(", status='").append(status).append('\'');
         sb.append(", updateTime=").append(updateTime);

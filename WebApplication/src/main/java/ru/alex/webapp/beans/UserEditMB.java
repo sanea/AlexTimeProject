@@ -112,7 +112,7 @@ public class UserEditMB implements Serializable {
 //            List<User> userList = userService.getAllEnabledUsers();
 //            logger.debug("assignListener userList={}", userList);
 //
-//            List<UserTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
+//            List<UserSiteTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
 //            logger.debug("assignListener userTaskList={}", userTaskList);
 //
 //            assignedList = new ArrayList<UserTaskAssigned>(userList.size());
@@ -120,7 +120,7 @@ public class UserEditMB implements Serializable {
 //            for (User u : userList) {
 //                boolean isAssigned = false;
 //                boolean isRunning = false;
-//                for (UserTask ut : userTaskList) {
+//                for (UserSiteTask ut : userTaskList) {
 //                    if (u.getUsername().equals(ut.getUserByUsername().getUsername())) {
 //                        isAssigned = true;
 //                        isRunning = TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING;

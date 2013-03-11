@@ -69,7 +69,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("initAllTasks taskTimeList={}", taskTimeList);
             List<UserTaskWrapper> allTasksLocal = new ArrayList<UserTaskWrapper>(taskTimeList.size());
             for (UserTaskTime taskTime : taskTimeList) {
-                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserTaskById(), taskTime);
+                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserSiteTaskById(), taskTime);
                 allTasksLocal.add(taskWrapper);
                 total = total.add(taskWrapper.getSum());
             }

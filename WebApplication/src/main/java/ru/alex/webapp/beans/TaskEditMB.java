@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
@@ -151,15 +151,15 @@ public class TaskEditMB implements Serializable {
             List<User> userList = userService.getAllEnabledUsers();
             logger.debug("assignListener userList={}", userList);
 
-            List<UserTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
-            logger.debug("assignListener userTaskList={}", userTaskList);
+            List<UserSiteTask> userSiteTaskList = taskService.getUsersForTask(selectedTask.getId());
+            logger.debug("assignListener userSiteTaskList={}", userSiteTaskList);
 
             assignedList = new ArrayList<UserTaskAssigned>(userList.size());
 
             for (User u : userList) {
                 boolean isAssigned = false;
                 boolean isRunning = false;
-                for (UserTask ut : userTaskList) {
+                for (UserSiteTask ut : userSiteTaskList) {
                     if (u.getUsername().equals(ut.getUserByUsername().getUsername())) {
                         isAssigned = true;
                         isRunning = TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING;

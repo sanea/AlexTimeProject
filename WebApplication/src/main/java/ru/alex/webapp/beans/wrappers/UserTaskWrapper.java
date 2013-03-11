@@ -2,7 +2,7 @@ package ru.alex.webapp.beans.wrappers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
@@ -19,25 +19,25 @@ import java.util.Date;
 public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserTaskWrapper.class);
-    private UserTask userTask;
+    private UserSiteTask userSiteTask;
     private UserTaskTime taskTime;
     private int timeLeftSec;
     private BigDecimal sum;
 
-    public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime) {
-        this(userTask, taskTime, 0);
+    public UserTaskWrapper(UserSiteTask userSiteTask, UserTaskTime taskTime) {
+        this(userSiteTask, taskTime, 0);
     }
 
-    public UserTaskWrapper(UserTask userTask, UserTaskTime taskTime, int timeSpentSeq) {
-        logger.debug("init UserTaskWrapper userTask={}, taskTime={}", userTask, taskTime);
-        if (userTask == null)
+    public UserTaskWrapper(UserSiteTask userSiteTask, UserTaskTime taskTime, int timeSpentSeq) {
+        logger.debug("init UserTaskWrapper userSiteTask={}, taskTime={}", userSiteTask, taskTime);
+        if (userSiteTask == null)
             throw new IllegalArgumentException("User task can't be null");
-        this.userTask = userTask;
+        this.userSiteTask = userSiteTask;
         this.taskTime = taskTime;
         if (taskTime != null) {
             Integer durationSec = getDurationSec();
             this.timeLeftSec = durationSec - timeSpentSeq;
-            if (TaskType.getType(userTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.PROCESS)
+            if (TaskType.getType(userSiteTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.PROCESS)
                 this.sum = durationSec != null ? getTaskPriceHour().multiply(new BigDecimal((double) durationSec / 3600)).setScale(2, RoundingMode.HALF_UP) : null;
             else
                 this.sum = getTaskPriceHour();
@@ -46,23 +46,23 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getUsername() {
-        return userTask.getUserByUsername().getUsername();
+        return userSiteTask.getUserByUsername().getUsername();
     }
 
     public String getTaskName() {
-        return userTask.getSiteTask().getTaskByTaskId().getName();
+        return userSiteTask.getSiteTask().getTaskByTaskId().getName();
     }
 
     public String getTaskTypeFormatted() {
-        return TaskType.getTypeFormatted(userTask.getSiteTask().getTaskByTaskId().getType());
+        return TaskType.getTypeFormatted(userSiteTask.getSiteTask().getTaskByTaskId().getType());
     }
 
     public String getTaskType() {
-        return userTask.getSiteTask().getTaskByTaskId().getType();
+        return userSiteTask.getSiteTask().getTaskByTaskId().getType();
     }
 
     public BigDecimal getTaskPriceHour() {
-        return userTask.getSiteTask().getTaskByTaskId().getPriceHour();
+        return userSiteTask.getSiteTask().getTaskByTaskId().getPriceHour();
     }
 
     public int getTimeLeftSec() {
@@ -74,15 +74,15 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getCurrentStatusFormatted() {
-        return TaskStatus.getStatusFormatted(userTask.getStatus());
+        return TaskStatus.getStatusFormatted(userSiteTask.getStatus());
     }
 
     public String getCurrentStatus() {
-        return userTask.getStatus();
+        return userSiteTask.getStatus();
     }
 
     public Long getTaskId() {
-        return userTask.getSiteTask().getTaskByTaskId().getId();
+        return userSiteTask.getSiteTask().getTaskByTaskId().getId();
     }
 
     public Date getStartTime() {
@@ -118,7 +118,7 @@ public class UserTaskWrapper implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskWrapper");
-        sb.append("{userTask=").append(userTask);
+        sb.append("{userSiteTask=").append(userSiteTask);
         sb.append(", taskTime=").append(taskTime);
         sb.append(", timeLeftSec=").append(timeLeftSec);
         sb.append('}');

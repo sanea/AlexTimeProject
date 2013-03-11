@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.util.FacesUtil;
@@ -39,10 +39,10 @@ public class OnlineTaskMB implements Serializable {
     private void initOnlineTasks() {
         logger.debug("initOnlineTasks");
         try {
-            List<UserTask> tasks = taskService.getOnlineTasks();
+            List<UserSiteTask> tasks = taskService.getOnlineTasks();
             logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
-            for (UserTask ut : tasks) {
+            for (UserSiteTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
                 logger.debug("currentTime={}", currentTime);
                 int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());

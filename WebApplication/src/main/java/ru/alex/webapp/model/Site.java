@@ -33,9 +33,9 @@ public class Site implements Serializable {
     private String country;
     @Column(name = "deleted", nullable = false)
     private Boolean deleted;
-    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Collection<SiteTask> siteTaskList;
-    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Collection<UserChange> userChangeList;
 
     public Site() {

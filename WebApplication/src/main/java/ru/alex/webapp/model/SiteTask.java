@@ -24,7 +24,7 @@ public class SiteTask implements Serializable {
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     private Task taskByTaskId;
     @OneToMany(mappedBy = "siteTask", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<UserTask> userTaskList;
+    private Collection<UserSiteTask> userSiteTaskList;
 
     public Long getId() {
         return id;
@@ -58,12 +58,12 @@ public class SiteTask implements Serializable {
         this.taskByTaskId = taskByTaskId;
     }
 
-    public Collection<UserTask> getUserTaskList() {
-        return userTaskList;
+    public Collection<UserSiteTask> getUserSiteTaskList() {
+        return userSiteTaskList;
     }
 
-    public void setUserTaskList(Collection<UserTask> userTaskList) {
-        this.userTaskList = userTaskList;
+    public void setUserSiteTaskList(Collection<UserSiteTask> userSiteTaskList) {
+        this.userSiteTaskList = userSiteTaskList;
     }
 
     @Override

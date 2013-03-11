@@ -35,7 +35,7 @@ public class UserTaskTime implements Serializable {
     private BigDecimal total;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_task_id", referencedColumnName = "id", nullable = false)
-    private UserTask userTaskById;
+    private UserSiteTask userSiteTaskById;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_change_id", referencedColumnName = "id", nullable = false)
     private UserChange userChange;
@@ -117,12 +117,12 @@ public class UserTaskTime implements Serializable {
         this.total = total;
     }
 
-    public UserTask getUserTaskById() {
-        return userTaskById;
+    public UserSiteTask getUserSiteTaskById() {
+        return userSiteTaskById;
     }
 
-    public void setUserTaskById(UserTask userTaskById) {
-        this.userTaskById = userTaskById;
+    public void setUserSiteTaskById(UserSiteTask userSiteTaskById) {
+        this.userSiteTaskById = userSiteTaskById;
     }
 
     public UserChange getUserChange() {
@@ -179,7 +179,7 @@ public class UserTaskTime implements Serializable {
         sb.append(", durationCustom3Sec=").append(durationCustom3Sec);
         sb.append(", priceHour=").append(priceHour);
         sb.append(", total=").append(total);
-        sb.append(", userTaskById=").append(userTaskById);
+        sb.append(", userSiteTaskById=").append(userSiteTaskById);
         sb.append(", userChange=").append(userChange);
         sb.append(", timeSeq=").append(timeSeq);
         sb.append('}');

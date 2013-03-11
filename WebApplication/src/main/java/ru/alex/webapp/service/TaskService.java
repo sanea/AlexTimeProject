@@ -1,7 +1,7 @@
 package ru.alex.webapp.service;
 
 import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTask;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 
 import java.util.Date;
@@ -10,11 +10,11 @@ import java.util.List;
 public interface TaskService {
     List<Task> getAllTasks() throws Exception;
 
-    List<UserTask> getTasksForUser(String username) throws Exception;
+    List<UserSiteTask> getTasksForUser(String username) throws Exception;
 
-    List<UserTask> getOnlineTasks() throws Exception;
+    List<UserSiteTask> getOnlineTasks() throws Exception;
 
-    List<UserTask> getUsersForTask(Long taskId) throws Exception;
+    List<UserSiteTask> getUsersForTask(Long taskId) throws Exception;
 
     UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception;
 
