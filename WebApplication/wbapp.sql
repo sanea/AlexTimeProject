@@ -31,7 +31,7 @@ CREATE TABLE `group_authorities` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `fk_authorities_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `group_authorities` (
 
 LOCK TABLES `group_authorities` WRITE;
 /*!40000 ALTER TABLE `group_authorities` DISABLE KEYS */;
-INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL');
+INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL'),(11,1,'EDIT_SITES'),(12,1,'ASSIGN_TASKS');
 /*!40000 ALTER TABLE `group_authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,7 +200,7 @@ CREATE TABLE `user_action` (
   PRIMARY KEY (`id`),
   KEY `FK_TASK_TIME_idx` (`task_time_id`),
   CONSTRAINT `FK_TASK_TIME` FOREIGN KEY (`task_time_id`) REFERENCES `user_task_time` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,10 +260,10 @@ CREATE TABLE `user_site_task` (
   UNIQUE KEY `current_time_UNIQUE` (`current_time`),
   KEY `fk_user_task_cur_time_idx` (`current_time`),
   KEY `fk_user_task_site_task_idx` (`site_task_id`),
-  CONSTRAINT `fk_user_task_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_user_task_cur_time` FOREIGN KEY (`current_time`) REFERENCES `user_task_time` (`id`),
+  CONSTRAINT `fk_user_task_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_user_task_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,7 +302,7 @@ CREATE TABLE `user_task_time` (
   KEY `fk_time_change_idx` (`user_change_id`),
   CONSTRAINT `FK_TIME_SEQ` FOREIGN KEY (`time_seq_id`) REFERENCES `user_task_time_seq` (`id`),
   CONSTRAINT `fk_time_task` FOREIGN KEY (`user_task_id`) REFERENCES `user_site_task` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -331,9 +331,9 @@ CREATE TABLE `user_task_time_seq` (
   PRIMARY KEY (`id`),
   KEY `fk_time_seq_prev_idx` (`prev_id`),
   KEY `fk_time_seq_next_idx` (`next_id`),
-  CONSTRAINT `fk_time_seq_prev` FOREIGN KEY (`prev_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_time_seq_next` FOREIGN KEY (`next_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_time_seq_next` FOREIGN KEY (`next_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_time_seq_prev` FOREIGN KEY (`prev_id`) REFERENCES `user_task_time_seq` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -385,6 +385,10 @@ INSERT INTO `users` VALUES ('admin','1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NUL
 UNLOCK TABLES;
 
 --
+-- Dumping events for database 'webapp'
+--
+
+--
 -- Dumping routines for database 'webapp'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -397,4 +401,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-12  1:20:08
+-- Dump completed on 2013-03-14 20:06:26
