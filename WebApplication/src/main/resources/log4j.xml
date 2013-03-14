@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://jakarta.apache.org/log4j/ ">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
     <!-- Appenders -->
-    <appender name="fileappender" class="org.apache.log4j.RollingFileAppender">
+    <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
         <param name="file" value="../logs/webApp.log"/>
         <param name="MaxFileSize" value="10000KB"/>
         <param name="MaxBackupIndex" value="1"/>
@@ -16,7 +14,7 @@
         </layout>
     </appender>
 
-    <appender name="consoleappender" class="org.apache.log4j.ConsoleAppender">
+    <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/>
@@ -85,8 +83,8 @@
     <!-- Root Logger -->
     <root>
         <priority value="info"/>
-        <appender-ref ref="fileappender"/>
-        <!--<appender-ref ref="consoleappender"/>-->
+        <appender-ref ref="fileAppender"/>
+        <!--<appender-ref ref="consoleAppender"/>-->
     </root>
 
 </log4j:configuration>

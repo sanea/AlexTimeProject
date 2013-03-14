@@ -9,5 +9,7 @@ public enum Authority {
     EDIT_TASKS,
     STAT_ONLINE,
     STAT_ALL,
-    EDIT_GROUPS
+    EDIT_GROUPS,
+    EDIT_SITES,
+    ASSIGN_TASKS
 }

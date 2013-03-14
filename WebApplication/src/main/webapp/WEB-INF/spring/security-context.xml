@@ -22,6 +22,8 @@
         <intercept-url pattern="/pages/tasksEdit*" access="hasRole('EDIT_TASKS')"/>
         <intercept-url pattern="/pages/onlineTasks*" access="hasRole('STAT_ONLINE')"/>
         <intercept-url pattern="/pages/allTasks*" access="hasRole('STAT_ALL')"/>
+        <intercept-url pattern="/pages/sitesEdit*" access="hasRole('EDIT_SITES')"/>
+        <intercept-url pattern="/pages/assignTasks*" access="hasRole('ASSIGN_TASKS')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <form-login login-page="/pages/login.xhtml" default-target-url="/pages/index.xhtml" always-use-default-target="true"
                     authentication-failure-url="/pages/login.xhtml" />
