@@ -32,12 +32,13 @@ public interface GenericDao<T, ID extends Serializable> {
 
     List<T> findWithNamedQuery(String namedQueryName);
 
-    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters);
-
     List<T> findWithNamedQuery(String namedQueryName, int resultLimit);
-
-    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit);
 
     List<T> findWithNamedQuery(String namedQueryName, int start, int end);
 
+    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters);
+
+    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit);
+
+    List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int start, int end);
 }

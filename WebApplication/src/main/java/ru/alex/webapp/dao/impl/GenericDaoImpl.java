@@ -94,36 +94,53 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
 
     @Override
     public List<T> findWithNamedQuery(String namedQueryName) {
-        return getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType()).getResultList();
-    }
-
-    @Override
-    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters) {
-        return findWithNamedQuery(namedQueryName, parameters, 0);
+        return findWithNamedQuery(namedQueryName, 0, 0);
     }
 
     @Override
     public List<T> findWithNamedQuery(String namedQueryName, int resultLimit) {
-        return getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType()).setMaxResults(resultLimit).getResultList();
+        return findWithNamedQuery(namedQueryName, 0, resultLimit);
     }
 
     @Override
-    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit) {
-        Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
+    public List<T> findWithNamedQuery(String namedQueryName, int start, int end) {
+        if (start < 0 || end < 0)
+            throw new IllegalArgumentException("start and end should > 0");
         TypedQuery<T> query = getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType());
-        if (resultLimit > 0) {
-            query.setMaxResults(resultLimit);
+        if (start > 0) {
+            query.setFirstResult(start);
         }
-        for (Map.Entry<String, Object> entry : rawParameters) {
-            query.setParameter(entry.getKey(), entry.getValue());
+        if (end > 0) {
+            query.setMaxResults(end - start);
         }
         return query.getResultList();
     }
 
     @Override
-    public List<T> findWithNamedQuery(String namedQueryName, int start, int end) {
-        TypedQuery<T> query = this.em.createNamedQuery(namedQueryName, getEntityBeanType());
-        query.setMaxResults(end - start).setFirstResult(start);
+    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters) {
+        return findWithNamedQuery(namedQueryName, parameters, 0, 0);
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit) {
+        return findWithNamedQuery(namedQueryName, parameters, 0, resultLimit);
+    }
+
+    @Override
+    public List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int start, int end) {
+        if (start < 0 || end < 0)
+            throw new IllegalArgumentException("start and end should > 0");
+        Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
+        TypedQuery<T> query = getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType());
+        if (start > 0) {
+            query.setFirstResult(start);
+        }
+        if (end > 0) {
+            query.setMaxResults(end - start);
+        }
+        for (Map.Entry<String, Object> entry : rawParameters) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
         return query.getResultList();
     }
 }

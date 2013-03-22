@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserTaskDao;
+import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.service.UserService;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private UserTaskDao userTaskDao;
+    private UserSiteTaskDao userTaskDao;
 
     @Override
     public User getUser(String username) throws Exception {

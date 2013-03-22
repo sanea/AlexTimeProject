@@ -16,6 +16,8 @@ import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import ru.alex.webapp.dao.TaskDao;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.service.GroupService;
+import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 
@@ -33,6 +35,10 @@ public class ServiceTestSuite {
     UserService userService;
     @Autowired
     TaskService taskService;
+//    @Autowired
+//    GroupService groupService;
+//    @Autowired
+//    SiteService siteService;
 
     @BeforeTransaction
     public void verifyInitialDatabaseState() {

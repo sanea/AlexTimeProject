@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.TaskDao;
 import ru.alex.webapp.dao.UserActionDao;
 import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserTaskDao;
+import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.dao.UserTaskTimeSeqDao;
 import ru.alex.webapp.model.Task;
@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private UserTaskDao userTaskDao;
+    private UserSiteTaskDao userTaskDao;
     @Autowired
     private UserTaskTimeDao userTaskTimeDao;
     @Autowired

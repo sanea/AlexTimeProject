@@ -10,6 +10,8 @@ import java.io.Serializable;
 public class FacesUtil implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private FacesUtil() {}
+
     public static ExternalContext getExternalContext() {
         FacesContext facesContext = getFacesContext();
         ExternalContext externalContext = null;
