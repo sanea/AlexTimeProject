@@ -65,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("getTasksForUser username={}", username);
         if (username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong username");
-        List<UserSiteTask> tasks = userTaskDao.getTasksForUser(username);
+        List<UserSiteTask> tasks = null; //userTaskDao.getTasksForUser(username);
         logger.debug("getTasksForUser tasks={}", tasks);
 //        for (UserSiteTask task : tasks)
 //            checkTask(task);
@@ -82,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<UserSiteTask> getOnlineTasks() throws Exception {
         logger.debug("getOnlineTasks");
-        List<UserSiteTask> tasks = userTaskDao.getRunningTasks();
+        List<UserSiteTask> tasks = null; //userTaskDao.getRunningTasks();
         logger.debug("getOnlineTasks runningTasks={}", tasks);
 //        List<UserSiteTask> result = new ArrayList<UserSiteTask>(tasks.size());
 //        for (UserSiteTask task : tasks) {
@@ -99,7 +99,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("getUsersForTask taskId={}", taskId);
         if (taskId == null)
             throw new IllegalArgumentException("Wrong taskId");
-        List<UserSiteTask> tasks = userTaskDao.getUsersForTask(taskId);
+        List<UserSiteTask> tasks = null; //userTaskDao.getUsersForTask(taskId);
         logger.debug("getUsersForTask tasks={}", tasks);
         return tasks;
     }
@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public UserTaskTime getCurrentTimeForUserTask(Long taskId, String username) throws Exception {
         logger.debug("getCurrentTimeForUserTask taskId={}, username={}", taskId, username);
-        List<UserTaskTime> currentTimeList = userTaskTimeDao.getCurrentTime(taskId, username);
+        List<UserTaskTime> currentTimeList = null; //userTaskTimeDao.getCurrentTime(taskId, username);
         logger.debug("getCurrentTimeForUserTask currentTimeList={}", currentTimeList);
         if (currentTimeList.size() > 1)
             throw new Exception("current time list should have size <= 1");
@@ -125,9 +125,9 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("getAllNotCurrentTime from={}, to={}", from, to);
         List<UserTaskTime> tasks;
         if (from == null && to == null)
-            tasks = userTaskTimeDao.getAllNotCurrentTime();
+            tasks = null; //userTaskTimeDao.getAllNotCurrentTime();
         else
-            tasks = userTaskTimeDao.getNotCurrentTime(from, to);
+            tasks = null; //userTaskTimeDao.getNotCurrentTime(from, to);
         logger.debug("getAllNotCurrentTime tasks={}", tasks);
         return tasks;
     }
@@ -190,8 +190,8 @@ public class TaskServiceImpl implements TaskService {
     private void endTask(UserSiteTask task, UserTaskTime currentTime, Date finishTime, boolean stop) throws Exception {
         logger.debug("endTask task={}, finishTime={}, stop={}", task, finishTime, stop);
         logger.debug("endTask currentTime={}", currentTime);
-        userTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
-        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
+        //userTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
+        //userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("task should have current time and time seq");
 
@@ -222,9 +222,9 @@ public class TaskServiceImpl implements TaskService {
         //change user_task status
         task.setStatus(stop ? TaskStatus.STOPPED.getStatusStr() : TaskStatus.COMPLETED.getStatusStr());
         task.setUpdateTime(finishTime);
-        userTaskDao.merge(task);
-        userTaskDao.flush();
-        userTaskDao.clear();
+        //userTaskDao.merge(task);
+        //userTaskDao.flush();
+        //userTaskDao.clear();
 
         //change user_tak_time duration
         if (stop) {
@@ -241,9 +241,9 @@ public class TaskServiceImpl implements TaskService {
         //change user_tak_time current value
         //currentTime.setCurrent(false);
         currentTime.setFinishTime(finishTime);
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = null; //userTaskTimeDao.merge(currentTime);
+        //userTaskTimeDao.flush();
+        //userTaskTimeDao.clear();
 
         //add user_action
         UserAction action = new UserAction();
@@ -286,7 +286,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("startTask taskId={}, username={}, seconds={}", taskId, username, seconds);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
-        UserSiteTask userSiteTask = userTaskDao.getTaskForUser(username, taskId);
+        UserSiteTask userSiteTask = null; //userTaskDao.getTaskForUser(username, taskId);
         logger.debug("startTask userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new Exception("can't find user task");
@@ -310,7 +310,7 @@ public class TaskServiceImpl implements TaskService {
                 //change user_task status
                 userSiteTask.setStatus(TaskStatus.RUNNING.getStatusStr());
                 userSiteTask.setUpdateTime(now);
-                userSiteTask = userTaskDao.merge(userSiteTask);
+                userSiteTask = null; //userTaskDao.merge(userSiteTask);
 
                 //add user_task_time
                 taskTime.setDurationPlaySec(seconds);
@@ -337,7 +337,7 @@ public class TaskServiceImpl implements TaskService {
                 //change user_task status
                 userSiteTask.setStatus(TaskStatus.COMPLETED.getStatusStr());
                 userSiteTask.setUpdateTime(now);
-                userSiteTask = userTaskDao.merge(userSiteTask);
+                userSiteTask = null; //userTaskDao.merge(userSiteTask);
 
                 //add user_task_time
                 taskTime.setDurationPlaySec(0);
@@ -356,7 +356,7 @@ public class TaskServiceImpl implements TaskService {
             default:
                 throw new Exception("Wrong task type");
         }
-        userTaskTimeDao.persist(taskTime);
+       //userTaskTimeDao.persist(taskTime);
     }
 
     @Override
@@ -365,7 +365,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("pauseTask taskId={}, username={}", taskId, username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
-        UserSiteTask userSiteTask = userTaskDao.getTaskForUser(username, taskId);
+        UserSiteTask userSiteTask = null; //userTaskDao.getTaskForUser(username, taskId);
         logger.debug("pauseTask userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new Exception("can't find user task");
@@ -388,9 +388,9 @@ public class TaskServiceImpl implements TaskService {
         //change user_task status
         userSiteTask.setUpdateTime(now);
         userSiteTask.setStatus(TaskStatus.CUSTOM1.getStatusStr());
-        userTaskDao.merge(userSiteTask);
-        userTaskDao.flush();
-        userTaskDao.clear();
+        //userTaskDao.merge(userSiteTask);
+        //userTaskDao.flush();
+        //userTaskDao.clear();
 
         //set end time user_task_time_seq
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
@@ -420,7 +420,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("resumeTask taskId={}, username={}", taskId, username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
-        UserSiteTask userSiteTask = userTaskDao.getTaskForUser(username, taskId);
+        UserSiteTask userSiteTask = null; //userTaskDao.getTaskForUser(username, taskId);
         logger.debug("resumeTask userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new Exception("can't find user task");
@@ -437,9 +437,9 @@ public class TaskServiceImpl implements TaskService {
         //change user_task status
         userSiteTask.setUpdateTime(now);
         userSiteTask.setStatus(TaskStatus.RUNNING.getStatusStr());
-        userTaskDao.merge(userSiteTask);
-        userTaskDao.flush();
-        userTaskDao.clear();
+        //userTaskDao.merge(userSiteTask);
+        //userTaskDao.flush();
+        //userTaskDao.clear();
 
         //update finish_time of user_task_time
         int timeSpentSec = 0;
@@ -456,9 +456,9 @@ public class TaskServiceImpl implements TaskService {
         finisTime.setTime(now);
         finisTime.add(Calendar.SECOND, secondToAdd);
         currentTime.setFinishTime(finisTime.getTime());
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = null; //userTaskTimeDao.merge(currentTime);
+        //userTaskTimeDao.flush();
+        //userTaskTimeDao.clear();
 
         //add user_task_time_seq to end of current user_task_time
         UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
@@ -487,7 +487,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("extendTask taskId={}, username={}, seconds={}", taskId, username, seconds);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
-        UserSiteTask userSiteTask = userTaskDao.getTaskForUser(username, taskId);
+        UserSiteTask userSiteTask = null; //userTaskDao.getTaskForUser(username, taskId);
         logger.debug("extendTask userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new Exception("can't find user task");
@@ -514,9 +514,9 @@ public class TaskServiceImpl implements TaskService {
         finisTime.add(Calendar.SECOND, seconds);
         currentTime.setFinishTime(finisTime.getTime());
         currentTime.setDurationPlaySec(currentTime.getDurationPlaySec() + seconds);
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = null; //userTaskTimeDao.merge(currentTime);
+        //userTaskTimeDao.flush();
+        //userTaskTimeDao.clear();
 
         //add user action
         UserAction userAction = new UserAction();
@@ -534,7 +534,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("stopTask taskId={}, username={}", taskId, username);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong Input Params for starting task");
-        UserSiteTask userSiteTask = userTaskDao.getTaskForUser(username, taskId);
+        UserSiteTask userSiteTask = null; //userTaskDao.getTaskForUser(username, taskId);
         logger.debug("stopTask userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new Exception("can't find user task");
@@ -589,7 +589,7 @@ public class TaskServiceImpl implements TaskService {
         }
         //TODO
 //        for (UserSiteTask userTask : task.getUserTasksById())
-//            userTaskDao.remove(userTask);
+//            null; //userTaskDao.remove(userTask);
         taskDao.remove(task);
     }
 
@@ -649,7 +649,7 @@ public class TaskServiceImpl implements TaskService {
         logger.debug("updateUserTask taskId={}, username={}, assigned={}", taskId, username, assigned);
         if (taskId == null || username == null || username.equals(""))
             throw new IllegalArgumentException("Wrong params for updateUserTask");
-        List<UserSiteTask> userSiteTaskList = userTaskDao.getTaskForUserAll(username, taskId);
+        List<UserSiteTask> userSiteTaskList = null; //userTaskDao.getTaskForUserAll(username, taskId);
         logger.debug("updateUserTask userSiteTaskList={}", userSiteTaskList);
         if (userSiteTaskList != null && userSiteTaskList.size() > 1)
             throw new Exception("Smth is wrong with database");
@@ -662,7 +662,7 @@ public class TaskServiceImpl implements TaskService {
 //                    UserSiteTask ut = userSiteTaskList.get(0);
 //                    ut.setEnabled(true);
 //                    ut.setUpdateTime(now);
-//                    userTaskDao.merge(ut);
+//                    null; //userTaskDao.merge(ut);
 //                }
 //            } else {
 //                if (userSiteTaskList.get(0).getEnabled()) {
@@ -672,7 +672,7 @@ public class TaskServiceImpl implements TaskService {
 //                        throw new Exception("Can't disable running task");
 //                    ut.setEnabled(false);
 //                    ut.setUpdateTime(now);
-//                    userTaskDao.merge(ut);
+//                    null; //userTaskDao.merge(ut);
 //                }
 //            }
 //        } else if (assigned) {
@@ -695,7 +695,7 @@ public class TaskServiceImpl implements TaskService {
 //                throw new Exception("wrong username");
 //            ut.setUserByUsername(user);
 //
-//            userTaskDao.persist(ut);
+//            null; //userTaskDao.persist(ut);
 //        }
     }
 
@@ -705,7 +705,7 @@ public class TaskServiceImpl implements TaskService {
     @Scheduled(fixedDelay = 1000)
     public void checkAllTasks() {
         logger.debug("checkAllTasks");
-        List<UserSiteTask> runningTasks = userTaskDao.getRunningTasks();
+        List<UserSiteTask> runningTasks = null; //userTaskDao.getRunningTasks();
         logger.debug("checkAllTasks runningTasks={}", runningTasks);
         try {
             for (UserSiteTask task : runningTasks) {

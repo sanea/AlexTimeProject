@@ -1,5 +1,6 @@
 package ru.alex.webapp.beans;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.data.FilterEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,9 +147,11 @@ public class AllTaskMB implements Serializable {
             for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
                 timeSeqList.add(new TimeSequence(timeSeq));
             selectedTimeSeqList = timeSeqList;
+            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", false);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in select task", e.toString()));
         }
     }

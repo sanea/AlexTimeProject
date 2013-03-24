@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllEnabledUsers() throws Exception {
-        List<User> users = userDao.getEnabledUsers();
+        List<User> users = null;//userDao.getEnabledUsers();
         logger.debug("getAllEnabledUsers users={}", users);
         return users;
     }
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         logger.debug("isDeletableUser user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        List<UserSiteTask> userSiteTaskList = userTaskDao.getTasksAllForUser(user.getUsername());
+        List<UserSiteTask> userSiteTaskList = null;//userTaskDao.getTasksAllForUser(user.getUsername());
         logger.debug("isDeletableUser userSiteTaskList={}", userSiteTaskList);
         boolean result;
         if (userSiteTaskList != null || userSiteTaskList.size() > 0)

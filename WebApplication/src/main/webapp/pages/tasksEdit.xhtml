@@ -73,7 +73,7 @@
                     </p:column>
 
                     <p:column>
-                        <p:commandButton icon="ui-icon-transfer-e-w" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="assignDlg.show();"
+                        <p:commandButton icon="ui-icon-transfer-e-w" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
                                          update=":contentForm:assignDialog" title="assign">
                             <f:attribute name="task" value="#{task}"/>
                         </p:commandButton>

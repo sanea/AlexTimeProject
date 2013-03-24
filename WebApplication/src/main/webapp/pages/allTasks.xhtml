@@ -62,7 +62,7 @@
                     </p:column>
 
                     <p:column style="width: 40px;">
-                        <p:commandButton id="selectButton" update=":contentForm:taskDialog" oncomplete="taskDlg.show()" icon="ui-icon-search" title="Details"
+                        <p:commandButton id="selectButton" update=":contentForm:taskDialog" oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDlg.show(); }" icon="ui-icon-search" title="Details"
                                 actionListener="#{allTaskMB.selectTaskListener}">
                             <f:attribute name="task" value="#{task}"/>
                         </p:commandButton>

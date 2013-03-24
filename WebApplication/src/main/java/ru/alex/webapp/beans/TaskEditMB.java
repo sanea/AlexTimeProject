@@ -1,5 +1,6 @@
 package ru.alex.webapp.beans;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -168,10 +170,11 @@ public class TaskEditMB implements Serializable {
                 }
                 assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned, isRunning));
             }
-
+            RequestContext.getCurrentInstance().addCallbackParam("showAssignDlg", true);
             logger.debug("assignListener assignedList={}", assignedList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            RequestContext.getCurrentInstance().addCallbackParam("showAssignDlg", false);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
     }
