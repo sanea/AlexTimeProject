@@ -17,7 +17,7 @@ public class GroupMember implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)
     private Group groupByGroupId;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User userByUsername;
 

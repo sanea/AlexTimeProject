@@ -164,6 +164,11 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${org.hibernate.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${org.hibernate.version}</version>
+        </dependency>
         <!-- Mysql driver -->
         <dependency>
             <groupId>mysql</groupId>

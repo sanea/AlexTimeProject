@@ -1,14 +1,6 @@
 package ru.alex.webapp.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -17,6 +9,8 @@ import java.util.Collection;
  */
 @Table(name = "site")
 @Entity
+@NamedQueries({
+        })
 public class Site implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -7,23 +7,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.webapp.dao.TaskDao;
-import ru.alex.webapp.dao.UserActionDao;
-import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserSiteTaskDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
-import ru.alex.webapp.dao.UserTaskTimeSeqDao;
-import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserAction;
-import ru.alex.webapp.model.UserSiteTask;
-import ru.alex.webapp.model.UserTaskTime;
-import ru.alex.webapp.model.UserTaskTimeSeq;
+import ru.alex.webapp.dao.*;
+import ru.alex.webapp.model.*;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
 
-import javax.persistence.LockModeType;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +21,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-public class TaskServiceImpl implements TaskService {
+public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements TaskService {
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
     @Autowired
     private TaskDao taskDao;
@@ -45,6 +35,11 @@ public class TaskServiceImpl implements TaskService {
     private UserTaskTimeSeqDao userTaskTimeSeqDao;
     @Autowired
     private UserActionDao userActionDao;
+
+    @Override
+    protected GenericDao<Task, Long> getDao() {
+        return taskDao;
+    }
 
     @Override
     public List<Task> getAllTasks() throws Exception {
@@ -356,7 +351,7 @@ public class TaskServiceImpl implements TaskService {
             default:
                 throw new Exception("Wrong task type");
         }
-       //userTaskTimeDao.persist(taskTime);
+        //userTaskTimeDao.persist(taskTime);
     }
 
     @Override
@@ -561,7 +556,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void addTask(Task task) throws Exception {
+    public void add(Task task) throws Exception {
         logger.debug("addTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("Wrong task");
@@ -576,21 +571,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void removeTask(Long taskId) throws Exception {
-        logger.debug("removeTask taskId={}", taskId);
-        if (taskId == null)
-            throw new IllegalArgumentException("Wrong taskId");
-        Task task = taskDao.findById(taskId);
+    public void remove(Task task) throws Exception {
         logger.debug("removeTask task={}", task);
         if (task == null)
-            throw new Exception("Can't find task with id=" + taskId);
-        if (!isTaskEditable(taskId)) {
+            throw new IllegalArgumentException("Wrong task");
+        Task mergedTask = taskDao.findById(task.getId());
+        logger.debug("removeTask task={}", task);
+        if (mergedTask == null)
+            throw new Exception("Can't find task with id=" + task.getId());
+        if (!isTaskEditable(task.getId())) {
             throw new Exception("Task is already stated, please disable this task, can't delete");
         }
         //TODO
 //        for (UserSiteTask userTask : task.getUserTasksById())
 //            null; //userTaskDao.remove(userTask);
-        taskDao.remove(task);
+        taskDao.remove(mergedTask);
     }
 
     /**
@@ -625,7 +620,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void editTask(Task task) throws Exception {
+    public void edit(Task task) throws Exception {
         logger.debug("editTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("Wrong task");
@@ -702,7 +697,7 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Repeats every second
      */
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 10000)
     public void checkAllTasks() {
         logger.debug("checkAllTasks");
         List<UserSiteTask> runningTasks = null; //userTaskDao.getRunningTasks();

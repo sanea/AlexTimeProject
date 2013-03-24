@@ -4,15 +4,312 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:body>
-    <ui:composition template="templates/template.xhtml">
-        <ui:define name="content">
+<ui:composition template="templates/template.xhtml">
+<ui:define name="content">
 
-            <h2>Edit Users</h2>
-            <h:form id="contentForm">
-                <!-- TODO -->
+<h2>Edit Users</h2>
+<h:form id="contentForm">
+<p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
+                 actionListener="#{userEditMB.addNewUserListener}"
+                 oncomplete="addUserDlg.show();" process="@this" title="add new user"/>
+<p:dataTable var="user" value="#{userEditMB.userList}" id="userTable" editable="true" editMode="row">
 
-            </h:form>
-        </ui:define>
-    </ui:composition>
+    <p:ajax event="rowEdit" listener="#{userEditMB.onEdit}" update=":messages"/>
+    <p:ajax event="rowEditCancel" listener="#{userEditMB.onCancel}" update=":messages"/>
+
+    <p:column headerText="Name" sortBy="#{user.username}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.username}"/>
+            </f:facet>
+            <f:facet name="input">
+                <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
+                    <p:inputText id="usernameEdit" value="#{user.username}" styleClass="w100" required="true"
+                                 requiredMessage="username is needed"/>
+                    <p:message for="usernameEdit"/>
+                </h:panelGrid>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Password" sortBy="#{user.password}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.password}"/>
+            </f:facet>
+            <f:facet name="input">
+                <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
+                    <p:password id="passwordEdit" value="#{user.password}" styleClass="w100" required="true"
+                                requiredMessage="Password needed" feedback="true"
+                                validatorMessage="Length is between 1 and 30">
+                        <f:validateLength minimum="1" maximum="30"/>
+                    </p:password>
+                    <p:message for="passwordEdit"/>
+                </h:panelGrid>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="First Name" sortBy="#{user.firstName}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.firstName}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.firstName}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Last Name" sortBy="#{user.lastName}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.lastName}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.lastName}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Middle Name" sortBy="#{user.middleName}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.middleName}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.middleName}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Phone 1" sortBy="#{user.phone1}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.phone1}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputMask value="#{user.phone1}" styleClass="w100" mask="+7(999) 999-9999"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Phone 2" sortBy="#{user.phone2}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.phone2}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputMask value="#{user.phone2}" styleClass="w100" mask="+7(999) 999-9999"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Email" sortBy="#{user.email}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.email}"/>
+            </f:facet>
+            <f:facet name="input">
+                <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
+                    <p:inputText id="emailEdit" label="email"
+                                 validatorMessage="Invalid email format"
+                                 value="#{user.email}">
+                        <f:validateRegex
+                                pattern="(^$)|(^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)"/>
+                    </p:inputText>
+                    <p:message for="emailEdit"/>
+                </h:panelGrid>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Country" sortBy="#{user.country}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.country}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.country}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="City" sortBy="#{user.city}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.city}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.city}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Address" sortBy="#{user.address}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <h:outputText value="#{user.address}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{user.address}" styleClass="w100"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Enabled" sortBy="#{user.enabled}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <p:selectBooleanCheckbox value="#{user.enabled}"
+                                         disabled="true"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:selectBooleanCheckbox value="#{user.enabled}"
+                                         disabled="#{user.deleted}"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column headerText="Deleted" sortBy="#{user.deleted}">
+        <p:cellEditor>
+            <f:facet name="output">
+                <p:selectBooleanCheckbox value="#{user.deleted}"
+                                         disabled="true"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:selectBooleanCheckbox value="#{user.deleted}"
+                                         disabled="#{not user.deleted}"/>
+            </f:facet>
+        </p:cellEditor>
+    </p:column>
+
+    <p:column>
+        <p:rowEditor/>
+    </p:column>
+
+    <p:column>
+        <h:panelGroup rendered="#{userEditMB.userDeletable[user.username]}">
+            <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
+                             title="delete"
+                             update=":contentForm:removeConfirmDialog">
+                <f:setPropertyActionListener value="#{user}" target="#{userEditMB.selectedUser}"/>
+            </p:commandButton>
+            <p:commandButton value="Group" process="@this" actionListener="#{userEditMB.assignListener}"
+                             oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
+                             update=":contentForm:assignDialog" title="Group">
+                <f:attribute value="#{user}" name="user"/>
+            </p:commandButton>
+        </h:panelGroup>
+    </p:column>
+
+</p:dataTable>
+
+<p:dialog id="addDialog" header="Add user" widgetVar="addUserDlg" modal="true" closable="true"
+          closeOnEscape="true">
+    <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
+        <h:outputLabel for="userName" value="Name:"/>
+        <p:inputText value="#{userEditMB.newUser.username}" id="userName" required="true"
+                     requiredMessage="Name can't be empty"/>
+        <p:message for="userName"/>
+
+        <h:outputLabel for="password" value="Password:"/>
+        <p:password id="password" value="#{userEditMB.newUser.password}" required="true"
+                    requiredMessage="Password needed" feedback="true"
+                    validatorMessage="Length is between 1 and 30">
+            <f:validateLength minimum="1" maximum="30"/>
+        </p:password>
+        <p:message for="password"/>
+
+        <h:outputLabel for="firstName" value="First Name:"/>
+        <p:inputText id="firstName" value="#{userEditMB.newUser.firstName}"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="lastName" value="Last Name:"/>
+        <p:inputText id="lastName" value="#{userEditMB.newUser.lastName}"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="middleName" value="Middle Name:"/>
+        <p:inputText id="middleName" value="#{userEditMB.newUser.middleName}"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="phone1" value="Phone 1:"/>
+        <p:inputMask id="phone1" value="#{userEditMB.newUser.phone1}" mask="+7(999) 999-9999"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="phone2" value="Phone 2:"/>
+        <p:inputMask id="phone2" value="#{userEditMB.newUser.phone2}" mask="+7(999) 999-9999"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="email" value="Email:"/>
+        <p:inputText id="email" label="email"
+                     validatorMessage="Invalid email format"
+                     value="#{userEditMB.newUser.email}" required="false">
+            <f:validateRegex
+                    pattern="(^$)|(^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)"/>
+        </p:inputText>
+        <p:message for="email"/>
+
+
+        <h:outputLabel for="userCountry" value="Country:"/>
+        <p:inputText value="#{userEditMB.newUser.country}" id="userCountry"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="userCity" value="City:"/>
+        <p:inputText value="#{userEditMB.newUser.city}" id="userCity"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="userAddr" value="Address:"/>
+        <p:inputText value="#{userEditMB.newUser.address}" id="userAddr"/>
+        <h:panelGroup/>
+
+        <h:outputLabel for="enabled" value="Enabled:"/>
+        <p:selectBooleanCheckbox id="enabled" value="#{userEditMB.newUser.enabled}"/>
+        <h:panelGroup/>
+
+    </h:panelGrid>
+    <f:facet name="footer">
+        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:addDialogContent"
+                         oncomplete="if(args &amp;&amp; !args.validationFailed) addUserDlg.hide();"
+                         action="#{userEditMB.addNewUser}" process=":contentForm:addDialog"/>
+        <p:commandButton value="Cancel" oncomplete="addUserDlg.hide();" immediate="true"/>
+    </f:facet>
+</p:dialog>
+
+<p:dialog id="removeConfirmDialog" header="Remove User" widgetVar="removeConfirmDlg" modal="true"
+          closeOnEscape="true">
+
+    <h:outputText value="Are you sure you want to remove '#{userEditMB.selectedUser.username}'?"/>
+
+    <f:facet name="footer">
+        <p:commandButton value="Yes" update=":contentForm:userTable"
+                         oncomplete="removeConfirmDlg.hide()"
+                         action="#{userEditMB.removeUser}" process="@this"/>
+        <p:commandButton value="No" onclick="removeConfirmDlg.hide()"/>
+    </f:facet>
+</p:dialog>
+
+<p:dialog id="assignDialog" header="Assign Group for User" widgetVar="assignDlg" modal="true" closable="true"
+          closeOnEscape="true">
+    <h:panelGrid id="assignDialogContent">
+        <h:outputText value="#{userEditMB.selectedUser.username}"/>
+        <p:message for="groups"/>
+        <p:selectOneRadio id="groups" value="#{userEditMB.selectedGroup}" layout="pageDirection"
+                          required="true" requiredMessage="Please select group" converter="groupConverter">
+            <f:selectItems value="#{userEditMB.groupList}" var="group"
+                           itemLabel="#{group.groupName}" itemValue="#{group}"/>
+        </p:selectOneRadio>
+    </h:panelGrid>
+    <f:facet name="footer">
+        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:assignDialogContent"
+                         oncomplete="if(args &amp;&amp; !args.validationFailed) assignDlg.hide();"
+                         action="#{userEditMB.assignUser}" process=":contentForm:assignDialogContent"/>
+        <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:userTable"
+                         immediate="true"/>
+    </f:facet>
+</p:dialog>
+
+</h:form>
+</ui:define>
+</ui:composition>
 </h:body>
 </html> 

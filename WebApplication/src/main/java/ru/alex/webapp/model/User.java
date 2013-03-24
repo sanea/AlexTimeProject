@@ -43,9 +43,9 @@ public class User implements Serializable {
     private String phone1;
     @Column(name = "phone2", length = 20, nullable = true)
     private String phone2;
-    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<GroupMember> groupMemberByUsername;
-    @OneToMany(mappedBy = "userByUsername", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private GroupMember groupMemberByUsername;
+    @OneToMany(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserSiteTask> userSiteTasksByUsername;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "current_change", referencedColumnName = "id", nullable = true)
@@ -155,11 +155,11 @@ public class User implements Serializable {
         this.phone2 = phone2;
     }
 
-    public Collection<GroupMember> getGroupMemberByUsername() {
+    public GroupMember getGroupMemberByUsername() {
         return groupMemberByUsername;
     }
 
-    public void setGroupMemberByUsername(Collection<GroupMember> groupMemberByUsername) {
+    public void setGroupMemberByUsername(GroupMember groupMemberByUsername) {
         this.groupMemberByUsername = groupMemberByUsername;
     }
 
@@ -178,7 +178,6 @@ public class User implements Serializable {
     public void setCurrentChange(UserChange currentChange) {
         this.currentChange = currentChange;
     }
-
 
     @Override
     public boolean equals(Object o) {

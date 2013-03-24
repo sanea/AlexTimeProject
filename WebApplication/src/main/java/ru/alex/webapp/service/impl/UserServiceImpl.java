@@ -6,50 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.service.UserService;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends GenericServiceImpl<User, String> implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDao userDao;
-    @Autowired
-    private UserSiteTaskDao userTaskDao;
 
     @Override
-    public User getUser(String username) throws Exception {
-        logger.debug("getUser username={}", username);
-        if (username == null || username.equals(""))
-            throw new IllegalArgumentException("Wrong username: " + username);
-        User user = userDao.findById(username);
-        logger.debug("getUser user={}", user);
-        return user;
-    }
-
-    @Override
-    public List<User> getAllEnabledUsers() throws Exception {
-        List<User> users = null;//userDao.getEnabledUsers();
-        logger.debug("getAllEnabledUsers users={}", users);
-        return users;
-    }
-
-    @Override
-    public List<User> getAllUsers() throws Exception {
-        List<User> users = userDao.findAll();
-        logger.debug("getAllUsers users={}", users);
-        return users;
+    protected GenericDao<User, String> getDao() {
+        return userDao;
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void addUser(User user) throws Exception {
+    public void add(User user) throws Exception {
         logger.debug("addUser user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
@@ -59,8 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void updateUser(User user) throws Exception {
-        logger.debug("updateUser user={}", user);
+    public void edit(User user) throws Exception {
+        logger.debug("edit user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
             throw new IllegalArgumentException("Wrong user");
@@ -73,34 +49,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void deleteUser(User user) throws Exception {
+    public void remove(User user) throws Exception {
         logger.debug("deleteUser user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
         User userEntity = userDao.findById(user.getUsername());
         if (userEntity == null)
-            throw new Exception("Can't find for delete user " + user.getUsername());
-        boolean isDeletable = isDeletableUser(userEntity);
-        logger.debug("deleteUser isDeletable={}", isDeletable);
-        if (isDeletable)
-            userDao.remove(userEntity);
-        else
-            throw new Exception("Can't delete user " + user.getUsername() + " (only disable)");
+            throw new Exception("Can't find user for delete" + user.getUsername());
+        if (!isUserDeletable(userEntity))
+            throw new Exception("User has active user change, please wait or close user session.");
+        userEntity.setDeleted(true);
+        userEntity.setEnabled(false);
+        userDao.merge(userEntity);
     }
 
     @Override
-    public boolean isDeletableUser(User user) throws Exception {
-        logger.debug("isDeletableUser user={}", user);
+    public boolean isUserDeletable(User user) throws Exception {
+        logger.debug("isUserDeletable user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        List<UserSiteTask> userSiteTaskList = null;//userTaskDao.getTasksAllForUser(user.getUsername());
-        logger.debug("isDeletableUser userSiteTaskList={}", userSiteTaskList);
+        User userEntity = userDao.findById(user.getUsername());
+        logger.debug("deleteUser userEntity={}", userEntity);
+        if (userEntity == null)
+            throw new Exception("isUserDeletable can't find user " + user.getUsername());
         boolean result;
-        if (userSiteTaskList != null || userSiteTaskList.size() > 0)
+        if (userEntity.isDeleted()) {
             result = false;
-        else
-            result = true;
-        logger.debug("isDeletableUser {}", result);
+        } else {
+            if (userEntity.getCurrentChange() != null)
+                result = false;
+            else
+                result = true;
+        }
+        logger.debug("isUserDeletable {}", result);
         return result;
     }
 }

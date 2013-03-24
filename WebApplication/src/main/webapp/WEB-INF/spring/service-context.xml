@@ -17,6 +17,7 @@
     <context:component-scan base-package="ru.alex.webapp.dao"/>
     <context:component-scan base-package="ru.alex.webapp.service"/>
     <context:component-scan base-package="ru.alex.webapp.beans"/>
+    <context:component-scan base-package="ru.alex.webapp.converters"/>
 
     <!-- Hibernate without JPA
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

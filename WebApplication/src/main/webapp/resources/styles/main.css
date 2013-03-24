@@ -14,3 +14,11 @@ body {
     background-color: #a9dba9 !important;
     background-image: none !important;
 }
+
+.noBorder {
+    border-width: 0px !important;
+}
+
+.w100 {
+    width: 100%;
+}

@@ -1,14 +1,16 @@
 package ru.alex.webapp.beans;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.model.Group;
+import ru.alex.webapp.model.GroupMember;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.service.GroupService;
 import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.util.FacesUtil;
 
@@ -28,56 +30,96 @@ import java.util.Map;
 public class UserEditMB implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserEditMB.class);
-    private Map<String, Boolean> userDeletable;
-    @Autowired
-    private TaskService taskService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GroupService groupService;
     private List<User> userList;
-    private String userName;
+    private Map<String, Boolean> userDeletable;
     private User newUser = new User();
     private User selectedUser;
+    private List<Group> groupList;
+    private Group selectedGroup;
 
     @PostConstruct
     private void init() {
-        userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.debug("init username={}", userName);
+        initUsers();
+        initGroups();
+    }
+
+    private void initUsers() {
         try {
-            intiUsers();
+            userList = userService.findAll();
+            logger.debug("initUsers userList={}", userList);
+            userDeletable = new HashMap(userList.size());
+            for (User u : userList) {
+                boolean deletable = userService.isUserDeletable(u);
+                userDeletable.put(u.getUsername(), deletable);
+            }
+            logger.debug("initUsers userEditable={}", userDeletable);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
         }
     }
 
-    private void intiUsers() throws Exception {
-        userList = userService.getAllUsers();
-        logger.debug("intiUsers userList={}", userList);
-        userDeletable = new HashMap<String, Boolean>(userList.size());
-        for (User u : userList) {
-            boolean isDeletable = userService.isDeletableUser(u);
-            userDeletable.put(u.getUsername(), isDeletable);
+    private void initGroups() {
+        try {
+            groupList = groupService.findAll();
+            logger.debug("initGroups groupList={}", groupList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
         }
-        logger.debug("initUsers userDeletable={}" + userDeletable);
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public Map<String, Boolean> getUserDeletable() {
+        return userDeletable;
+    }
+
+    public User getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(User newUser) {
+        this.newUser = newUser;
+    }
+
+    public User getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(User selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public Group getSelectedGroup() {
+        return selectedGroup;
+    }
+
+    public void setSelectedGroup(Group selectedGroup) {
+        this.selectedGroup = selectedGroup;
     }
 
     public void onEdit(RowEditEvent event) {
         User user = (User) event.getObject();
         logger.debug("onEdit user={}", user);
         try {
-            userService.updateUser(user);
+            userService.edit(user);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Edited", user.getUsername()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in editing task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in editing user", e.toString()));
         }
-
-        try {
-            intiUsers();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of users", e.toString()));
-        }
+        initUsers();
     }
 
     public void onCancel(RowEditEvent event) {
@@ -88,118 +130,60 @@ public class UserEditMB implements Serializable {
     public void addNewUserListener(ActionEvent event) {
         logger.debug("addNewUserListener");
         newUser = new User();
+        newUser.setDeleted(false);
         newUser.setEnabled(true);
     }
 
     public void addNewUser() {
         logger.debug("addNewUser newUser={}", newUser);
         try {
-            userService.addUser(newUser);
-            intiUsers();
+            userService.add(newUser);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Added", newUser.getUsername()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in adding user", e.toString()));
         }
+        initUsers();
+    }
+
+    public void removeUser() {
+        logger.debug("removeUser selectedUser={}", selectedUser);
+        try {
+            userService.remove(selectedUser);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Removed", selectedUser.getUsername()));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing user", e.toString()));
+        }
+        initUsers();
     }
 
     public void assignListener(ActionEvent event) {
-        //TODO
         try {
-//            selectedUser = (User) event.getComponent().getAttributes().get("user");
-//            logger.debug("assignListener selectedUser={}", selectedUser);
-//
-//            List<User> userList = userService.getAllEnabledUsers();
-//            logger.debug("assignListener userList={}", userList);
-//
-//            List<UserSiteTask> userTaskList = taskService.getUsersForTask(selectedTask.getId());
-//            logger.debug("assignListener userTaskList={}", userTaskList);
-//
-//            assignedList = new ArrayList<UserTaskAssigned>(userList.size());
-//
-//            for (User u : userList) {
-//                boolean isAssigned = false;
-//                boolean isRunning = false;
-//                for (UserSiteTask ut : userTaskList) {
-//                    if (u.getUsername().equals(ut.getUserByUsername().getUsername())) {
-//                        isAssigned = true;
-//                        isRunning = TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING;
-//                        break;
-//                    }
-//                }
-//                assignedList.add(new UserTaskAssigned(u.getUsername(), isAssigned, isRunning));
-//            }
-//
-//            logger.debug("assignListener assignedList={}", assignedList);
+            selectedUser = (User) event.getComponent().getAttributes().get("user");
+            logger.debug("assignListener selectedUser={}", selectedUser);
+            GroupMember groupMember = selectedUser.getGroupMemberByUsername();
+            logger.debug("assignListener groupMember={}", groupMember);
+            if (groupMember != null)
+                selectedGroup = groupMember.getGroupByGroupId();
+            else
+                selectedGroup = null;
+            logger.debug("assignListener selectedGroup={}", selectedGroup);
+            RequestContext.getCurrentInstance().addCallbackParam("showAssignDlg", true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            RequestContext.getCurrentInstance().addCallbackParam("showAssignDlg", false);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
     }
 
-    public void assignTask() {
-        //TODO
-        logger.debug("assignTask selectedUser={}", selectedUser);
+    public void assignUser() {
+        logger.debug("assignUser selectedUser={}, selectedGroup={}", selectedUser, selectedGroup);
         try {
-//            Long innerSelectedTaskId = selectedTask.getId();
-//            for (UserTaskAssigned assigned : assignedList) {
-//                taskService.updateUserTask(innerSelectedTaskId, assigned.getUsername(), assigned.getAssigned());
-//            }
-//            initTasks();
-//            logger.debug("assignTask taskList={}", taskList);
-//            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Assigned", selectedTask.getName()));
-//            assignedList = null;
+            //TODO save through GroupMemeber
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
-        }
-    }
-
-    public void removeTask() {
-        //TODO
-        logger.debug("removeTask selectedUser={}", selectedUser);
-        try {
-//            taskService.removeTask(selectedTask.getId());
-//            initTasks();
-//            logger.debug("removeTask taskList={}", taskList);
-//            FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task", e.toString()));
-        }
-    }
-
-    public static class UserGroupAssigned {
-        private String username;
-        private boolean assigned;
-
-        public UserGroupAssigned(String username, boolean assigned) {
-            this.username = username;
-            this.assigned = assigned;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public boolean getAssigned() {
-            return assigned;
-        }
-
-        public void setAssigned(boolean assigned) {
-            this.assigned = assigned;
-        }
-
-        @Override
-        public String toString() {
-            return "UserTaskAssigned{" +
-                    "username='" + username + '\'' +
-                    ", assigned=" + assigned +
-                    '}';
         }
     }
 

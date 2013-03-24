@@ -7,7 +7,7 @@ import ru.alex.webapp.model.UserTaskTime;
 import java.util.Date;
 import java.util.List;
 
-public interface TaskService {
+public interface TaskService extends GenericService<Task, Long> {
     List<Task> getAllTasks() throws Exception;
 
     List<UserSiteTask> getTasksForUser(String username) throws Exception;
@@ -32,13 +32,7 @@ public interface TaskService {
 
     void stopTask(Long taskId, String username) throws Exception;
 
-    void addTask(Task task) throws Exception;
-
-    void removeTask(Long taskId) throws Exception;
-
     boolean isTaskEditable(Long taskId) throws Exception;
-
-    void editTask(Task task) throws Exception;
 
     void updateUserTask(Long taskId, String username, boolean assigned) throws Exception;
 

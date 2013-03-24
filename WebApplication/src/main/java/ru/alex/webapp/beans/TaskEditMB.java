@@ -105,7 +105,7 @@ public class TaskEditMB implements Serializable {
         Task task = (Task) event.getObject();
         logger.debug("onEdit task={}", task);
         try {
-            taskService.editTask(task);
+            taskService.edit(task);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Edited", task.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -135,7 +135,7 @@ public class TaskEditMB implements Serializable {
     public void addNewTask() {
         logger.debug("addNewTask newTask={}", newTask);
         try {
-            taskService.addTask(newTask);
+            taskService.add(newTask);
             initTasks();
             logger.debug("addNewTask taskList={}", taskList);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Added", newTask.getName()));
@@ -150,7 +150,7 @@ public class TaskEditMB implements Serializable {
             selectedTask = (Task) event.getComponent().getAttributes().get("task");
             logger.debug("assignListener selectedTask={}", selectedTask);
 
-            List<User> userList = userService.getAllEnabledUsers();
+            List<User> userList = null;//userService.getAllEnabledUsers();
             logger.debug("assignListener userList={}", userList);
 
             List<UserSiteTask> userSiteTaskList = taskService.getUsersForTask(selectedTask.getId());
@@ -199,7 +199,7 @@ public class TaskEditMB implements Serializable {
     public void removeTask() {
         logger.debug("removeTask selectedTask={}", selectedTask);
         try {
-            taskService.removeTask(selectedTask.getId());
+            taskService.remove(selectedTask);
             initTasks();
             logger.debug("removeTask taskList={}", taskList);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Removed", selectedTask.getName()));
