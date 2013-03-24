@@ -4,7 +4,7 @@ USE `webapp`;
 --
 -- Host: localhost    Database: webapp
 -- ------------------------------------------------------
--- Server version	5.1.66-community
+-- Server version	5.5.25a
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -57,6 +57,7 @@ CREATE TABLE `group_members` (
   `group_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_members_username` (`username`,`group_id`),
+  UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `idx_members_group_id` (`group_id`),
   CONSTRAINT `fk_members_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`),
   CONSTRAINT `fk_members_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
@@ -112,7 +113,7 @@ CREATE TABLE `site` (
   `country` varchar(255) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +122,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2',NULL,NULL,NULL,0),(3,'площадка 3',NULL,NULL,NULL,0);
+INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2_removed','','','',1),(3,'площадка 3','','','',0),(4,'123_removed','','','',1),(5,'133_removed','','','',1);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,17 +381,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('admin','1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('user1','1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('user2','1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('user3','1',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'webapp'
---
-
---
--- Dumping routines for database 'webapp'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -401,4 +394,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-14 20:06:26
+-- Dump completed on 2013-03-25  1:30:19
