@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -25,9 +26,9 @@ public class Group implements Serializable {
     private Long id;
     @Column(name = "group_name", nullable = false, length = 255)
     private String groupName;
-    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Collection<GroupAuthority> groupAuthorityById;
-    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "groupByGroupId", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Collection<GroupMember> groupMemberById;
 
     public Long getId() {
@@ -87,5 +88,18 @@ public class Group implements Serializable {
         sb.append(", groupName='").append(groupName).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public void addAuthority(GroupAuthority groupAuthority) {
+        groupAuthority.setGroupByGroupId(this);
+        if (groupAuthorityById == null)
+            groupAuthorityById = new ArrayList<>();
+        groupAuthorityById.add(groupAuthority);
+    }
+
+    public void removeAuthority(GroupAuthority groupAuthority) {
+        groupAuthority.setAuthority(null);
+        if (groupAuthorityById != null)
+            groupAuthorityById.remove(groupAuthority);
     }
 }

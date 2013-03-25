@@ -35,8 +35,8 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void edit(User user) throws Exception {
-        logger.debug("edit user={}", user);
+    public void update(User user) throws Exception {
+        logger.debug("update user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
             throw new IllegalArgumentException("Wrong user");

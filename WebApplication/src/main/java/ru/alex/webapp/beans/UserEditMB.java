@@ -116,7 +116,7 @@ public class UserEditMB implements Serializable {
         User user = (User) event.getObject();
         logger.debug("onEdit user={}", user);
         try {
-            userService.edit(user);
+            userService.update(user);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Edited", user.getUsername()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -187,7 +187,7 @@ public class UserEditMB implements Serializable {
             logger.debug("assignUser groupMemberOld={}", groupMemberOld);
             if (groupMemberOld != null && groupMemberOld.getGroupByGroupId() != null) {
                 groupMemberOld.setGroupByGroupId(selectedGroup);
-                groupMemberService.edit(groupMemberOld);
+                groupMemberService.update(groupMemberOld);
             } else {
                 GroupMember groupMember = new GroupMember();
                 groupMember.setGroupByGroupId(selectedGroup);

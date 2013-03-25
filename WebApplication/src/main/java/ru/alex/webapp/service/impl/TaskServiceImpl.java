@@ -620,7 +620,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void edit(Task task) throws Exception {
+    public void update(Task task) throws Exception {
         logger.debug("editTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("Wrong task");

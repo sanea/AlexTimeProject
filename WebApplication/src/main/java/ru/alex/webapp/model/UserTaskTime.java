@@ -3,6 +3,7 @@ package ru.alex.webapp.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -184,5 +185,12 @@ public class UserTaskTime implements Serializable {
         sb.append(", timeSeq=").append(timeSeq);
         sb.append('}');
         return sb.toString();
+    }
+
+    public void addUserAction(UserAction userAction) {
+        userAction.setUserTaskTimeById(this);
+        if (userActionsById == null)
+            userActionsById = new ArrayList<UserAction>();
+        userActionsById.add(userAction);
     }
 }

@@ -19,7 +19,6 @@ import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -105,7 +104,7 @@ public class TaskEditMB implements Serializable {
         Task task = (Task) event.getObject();
         logger.debug("onEdit task={}", task);
         try {
-            taskService.edit(task);
+            taskService.update(task);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Task Edited", task.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

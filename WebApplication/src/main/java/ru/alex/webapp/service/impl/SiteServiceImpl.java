@@ -31,8 +31,8 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void edit(Site entity) throws Exception {
-        logger.debug("edit site={}", entity);
+    public void update(Site entity) throws Exception {
+        logger.debug("update site={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
         throwExceptionIfNotExists(entity, entity.getId());

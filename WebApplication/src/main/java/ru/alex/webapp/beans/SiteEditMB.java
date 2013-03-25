@@ -82,7 +82,7 @@ public class SiteEditMB implements Serializable {
         Site site = (Site) event.getObject();
         logger.debug("onEdit site={}", site);
         try {
-            siteService.edit(site);
+            siteService.update(site);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("Site Edited", site.getName()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

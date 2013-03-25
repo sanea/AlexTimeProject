@@ -15,7 +15,7 @@ public interface GenericService<T, ID extends Serializable> {
 
     Long count();
 
-    void edit(T entity) throws Exception;
+    void update(T entity) throws Exception;
 
     void add(T entity) throws Exception;
 

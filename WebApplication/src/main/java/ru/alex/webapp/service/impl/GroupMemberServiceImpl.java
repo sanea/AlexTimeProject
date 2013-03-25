@@ -32,8 +32,8 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void edit(GroupMember entity) throws Exception {
-        logger.debug("edit GroupMember={}", entity);
+    public void update(GroupMember entity) throws Exception {
+        logger.debug("update groupMember={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
         throwExceptionIfNotExists(entity, entity.getId());
@@ -43,7 +43,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void add(GroupMember entity) throws Exception {
-        logger.debug("add GroupMember={}", entity);
+        logger.debug("add groupMember={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
         if (entity.getGroupByGroupId() == null || entity.getUserByUsername() == null)
@@ -60,7 +60,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void remove(GroupMember entity) throws Exception {
-        logger.debug("remove GroupMember={}", entity);
+        logger.debug("remove groupMember={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
         throwExceptionIfNotExists(entity, entity.getId());
