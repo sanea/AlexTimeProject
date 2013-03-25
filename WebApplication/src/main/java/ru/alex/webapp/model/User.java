@@ -43,7 +43,7 @@ public class User implements Serializable {
     private String phone1;
     @Column(name = "phone2", length = 20, nullable = true)
     private String phone2;
-    @OneToOne(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private GroupMember groupMemberByUsername;
     @OneToMany(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserSiteTask> userSiteTasksByUsername;
