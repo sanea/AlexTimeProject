@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.GroupDao;
 import ru.alex.webapp.model.Group;
+import ru.alex.webapp.model.GroupMember;
 import ru.alex.webapp.service.GroupService;
+
+import java.util.Collection;
 
 /**
  * @author Alex
@@ -55,6 +58,10 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
             throw new IllegalArgumentException("Wrong entity");
         throwExceptionIfNotExists(entity, entity.getId());
         Group mergedEntity = groupDao.merge(entity);
+        Collection<GroupMember> groupMembers = mergedEntity.getGroupMemberById();
+        logger.debug("remove groupMembers={}", groupMembers);
+        if (groupMembers != null && groupMembers.size() > 0)
+            throw new Exception("Can't remove group with assigned Users.");
         groupDao.remove(mergedEntity); //Cascade.ALL
     }
 }

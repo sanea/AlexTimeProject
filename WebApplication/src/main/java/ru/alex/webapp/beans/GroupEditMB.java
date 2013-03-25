@@ -11,7 +11,6 @@ import ru.alex.webapp.model.Group;
 import ru.alex.webapp.model.GroupAuthority;
 import ru.alex.webapp.model.enums.Authority;
 import ru.alex.webapp.service.GroupAuthorityService;
-import ru.alex.webapp.service.GroupMemberService;
 import ru.alex.webapp.service.GroupService;
 import ru.alex.webapp.util.FacesUtil;
 
@@ -36,8 +35,6 @@ public class GroupEditMB implements Serializable {
     private GroupService groupService;
     @Autowired
     private GroupAuthorityService groupAuthorityService;
-    @Autowired
-    private GroupMemberService groupMemberService;
     private List<Group> groupList;
     private Group newGroup = new Group();
     private Group selectedGroup;
@@ -169,31 +166,39 @@ public class GroupEditMB implements Serializable {
         logger.debug("assignGroup selectedGroup={}, selectedAuthorities={}", selectedGroup, selectedAuthorities);
         try {
             Collection<GroupAuthority> selectedGA = selectedGroup.getGroupAuthorityById();
-            logger.debug("assignListener groupAuthorities={}", selectedGA);
+            logger.debug("assignGroup before groupAuthorities={}", selectedGA);
             for (Authority authority : authorityList) {
+                GroupAuthority ga = groupAuthorityByAuthority(selectedGA, authority);
                 if (selectedAuthorities.contains(authority)) {
-                    if (selectedGA == null || !selectedGA.contains(authority)) {
-                        GroupAuthority ga = new GroupAuthority();
-                        ga.setAuthority(authority.toString());
-                        selectedGroup.addAuthority(ga);
+                    if (ga == null) {
+                        GroupAuthority newGA = new GroupAuthority();
+                        newGA.setAuthority(authority.toString());
+                        selectedGroup.addAuthority(newGA);
+                        groupAuthorityService.add(newGA);
                     }
                 } else {
-                    if (selectedGA != null && selectedGA.contains(authority)) {
-                        for (GroupAuthority ga : selectedGA) {
-                            if (ga.getAuthority().equals(authority.toString())) {
-                                selectedGroup.removeAuthority(ga);
-                                break;
-                            }
-                        }
+                    if (ga != null) {
+                        selectedGroup.removeAuthority(ga);
+                        groupAuthorityService.remove(ga);
                     }
                 }
             }
-            groupService.update(selectedGroup);
+            logger.debug("assignGroup after groupAuthorities={}", selectedGA);
+//            groupService.update(selectedGroup);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
         initGroups();
+    }
+
+    private GroupAuthority groupAuthorityByAuthority(Collection<GroupAuthority> groupAuthorities, Authority authority) {
+        if (groupAuthorities == null)
+            return null;
+        for (GroupAuthority ga : groupAuthorities)
+            if (ga.getAuthority().equals(authority.toString()))
+                return ga;
+        return null;
     }
 
 }

@@ -92,7 +92,7 @@
                         <h:outputText value="#{groupEditMB.selectedGroup.groupName}"/>
                         <p:message for="groups"/>
                         <p:selectManyCheckbox id="groups" value="#{groupEditMB.selectedAuthorities}"
-                                              layout="pageDirection"
+                                              layout="pageDirection" converter="#{authorityConverter}"
                                               required="true" requiredMessage="Please select at least one authority">
                             <f:selectItems value="#{groupEditMB.authorityList}" var="auth"
                                            itemLabel="#{auth}" itemValue="#{auth}"/>
