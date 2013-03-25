@@ -4,7 +4,7 @@ USE `webapp`;
 --
 -- Host: localhost    Database: webapp
 -- ------------------------------------------------------
--- Server version	5.5.25a
+-- Server version	5.1.66-community
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `group_authorities` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `fk_authorities_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `group_authorities` (
 
 LOCK TABLES `group_authorities` WRITE;
 /*!40000 ALTER TABLE `group_authorities` DISABLE KEYS */;
-INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL'),(11,1,'EDIT_SITES'),(12,1,'ASSIGN_TASKS');
+INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL'),(11,1,'EDIT_SITES'),(12,1,'ASSIGN_TASKS'),(25,6,'EDIT_USERS'),(26,6,'MANAGE_TASK'),(27,6,'EDIT_TASKS'),(28,6,'STAT_ONLINE'),(29,6,'STAT_ALL'),(30,6,'EDIT_GROUPS'),(31,6,'EDIT_SITES'),(32,6,'ASSIGN_TASKS');
 /*!40000 ALTER TABLE `group_authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +61,7 @@ CREATE TABLE `group_members` (
   KEY `idx_members_group_id` (`group_id`),
   CONSTRAINT `fk_members_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`),
   CONSTRAINT `fk_members_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `group_members` (
 
 LOCK TABLES `group_members` WRITE;
 /*!40000 ALTER TABLE `group_members` DISABLE KEYS */;
-INSERT INTO `group_members` VALUES (1,'admin',1),(2,'user1',2),(3,'user2',2);
+INSERT INTO `group_members` VALUES (5,'1',6),(1,'admin',1),(9,'testde',1),(2,'user1',2),(3,'user2',2),(8,'user3',2);
 /*!40000 ALTER TABLE `group_members` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `groups` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `group_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'admin'),(2,'operator');
+INSERT INTO `groups` VALUES (1,'admin'),(2,'operator'),(6,'test');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +113,7 @@ CREATE TABLE `site` (
   `country` varchar(255) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2_removed','','','',1),(3,'площадка 3','','','',0),(4,'123_removed','','','',1),(5,'133_removed','','','',1);
+INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2','','','',0),(3,'площадка 3','','','',0),(4,'123_removed','','','',1),(5,'133_removed','','','',1),(6,'d_removed','','','',0);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,6 +139,7 @@ CREATE TABLE `site_task` (
   `task_id` bigint(20) unsigned NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_site_task` (`site_id`,`task_id`),
   KEY `fk_site_task_idx1` (`site_id`),
   KEY `fk_site_task_idx2` (`task_id`),
   CONSTRAINT `fk_site_task1` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
@@ -224,10 +225,7 @@ CREATE TABLE `user_change` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
-  `site_id` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_change_site_idx` (`site_id`),
-  CONSTRAINT `fk_change_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -301,6 +299,8 @@ CREATE TABLE `user_task_time` (
   KEY `fk_user_task_idx` (`user_task_id`),
   KEY `FK_TIME_SEQ_idx` (`time_seq_id`),
   KEY `fk_time_change_idx` (`user_change_id`),
+  KEY `fk_user_change_idx` (`user_change_id`),
+  CONSTRAINT `fk_task_time_user_change` FOREIGN KEY (`user_change_id`) REFERENCES `user_change` (`id`),
   CONSTRAINT `FK_TIME_SEQ` FOREIGN KEY (`time_seq_id`) REFERENCES `user_task_time_seq` (`id`),
   CONSTRAINT `fk_time_task` FOREIGN KEY (`user_task_id`) REFERENCES `user_site_task` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -381,7 +381,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
+INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('asd','1',1,'','','','','','','','','',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('testde','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -394,4 +394,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-25  1:30:19
+-- Dump completed on 2013-03-25 18:18:07
