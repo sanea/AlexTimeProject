@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface TaskService extends GenericService<Task, Long> {
-    List<Task> getAllTasks() throws Exception;
 
     List<UserSiteTask> getTasksForUser(String username) throws Exception;
 

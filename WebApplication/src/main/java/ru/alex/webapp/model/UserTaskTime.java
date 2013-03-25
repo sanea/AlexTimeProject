@@ -12,7 +12,15 @@ import java.util.Date;
  */
 @Table(name = "user_task_time")
 @Entity
+@NamedQueries({
+        @NamedQuery(name = UserTaskTime.BY_SITE_ID, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u where u.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.userByUsername.username = :username")
+})
 public class UserTaskTime implements Serializable {
+    public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
+    public static final String CURRENT_BY_SITE_ID = "UserTaskTime.CURRENT_BY_SITE_ID";
+    public static final String BY_USERNAME = "UserTaskTime.BY_USERNAME";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

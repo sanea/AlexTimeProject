@@ -8,11 +8,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteDao;
+import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.model.Site;
-import ru.alex.webapp.model.UserChange;
+import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.SiteService;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -23,6 +26,8 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
     private static final Logger logger = LoggerFactory.getLogger(SiteServiceImpl.class);
     @Autowired
     SiteDao siteDao;
+    @Autowired
+    UserTaskTimeDao userTaskTimeDao;
 
     @Override
     protected GenericDao<Site, Long> getDao() {
@@ -47,6 +52,7 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
             throw new IllegalArgumentException("Wrong entity");
         if (entity.getName() == null || entity.getName().equals(""))
             throw new Exception("Name can't be empty");
+        entity.setDeleted(false);
         siteDao.persist(entity);
     }
 
@@ -59,9 +65,19 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         throwExceptionIfNotExists(entity, entity.getId());
         if (!isSiteDeletable(entity))
             throw new Exception("Site has active user changes, please wait or close user session.");
-        entity.setName(entity.getName() + REMOVED_NAME_APPEND);
-        entity.setDeleted(true);
-        siteDao.merge(entity);
+
+        Map<String, Object> params = new HashMap<>(1);
+        params.put("siteId", entity.getId());
+        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_SITE_ID, params);
+        logger.debug("remove BY_SITE_ID userTaskTimeList={}", userTaskTimeList);
+        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+            entity = siteDao.merge(entity);
+            siteDao.remove(entity);
+        } else {
+            entity.setName(entity.getName() + REMOVED_NAME_APPEND);
+            entity.setDeleted(true);
+            siteDao.merge(entity);
+        }
     }
 
     @Override
@@ -74,9 +90,12 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         if (site.getDeleted()) {
             result = false;
         } else {
-            Collection<UserChange> userChangeList = site.getUserChangeList();
-            logger.debug("isSiteDeletable userChangeList={}", userChangeList);
-            if (userChangeList == null || userChangeList.size() == 0)
+            site = siteDao.merge(site);
+            Map<String, Object> params = new HashMap<>(1);
+            params.put("siteId", site.getId());
+            Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_ID, params);
+            logger.debug("isSiteDeletable CURRENT_BY_SITE_ID userTaskTimeList={}", userTaskTimeList);
+            if (userTaskTimeList == null || userTaskTimeList.size() == 0)
                 result = true;
             else
                 result = false;

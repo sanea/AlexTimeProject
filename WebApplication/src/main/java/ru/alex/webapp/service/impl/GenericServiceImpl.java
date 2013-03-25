@@ -33,7 +33,7 @@ public abstract class GenericServiceImpl<T, ID extends Serializable> implements 
 
     protected void throwExceptionIfNotExists(T entity, ID id) throws Exception {
         T mergedEntity = getDao().findById(id);
-        logger.debug("throwExceptionIfNotExist {}={}", entity.getClass().getName(), mergedEntity);
+        logger.debug("throwExceptionIfNotExists {}={}", entity.getClass().getName(), mergedEntity);
         if (mergedEntity == null)
             throw new Exception("Can't find " + entity.getClass().getName() + " with id=" + id);
     }

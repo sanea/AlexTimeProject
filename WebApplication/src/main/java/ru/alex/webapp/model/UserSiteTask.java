@@ -10,7 +10,11 @@ import java.util.Date;
  */
 @Table(name = "user_site_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "site_task_id"}))
 @Entity
+@NamedQueries({
+        @NamedQuery(name = UserSiteTask.BY_USERNAME, query = "SELECT u FROM UserSiteTask u where userByUsername.username = :username")
+})
 public class UserSiteTask implements Serializable {
+    public static final String BY_USERNAME = "User.BY_USERNAME";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

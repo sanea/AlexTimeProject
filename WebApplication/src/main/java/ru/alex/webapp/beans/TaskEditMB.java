@@ -58,7 +58,7 @@ public class TaskEditMB implements Serializable {
     }
 
     private void initTasks() throws Exception {
-        taskList = taskService.getAllTasks();
+        taskList = taskService.findAll();
         logger.debug("initTasks taskList={}", taskList);
         taskEditable = new HashMap<Long, Boolean>(taskList.size());
         for (Task t : taskList) {

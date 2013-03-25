@@ -48,7 +48,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
             throw new IllegalArgumentException("Wrong entity");
         if (entity.getGroupByGroupId() == null || entity.getUserByUsername() == null)
             throw new Exception("User and group can't be null");
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>(1);
         params.put("username", entity.getUserByUsername().getUsername());
         List<GroupMember> groupMembers = groupMemberDao.findWithNamedQuery(GroupMember.BY_USERNAME, params);
         logger.debug("add groupMembers by username={}", groupMembers);
