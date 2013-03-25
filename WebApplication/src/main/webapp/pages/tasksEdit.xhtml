@@ -6,22 +6,26 @@
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
+            <h2>TODO</h2>
+
             <h2>Edit Tasks</h2>
             <h:form id="contentForm">
-                <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent" actionListener="#{taskEditMB.addNewTaskListener}"
+                <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
+                                 actionListener="#{taskEditMB.addNewTaskListener}"
                                  oncomplete="addTaskDlg.show();" process="@this" title="add new task"/>
                 <p:dataTable var="task" value="#{taskEditMB.taskList}" id="taskTable" editable="true" editMode="row">
 
-                    <p:ajax event="rowEdit" listener="#{taskEditMB.onEdit}" update=":messages" />
-                    <p:ajax event="rowEditCancel" listener="#{taskEditMB.onCancel}" update=":messages" />
+                    <p:ajax event="rowEditInit" listener="#{taskEditMB.onEditInit}" update=":messages"/>
+                    <p:ajax event="rowEdit" listener="#{taskEditMB.onEdit}" update=":messages"/>
+                    <p:ajax event="rowEditCancel" listener="#{taskEditMB.onCancel}" update=":messages"/>
 
                     <p:column headerText="Name" sortBy="#{task.name}">
                         <p:cellEditor>
                             <f:facet name="output">
-                                <h:outputText value="#{task.name}" />
+                                <h:outputText value="#{task.name}"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:inputText value="#{task.name}" style="width:100%" required="true"/>
+                                <p:inputText value="#{task.name}" styleClass="w100" required="true"/>
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
@@ -29,15 +33,18 @@
                     <p:column headerText="Type" sortBy="#{task.type}">
                         <p:cellEditor>
                             <f:facet name="output">
-                                <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}" />
+                                <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:selectOneMenu value="#{task.type}" rendered="#{taskEditMB.taskEditable[task.id]}" required="true">
-                                    <f:selectItem itemValue="" itemLabel="Select One" />
+                                <p:selectOneMenu value="#{task.type}" rendered="#{taskEditMB.taskEditable[task.id]}"
+                                                 required="true">
+                                    <f:selectItem itemValue="" itemLabel="Select One"/>
                                     <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
-                                                   itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}" />
+                                                   itemLabel="#{taskType.typeFormatted}"
+                                                   itemValue="#{taskType.typeStr}"/>
                                 </p:selectOneMenu>
-                                <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}" rendered="#{not taskEditMB.taskEditable[task.id]}"/>
+                                <h:outputText value="#{taskEditMB.getTaskTypeFormated(task.type)}"
+                                              rendered="#{not taskEditMB.taskEditable[task.id]}"/>
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
@@ -45,13 +52,39 @@
                     <p:column headerText="Price" sortBy="#{task.priceHour}">
                         <p:cellEditor>
                             <f:facet name="output">
-                                <h:outputText value="#{task.priceHour}" />
+                                <h:outputText value="#{task.priceHour}"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:inputText value="#{task.priceHour}" style="width:100%" required="true" rendered="#{taskEditMB.taskEditable[task.id]}">
+                                <p:inputText value="#{task.priceHour}" styleClass="w100" required="true"
+                                             rendered="#{taskEditMB.taskEditable[task.id]}">
                                     <f:convertNumber maxFractionDigits="2" maxIntegerDigits="10"/>
                                 </p:inputText>
-                                <h:outputText value="#{task.priceHour}" rendered="#{not taskEditMB.taskEditable[task.id]}"/>
+                                <h:outputText value="#{task.priceHour}"
+                                              rendered="#{not taskEditMB.taskEditable[task.id]}"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Income" sortBy="#{task.income}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <p:selectBooleanCheckbox value="#{task.income}" disabled="true"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectBooleanCheckbox value="#{task.income}"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Repeat" sortBy="#{task.repeat}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{task.repeat}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{task.repeat}" styleClass="w100">
+                                    <f:convertNumber/>
+                                </p:inputText>
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
@@ -59,88 +92,86 @@
                     <p:column headerText="Enabled" sortBy="#{task.enabled}">
                         <p:cellEditor>
                             <f:facet name="output">
-                                <h:outputText value="#{task.enabled}" />
+                                <p:selectBooleanCheckbox value="#{task.enabled}" disabled="true"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:selectBooleanCheckbox id="taskEnabled" value="#{task.enabled}" />
+                                <p:selectBooleanCheckbox value="#{task.enabled}"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Deleted" sortBy="#{task.deleted}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <p:selectBooleanCheckbox value="#{task.deleted}" disabled="true"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectBooleanCheckbox value="#{task.deleted}" disabled="#{not task.deleted}"/>
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
 
                     <p:column>
-                        <p:rowEditor />
+                        <p:rowEditor/>
                     </p:column>
 
                     <p:column>
-                        <p:commandButton icon="ui-icon-transfer-e-w" process="@this" actionListener="#{taskEditMB.assignListener}" oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
-                                         update=":contentForm:assignDialog" title="assign">
-                            <f:attribute name="task" value="#{task}"/>
-                        </p:commandButton>
-                        <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();" title="delete"
-                                         update=":contentForm:removeConfirmDialog" rendered="#{taskEditMB.taskEditable[task.id]}">
-                            <f:setPropertyActionListener value="#{task}" target="#{taskEditMB.selectedTask}" />
+                        <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
+                                         title="delete"
+                                         update=":contentForm:removeConfirmDialog"
+                                         rendered="#{taskEditMB.taskEditable[task.id]}">
+                            <f:setPropertyActionListener value="#{task}" target="#{taskEditMB.selectedTask}"/>
                         </p:commandButton>
                     </p:column>
 
                 </p:dataTable>
 
-                <p:dialog id="addDialog" header="Add task" widgetVar="addTaskDlg" modal="true" closable="true" closeOnEscape="true">
+                <p:dialog id="addDialog" header="Add task" widgetVar="addTaskDlg" modal="true" closable="true"
+                          closeOnEscape="true">
                     <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="taskName" value="Name:" />
+                        <h:outputLabel for="taskName" value="Name:"/>
                         <p:inputText value="#{taskEditMB.newTask.name}" id="taskName" required="true"/>
                         <p:message for="taskName"/>
 
-                        <h:outputLabel for="taskType" value="Type:" />
+                        <h:outputLabel for="taskType" value="Type:"/>
                         <p:selectOneMenu id="taskType" value="#{taskEditMB.newTask.type}" required="true">
-                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
                             <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
-                                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}" />
+                                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}"/>
                         </p:selectOneMenu>
                         <p:message for="taskType"/>
 
-                        <h:outputLabel for="taskPrice" value="Price:" />
+                        <h:outputLabel for="taskPrice" value="Price:"/>
                         <p:inputText value="#{taskEditMB.newTask.priceHour}" id="taskPrice" required="true">
                             <f:convertNumber maxFractionDigits="2" maxIntegerDigits="10"/>
                         </p:inputText>
                         <p:message for="taskPrice"/>
 
-                        <h:outputLabel for="taskEnabled" value="Enabled:" />
-                        <p:selectBooleanCheckbox id="taskEnabled" value="#{taskEditMB.newTask.enabled}" />
+                        <h:outputLabel for="taskEnabled" value="Enabled:"/>
+                        <p:selectBooleanCheckbox id="taskEnabled" value="#{taskEditMB.newTask.enabled}"/>
                         <p:message for="taskEnabled"/>
 
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:taskTable :contentForm:addDialogContent" oncomplete="addTaskDialogSaveClick(args);"
+                        <p:commandButton value="Save" update=":contentForm:taskTable :contentForm:addDialogContent"
+                                         oncomplete="if(args &amp;&amp; !args.validationFailed) addTaskDlg.hide();"
                                          action="#{taskEditMB.addNewTask}" process=":contentForm:addDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
+                        <p:commandButton value="Cancel" oncomplete="addTaskDlg.hide();" update=":contentForm:taskTable"
+                                         immediate="true"/>
                     </f:facet>
                 </p:dialog>
 
-                <p:dialog id="assignDialog" header="Assign Task" widgetVar="assignDlg" modal="true" closable="true" closeOnEscape="true">
-                    <h:outputText value="#{taskEditMB.selectedTask.name}"/>
-                    <p:dataTable value="#{taskEditMB.assignedList}" var="assigned">
-                        <p:column headerText="User">
-                            <h:outputText value="#{assigned.username}"/>
-                        </p:column>
-                        <p:column headerText="Assigned">
-                            <p:selectBooleanCheckbox value="#{assigned.assigned}" disabled="#{assigned.disabled}" />
-                        </p:column>
-                    </p:dataTable>
-                    <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:taskTable :contentForm:assignDialog" oncomplete="assignDlg.hide();"
-                                         action="#{taskEditMB.assignTask}" process=":contentForm:assignDialog" />
-                        <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:taskTable" immediate="true"/>
-                    </f:facet>
-                </p:dialog>
 
-                <p:dialog id="removeConfirmDialog" header="Remove Task" widgetVar="removeConfirmDlg" modal="true" closeOnEscape="true">
+                <p:dialog id="removeConfirmDialog" header="Remove Task" widgetVar="removeConfirmDlg" modal="true"
+                          closeOnEscape="true">
 
                     <h:outputText value="Are you sure you want to remove '#{taskEditMB.selectedTask.name}'?"/>
 
                     <f:facet name="footer">
-                        <p:commandButton value="Yes" update=":contentForm:taskTable" oncomplete="removeConfirmDlg.hide()"
-                                     action="#{taskEditMB.removeTask}" process="@this"/>
-                        <p:commandButton value="No" onclick="removeConfirmDlg.hide()" />
+                        <p:commandButton value="Yes" update=":contentForm:taskTable"
+                                         oncomplete="removeConfirmDlg.hide()"
+                                         action="#{taskEditMB.removeTask}" process="@this"/>
+                        <p:commandButton value="No" onclick="removeConfirmDlg.hide()"/>
                     </f:facet>
 
                 </p:dialog>
