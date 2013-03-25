@@ -697,7 +697,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
     /**
      * Repeats every second
      */
-    @Scheduled(fixedDelay = 10000)
+//    @Scheduled(fixedDelay = 10000)
     public void checkAllTasks() {
         logger.debug("checkAllTasks");
         List<UserSiteTask> runningTasks = null; //userTaskDao.getRunningTasks();

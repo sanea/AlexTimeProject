@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Group;
 import ru.alex.webapp.model.GroupMember;
 import ru.alex.webapp.model.User;
+import ru.alex.webapp.service.GroupMemberService;
 import ru.alex.webapp.service.GroupService;
 import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.util.FacesUtil;
@@ -34,6 +35,8 @@ public class UserEditMB implements Serializable {
     private UserService userService;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private GroupMemberService groupMemberService;
     private List<User> userList;
     private Map<String, Boolean> userDeletable;
     private User newUser = new User();
@@ -180,11 +183,22 @@ public class UserEditMB implements Serializable {
     public void assignUser() {
         logger.debug("assignUser selectedUser={}, selectedGroup={}", selectedUser, selectedGroup);
         try {
-            //TODO save through GroupMemeber
+            GroupMember groupMemberOld = selectedUser.getGroupMemberByUsername();
+            logger.debug("assignUser groupMemberOld={}", groupMemberOld);
+            if (groupMemberOld != null && groupMemberOld.getGroupByGroupId() != null) {
+                groupMemberOld.setGroupByGroupId(selectedGroup);
+                groupMemberService.edit(groupMemberOld);
+            } else {
+                GroupMember groupMember = new GroupMember();
+                groupMember.setGroupByGroupId(selectedGroup);
+                groupMember.setUserByUsername(selectedUser);
+                groupMemberService.add(groupMember);
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
+        initUsers();
     }
 
 }

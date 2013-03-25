@@ -69,7 +69,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
         User userEntity = userDao.findById(user.getUsername());
-        logger.debug("deleteUser userEntity={}", userEntity);
+        logger.debug("isUserDeletable userEntity={}", userEntity);
         if (userEntity == null)
             throw new Exception("isUserDeletable can't find user " + user.getUsername());
         boolean result;

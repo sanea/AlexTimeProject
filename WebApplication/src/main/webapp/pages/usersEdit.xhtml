@@ -294,7 +294,7 @@
         <h:outputText value="#{userEditMB.selectedUser.username}"/>
         <p:message for="groups"/>
         <p:selectOneRadio id="groups" value="#{userEditMB.selectedGroup}" layout="pageDirection"
-                          required="true" requiredMessage="Please select group" converter="groupConverter">
+                          required="true" requiredMessage="Please select group" converter="#{groupConverter}">
             <f:selectItems value="#{userEditMB.groupList}" var="group"
                            itemLabel="#{group.groupName}" itemValue="#{group}"/>
         </p:selectOneRadio>
@@ -302,7 +302,7 @@
     <f:facet name="footer">
         <p:commandButton value="Save" update=":contentForm:userTable :contentForm:assignDialogContent"
                          oncomplete="if(args &amp;&amp; !args.validationFailed) assignDlg.hide();"
-                         action="#{userEditMB.assignUser}" process=":contentForm:assignDialogContent"/>
+                         action="#{userEditMB.assignUser}" process=":contentForm:assignDialog"/>
         <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:userTable"
                          immediate="true"/>
     </f:facet>

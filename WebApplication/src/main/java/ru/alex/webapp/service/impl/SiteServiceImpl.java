@@ -35,10 +35,7 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("edit site={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        Site mergedEntity = siteDao.findById(entity.getId());
-        logger.debug("edit site={}", mergedEntity);
-        if (mergedEntity == null)
-            throw new Exception("Can't find site with id=" + entity.getId());
+        throwExceptionIfNotExists(entity, entity.getId());
         siteDao.merge(entity);
     }
 
@@ -59,15 +56,12 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("remove site={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        Site mergedEntity = siteDao.findById(entity.getId());
-        logger.debug("remove site={}", mergedEntity);
-        if (mergedEntity == null)
-            throw new Exception("Can't find site with id=" + entity.getId());
-        if (!isSiteDeletable(mergedEntity))
+        throwExceptionIfNotExists(entity, entity.getId());
+        if (!isSiteDeletable(entity))
             throw new Exception("Site has active user changes, please wait or close user session.");
-        mergedEntity.setName(mergedEntity.getName() + REMOVED_NAME_APPEND);
-        mergedEntity.setDeleted(true);
-        siteDao.merge(mergedEntity);
+        entity.setName(entity.getName() + REMOVED_NAME_APPEND);
+        entity.setDeleted(true);
+        siteDao.merge(entity);
     }
 
     @Override
@@ -75,15 +69,12 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("isSiteDeletable site={}", site);
         if (site == null)
             throw new IllegalArgumentException("Wrong site");
-        Site siteEntity = siteDao.findById(site.getId());
-        logger.debug("isSiteDeletable site={}", siteEntity);
-        if (siteEntity == null)
-            throw new Exception("Can't find site with id=" + siteEntity.getId());
+        throwExceptionIfNotExists(site, site.getId());
         boolean result;
-        if (siteEntity.getDeleted()) {
+        if (site.getDeleted()) {
             result = false;
         } else {
-            Collection<UserChange> userChangeList = siteEntity.getUserChangeList();
+            Collection<UserChange> userChangeList = site.getUserChangeList();
             logger.debug("isSiteDeletable userChangeList={}", userChangeList);
             if (userChangeList == null || userChangeList.size() == 0)
                 result = true;
@@ -93,5 +84,6 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("isSiteDeletable " + result);
         return result;
     }
+
 
 }
