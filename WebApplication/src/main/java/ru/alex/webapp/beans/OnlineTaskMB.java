@@ -28,7 +28,7 @@ public class OnlineTaskMB implements Serializable {
     @Autowired
     private TaskService taskService;
     private List<UserTaskWrapper> onlineTasks;
-    private int updateIntervalSec = 5;
+    private final int updateIntervalSec = 5;
 
     @PostConstruct
     private void init() {
@@ -41,7 +41,7 @@ public class OnlineTaskMB implements Serializable {
         try {
             List<UserSiteTask> tasks = taskService.getOnlineTasks();
             logger.debug("tasks={}", tasks);
-            List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
+            List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
             for (UserSiteTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
                 logger.debug("currentTime={}", currentTime);

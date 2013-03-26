@@ -66,7 +66,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
         throwExceptionIfNotExists(entity.getId());
         GroupMember mergedEntity = groupMemberDao.merge(entity);
         mergedEntity.getUserByUsername().setGroupMemberByUsername(null);
-        mergedEntity.getGroupByGroupId().getGroupAuthorityById().remove(mergedEntity);
+        mergedEntity.getGroupByGroupId().getGroupMemberById().remove(mergedEntity);
         groupMemberDao.remove(mergedEntity);
     }
 

@@ -207,7 +207,7 @@ public class UserTaskTime implements Serializable {
     public void addUserAction(UserAction userAction) {
         userAction.setUserTaskTimeById(this);
         if (userActionsById == null)
-            userActionsById = new ArrayList<UserAction>();
+            userActionsById = new ArrayList<>();
         userActionsById.add(userAction);
     }
 }

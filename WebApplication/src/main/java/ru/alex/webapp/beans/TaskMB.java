@@ -36,7 +36,7 @@ public class TaskMB implements Serializable {
     private int selectedMinutes;
     private UserTaskWrapper selectedTask;
     private boolean startTableUpdater;
-    private int updateIntervalSec = 1;
+    private final int updateIntervalSec = 1;
 
     @PostConstruct
     private void init() {
@@ -51,7 +51,7 @@ public class TaskMB implements Serializable {
             startTableUpdater = false;
             List<UserSiteTask> tasks = taskService.getTasksForUser(userName);
             logger.debug("tasks={}", tasks);
-            List<UserTaskWrapper> taskWrappers = new ArrayList<UserTaskWrapper>(tasks.size());
+            List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
             for (UserSiteTask ut : tasks) {
                 UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
                 logger.debug("currentTime={}", currentTime);

@@ -118,7 +118,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         if (task == null)
             throw new IllegalArgumentException("Wrong task");
         throwExceptionIfNotExists(task.getId());
-        boolean result = true;
+        boolean result;
         if (task.getDeleted()) {
             result = false;
         } else {
@@ -359,7 +359,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         if (nextTimeSeqList != null && nextTimeSeqList.contains(timeSeq))
             throw new Exception("Unlimited recursion in getAllTimeSeq for task");
 
-        List<UserTaskTimeSeq> timeSeqList = new ArrayList<UserTaskTimeSeq>();
+        List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
         if (nextTimeSeqList != null)
             timeSeqList.addAll(nextTimeSeqList);
         timeSeqList.add(timeSeq);

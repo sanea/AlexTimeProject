@@ -42,7 +42,7 @@ public class SiteEditMB implements Serializable {
         try {
             siteList = siteService.findAll();
             logger.debug("initSites siteList={}", siteList);
-            siteDeletable = new HashMap(siteList.size());
+            siteDeletable = new HashMap<>(siteList.size());
             for (Site s : siteList) {
                 boolean deletable = siteService.isSiteDeletable(s);
                 siteDeletable.put(s.getId(), deletable);

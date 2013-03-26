@@ -5,7 +5,7 @@ package ru.alex.webapp.model.enums;
  */
 public enum Action {
     START('r'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');  //Custom like pause
-    private char action;
+    private final char action;
 
     private Action(char action) {
         this.action = action;

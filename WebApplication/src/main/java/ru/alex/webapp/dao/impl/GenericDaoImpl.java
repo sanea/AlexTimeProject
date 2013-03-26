@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public abstract class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T, ID> {
 
-    private Class<T> entityBeanType;
+    private final Class<T> entityBeanType;
     @PersistenceContext
     private EntityManager em;
 

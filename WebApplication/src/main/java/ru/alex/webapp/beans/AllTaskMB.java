@@ -68,7 +68,7 @@ public class AllTaskMB implements Serializable {
             total = new BigDecimal(0);
             List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
             logger.debug("initAllTasks taskTimeList={}", taskTimeList);
-            List<UserTaskWrapper> allTasksLocal = new ArrayList<UserTaskWrapper>(taskTimeList.size());
+            List<UserTaskWrapper> allTasksLocal = new ArrayList<>(taskTimeList.size());
             for (UserTaskTime taskTime : taskTimeList) {
                 UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserSiteTaskById(), taskTime);
                 allTasksLocal.add(taskWrapper);
@@ -143,7 +143,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("selectTaskListener selectedTask={}", selectedTask);
             List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTask.getTaskTime().getTimeSeq());
             logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
-            List<TimeSequence> timeSeqList = new ArrayList<TimeSequence>(taskTimeSeqList.size());
+            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
             for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
                 timeSeqList.add(new TimeSequence(timeSeq));
             selectedTimeSeqList = timeSeqList;
@@ -171,7 +171,7 @@ public class AllTaskMB implements Serializable {
 
     private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {
         logger.debug("buildTimeSeqList timeSeq={}", timeSeq);
-        List<UserTaskTimeSeq> timeSeqList = new ArrayList<UserTaskTimeSeq>();
+        List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
         if (timeSeq != null) {
             timeSeqList.add(timeSeq);
             if (timeSeq.getNextTimeSeq() != null)
