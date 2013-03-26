@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `webapp` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `webapp`;
--- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.25a, for Win64 (x86)
 --
 -- Host: localhost    Database: webapp
 -- ------------------------------------------------------
--- Server version	5.1.66-community
+-- Server version	5.5.25a
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,6 +14,16 @@ USE `webapp`;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `webapp`
+--
+
+/*!40000 DROP DATABASE IF EXISTS `webapp`*/;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `webapp` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `webapp`;
 
 --
 -- Table structure for table `group_authorities`
@@ -394,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-25 18:18:07
+-- Dump completed on 2013-03-26 21:49:33
