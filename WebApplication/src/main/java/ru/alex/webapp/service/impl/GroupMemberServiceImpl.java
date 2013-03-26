@@ -36,7 +36,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
         logger.debug("update groupMember={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         groupMemberDao.merge(entity);
     }
 
@@ -63,7 +63,7 @@ public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long
         logger.debug("remove groupMember={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         GroupMember mergedEntity = groupMemberDao.merge(entity);
         mergedEntity.getUserByUsername().setGroupMemberByUsername(null);
         mergedEntity.getGroupByGroupId().getGroupAuthorityById().remove(mergedEntity);

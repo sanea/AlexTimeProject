@@ -32,7 +32,7 @@ public class GroupAuthorityServiceImpl extends GenericServiceImpl<GroupAuthority
         logger.debug("update groupAuthority={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         groupAuthorityDao.merge(entity);
     }
 
@@ -53,7 +53,7 @@ public class GroupAuthorityServiceImpl extends GenericServiceImpl<GroupAuthority
         logger.debug("remove groupAuthority={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         GroupAuthority mergedEntity = groupAuthorityDao.merge(entity);
         mergedEntity.getGroupByGroupId().getGroupAuthorityById().remove(mergedEntity);
         groupAuthorityDao.remove(mergedEntity);

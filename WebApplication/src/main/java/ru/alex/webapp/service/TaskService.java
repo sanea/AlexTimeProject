@@ -31,7 +31,7 @@ public interface TaskService extends GenericService<Task, Long> {
 
     void stopTask(Long taskId, String username) throws Exception;
 
-    boolean isTaskEditable(Long taskId) throws Exception;
+    boolean isTaskEditable(Task task) throws Exception;
 
     void updateUserTask(Long taskId, String username, boolean assigned) throws Exception;
 

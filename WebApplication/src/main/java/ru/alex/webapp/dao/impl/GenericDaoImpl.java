@@ -34,7 +34,8 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         return em;
     }
 
-    protected Class<T> getEntityBeanType() {
+    @Override
+    public Class<T> getEntityBeanType() {
         return entityBeanType;
     }
 

@@ -36,7 +36,7 @@ public class Task implements Serializable {
     private Boolean deleted;
     @Column(name = "income", nullable = false, columnDefinition = "BIT")
     private Boolean income;
-    @Column(name = "repeat", nullable = true, length = 1)
+    @Column(name = "repeat_task", nullable = true, length = 11)
     private Integer repeat;
     @OneToMany(mappedBy = "taskByTaskId", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<SiteTask> siteTasksById;
