@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.25a, for Win64 (x86)
+-- MySQL dump 10.13  Distrib 5.5.24, for Win64 (x86)
 --
 -- Host: localhost    Database: webapp
 -- ------------------------------------------------------
--- Server version	5.5.25a
+-- Server version	5.1.66-community
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -69,7 +69,7 @@ CREATE TABLE `group_members` (
   KEY `idx_members_group_id` (`group_id`),
   CONSTRAINT `fk_members_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`),
   CONSTRAINT `fk_members_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `group_members` (
 
 LOCK TABLES `group_members` WRITE;
 /*!40000 ALTER TABLE `group_members` DISABLE KEYS */;
-INSERT INTO `group_members` VALUES (5,'1',6),(1,'admin',1),(9,'testde',1),(2,'user1',2),(3,'user2',2),(8,'user3',2);
+INSERT INTO `group_members` VALUES (5,'1',6),(1,'admin',1),(2,'user1',2),(3,'user2',2),(8,'user3',2);
 /*!40000 ALTER TABLE `group_members` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,7 +121,7 @@ CREATE TABLE `site` (
   `country` varchar(255) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2','','','',0),(3,'площадка 3','','','',0),(4,'123_removed','','','',1),(5,'133_removed','','','',1),(6,'d_removed','','','',0);
+INSERT INTO `site` VALUES (1,'площадка 1',NULL,NULL,NULL,0),(2,'площадка 2','','','',0),(3,'площадка 3','','','',0),(7,'321','','','',0);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,9 +179,9 @@ CREATE TABLE `task` (
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `income` tinyint(1) NOT NULL DEFAULT '1',
-  `repeat` int(11) DEFAULT NULL,
+  `repeat_task` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +190,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,NULL),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','p',100.00,1,0,1,NULL),(20,'Охрана','p',1.00,1,0,0,NULL);
+INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,NULL),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','p',100.00,1,0,1,NULL),(20,'Охранаа','p',11.00,1,0,0,0);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +389,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('asd','1',1,'','','','','','','','','',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('testde','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
+INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('asd','1',1,'','','','','','','','','',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -402,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-26 21:52:39
+-- Dump completed on 2013-03-26 23:17:14
