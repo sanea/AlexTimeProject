@@ -10,11 +10,10 @@ import java.util.Collection;
 @Table(name = "users")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = User.ALL, query = "SELECT u FROM User u "),
-        @NamedQuery(name = User.TOTAL, query = "SELECT COUNT(u) FROM User u")})
+        @NamedQuery(name = User.ALL_ENABLED_NOT_DELETED, query = "SELECT u FROM User u where u.deleted = false and u.enabled = true")
+})
 public class User implements Serializable {
-    public static final String ALL = "User.getAll";
-    public static final String TOTAL = "User.countAll";
+    public static final String ALL_ENABLED_NOT_DELETED = "User.ALL_ENABLED_NOT_DELETED";
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "username", length = 50)

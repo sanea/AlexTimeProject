@@ -27,9 +27,9 @@
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
         <ui:insert name="content">Main Content</ui:insert>
     </div>
-    <p:ajaxStatus style="width: 64px; height: 64px; position: fixed; right: 10px; bottom: 10px;">
+    <p:ajaxStatus styleClass="ajax-loading">
         <f:facet name="start">
-            <p:graphicImage value="#{resource['images/loading.gif']}" style="width: 64px; height: 64px;"/>
+            <p:graphicImage value="#{resource['images/loading.gif']}" styleClass="ajax-loading-img"/>
         </f:facet>
 
         <f:facet name="complete">

@@ -15,6 +15,7 @@ import ru.alex.webapp.service.UserService;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -98,5 +99,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         }
         logger.debug("isUserDeletable {}", result);
         return result;
+    }
+
+    @Override
+    public List<User> getEnabledNotDeletedUsers() throws Exception {
+        List<User> userList = userDao.findWithNamedQuery(User.ALL_ENABLED_NOT_DELETED);
+        logger.debug("getEnabledNotDeletedUsers userList={}", userList);
+        return userList;
     }
 }

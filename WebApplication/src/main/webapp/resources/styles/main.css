@@ -22,3 +22,32 @@ body {
 .w100 {
     width: 100%;
 }
+
+.w333 {
+    width: 33.3%;
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+.td-center {
+    text-align: center;
+}
+
+.w1 {
+    width: 1%;
+}
+
+.ajax-loading {
+    width: 64px;
+    height: 64px;
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+}
+
+.ajax-loading-img {
+    width: 64px;
+    height: 64px;
+}

@@ -1,14 +1,6 @@
 package ru.alex.webapp.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -18,7 +10,11 @@ import java.util.Collection;
  */
 @Table(name = "task")
 @Entity
+@NamedQueries({
+        @NamedQuery(name = Task.ALL_ENABLED_NOT_DELETED, query = "SELECT t FROM Task t where t.deleted = false and t.enabled = true")
+})
 public class Task implements Serializable {
+    public static final String ALL_ENABLED_NOT_DELETED = "Site.ALL_ENABLED_NOT_DELETED";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface TaskService extends GenericService<Task, Long> {
 
+    boolean isTaskEditable(Task task) throws Exception;
+
+    List<Task> getEnabledNotDeletedTasks() throws Exception;
+
     List<UserSiteTask> getTasksForUser(String username) throws Exception;
 
     List<UserSiteTask> getOnlineTasks() throws Exception;
@@ -30,8 +34,6 @@ public interface TaskService extends GenericService<Task, Long> {
     void extendTask(Long taskId, String username, int seconds) throws Exception;
 
     void stopTask(Long taskId, String username) throws Exception;
-
-    boolean isTaskEditable(Task task) throws Exception;
 
     void updateUserTask(Long taskId, String username, boolean assigned) throws Exception;
 

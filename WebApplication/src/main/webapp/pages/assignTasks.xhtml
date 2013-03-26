@@ -1,60 +1,114 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core">
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
             TODO
             <h2>Assign Tasks</h2>
             <h:form id="contentForm">
+                <h:panelGrid columns="3" styleClass="w100"
+                             columnClasses="w333 valign-top, w333 valign-top, w333 valign-top" rowClasses="">
+                    <h:panelGroup>
+                        <p:dataTable var="site" value="#{assignTasksEditMB.siteList}" id="siteTable"
+                                     rowKey="#{site.id}" selectionMode="single"
+                                     selection="#{assignTasksEditMB.selectedSite}">
 
-                <p:dataTable var="site" value="#{assignTasksEditMB.siteList}" id="siteTable" editable="true"
-                             editMode="row">
+                            <p:ajax event="rowSelect" listener="#{assignTasksEditMB.onSiteRowSelect}"
+                                    update=":contentForm:taskList :contentForm:userList"
+                                    onstart="blockTaskTable.show(); blockUserTable.show();"
+                                    oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
+                            <p:ajax event="rowUnselect" listener="#{assignTasksEditMB.onSiteRowUnselect}"
+                                    update=":contentForm:taskList :contentForm:userList"
+                                    onstart="blockTaskTable.show(); blockUserTable.show();"
+                                    oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
 
-                    <p:column headerText="Name" sortBy="#{site.name}">
+                            <f:facet name="header">
+                                Site List
+                            </f:facet>
 
-                    </p:column>
+                            <p:column headerText="Name" sortBy="#{site.name}" styleClass="td-center">
+                                <h:outputText value="#{site.name}"/>
+                            </p:column>
 
-                    <p:column>
-                        <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
-                                         title="delete"
-                                         update=":contentForm:removeConfirmDialog"
-                                         rendered="#{siteEditMB.siteDeletable[site.id]}">
-                            <f:setPropertyActionListener value="#{site}" target="#{siteEditMB.selectedSite}"/>
-                        </p:commandButton>
-                    </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
 
-                </p:dataTable>
+                    <h:panelGroup id="taskList">
+                        <p:dataTable var="task" value="#{assignTasksEditMB.assignedTaskList}" id="taskTable"
+                                     emptyMessage="Please Select Site"
+                                     rowKey="#{task.task.id}" selectionMode="single"
+                                     selection="#{assignTasksEditMB.selectedTask}">
 
-                <p:dialog id="addDialog" header="Add site" widgetVar="addSiteDlg" modal="true" closable="true"
-                          closeOnEscape="true">
-                    <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="siteName" value="Name:"/>
-                        <p:inputText value="#{siteEditMB.newSite.name}" id="siteName" required="true"/>
-                        <p:message for="siteName" display="icon"/>
+                            <p:ajax event="rowSelect" listener="#{assignTasksEditMB.onTaskRowSelect}"
+                                    update=":contentForm:userList"
+                                    onstart="blockTaskTable.show(); blockUserTable.show();"
+                                    oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
+                            <p:ajax event="rowUnselect" listener="#{assignTasksEditMB.onTaskRowUnselect}"
+                                    update=":contentForm:userList"
+                                    onstart="blockTaskTable.show(); blockUserTable.show();"
+                                    oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
 
-                        <h:outputLabel for="siteCountry" value="Country:"/>
-                        <p:inputText value="#{siteEditMB.newSite.country}" id="siteCountry"/>
-                        <h:panelGroup/>
+                            <f:facet name="header">
+                                Assign Task List
+                            </f:facet>
 
-                        <h:outputLabel for="siteCity" value="City:"/>
-                        <p:inputText value="#{siteEditMB.newSite.city}" id="siteCity"/>
-                        <h:panelGroup/>
+                            <p:column headerText="Name" sortBy="#{task.task.name}" styleClass="td-center">
+                                <h:outputText value="#{task.task.name}"/>
+                            </p:column>
 
-                        <h:outputLabel for="siteAddr" value="Address:"/>
-                        <p:inputText value="#{siteEditMB.newSite.address}" id="siteAddr"/>
-                        <h:panelGroup/>
+                            <p:column styleClass="td-center w1">
+                                <f:facet name="header">
+                                    <h:outputText value="Assign" style="padding-right: 15px;"/>
+                                    <p:selectBooleanCheckbox id="selectAllTasks">
+                                        <p:ajax update=":contentForm:taskList :contentForm:userList"
+                                                listener="#{assignTasksEditMB.selectAllTasks}"
+                                                onstart="blockTaskTable.show(); blockUserTable.show();"
+                                                oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
+                                    </p:selectBooleanCheckbox>
+                                </f:facet>
+                                <p:selectBooleanCheckbox value="#{task.selected}" disabled="#{task.disabled}">
+                                    <p:ajax update=":contentForm:taskList :contentForm:userList"
+                                            listener="#{assignTasksEditMB.selectTask}"
+                                            onstart="blockTaskTable.show();"
+                                            oncomplete="blockTaskTable.hide();"/>
+                                    <f:attribute name="task" value="#{task}"/>
+                                </p:selectBooleanCheckbox>
+                            </p:column>
 
-                    </h:panelGrid>
-                    <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:siteTable :contentForm:addDialogContent"
-                                         oncomplete="if(args &amp;&amp; !args.validationFailed) addSiteDlg.hide();"
-                                         action="#{siteEditMB.addNewSite}" process=":contentForm:addDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="addSiteDlg.hide();" immediate="true"/>
-                    </f:facet>
-                </p:dialog>
+                        </p:dataTable>
+                        <p:blockUI block="taskTable" widgetVar="blockTaskTable">
+                            <p:graphicImage value="#{resource['images/loading.gif']}" styleClass="ajax-loading-img"/>
+                        </p:blockUI>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="userList">
+                        <p:dataTable var="user" value="#{assignTasksEditMB.assignedUserList}" id="userTable"
+                                     emptyMessage="Please Select Task ">
+
+                            <f:facet name="header">
+                                Assign User List
+                            </f:facet>
+
+                            <p:column headerText="Name" sortBy="#{user.user.username}" styleClass="td-center">
+                                <h:outputText value="#{user.user.username}"/>
+                            </p:column>
+
+                            <p:column styleClass="td-center w1">
+                                <f:facet name="header">
+                                    <h:outputText value="Assign" style="padding-right: 15px;"/>
+                                    <p:selectBooleanCheckbox/>
+                                </f:facet>
+                                <p:selectBooleanCheckbox value="#{user.selected}" disabled="#{user.disabled}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:blockUI block="userTable" widgetVar="blockUserTable">
+                            <p:graphicImage value="#{resource['images/loading.gif']}" styleClass="ajax-loading-img"/>
+                        </p:blockUI>
+                    </h:panelGroup>
+                </h:panelGrid>
             </h:form>
         </ui:define>
     </ui:composition>

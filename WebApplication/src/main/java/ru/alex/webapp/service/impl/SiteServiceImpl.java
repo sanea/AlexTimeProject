@@ -15,6 +15,7 @@ import ru.alex.webapp.service.SiteService;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -103,5 +104,10 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         return result;
     }
 
-
+    @Override
+    public List<Site> getNotDeletedSites() throws Exception {
+        List<Site> siteList = siteDao.findWithNamedQuery(Site.ALL_NOT_DELETED);
+        logger.debug("getNotDeletedSites siteList={}", siteList);
+        return siteList;
+    }
 }
