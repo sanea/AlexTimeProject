@@ -6,13 +6,57 @@
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
-
+            TODO
             <h2>Assign Tasks</h2>
             <h:form id="contentForm">
 
+                <p:dataTable var="site" value="#{assignTasksEditMB.siteList}" id="siteTable" editable="true"
+                             editMode="row">
 
+                    <p:column headerText="Name" sortBy="#{site.name}">
+
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
+                                         title="delete"
+                                         update=":contentForm:removeConfirmDialog"
+                                         rendered="#{siteEditMB.siteDeletable[site.id]}">
+                            <f:setPropertyActionListener value="#{site}" target="#{siteEditMB.selectedSite}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog id="addDialog" header="Add site" widgetVar="addSiteDlg" modal="true" closable="true"
+                          closeOnEscape="true">
+                    <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
+                        <h:outputLabel for="siteName" value="Name:"/>
+                        <p:inputText value="#{siteEditMB.newSite.name}" id="siteName" required="true"/>
+                        <p:message for="siteName" display="icon"/>
+
+                        <h:outputLabel for="siteCountry" value="Country:"/>
+                        <p:inputText value="#{siteEditMB.newSite.country}" id="siteCountry"/>
+                        <h:panelGroup/>
+
+                        <h:outputLabel for="siteCity" value="City:"/>
+                        <p:inputText value="#{siteEditMB.newSite.city}" id="siteCity"/>
+                        <h:panelGroup/>
+
+                        <h:outputLabel for="siteAddr" value="Address:"/>
+                        <p:inputText value="#{siteEditMB.newSite.address}" id="siteAddr"/>
+                        <h:panelGroup/>
+
+                    </h:panelGrid>
+                    <f:facet name="footer">
+                        <p:commandButton value="Save" update=":contentForm:siteTable :contentForm:addDialogContent"
+                                         oncomplete="if(args &amp;&amp; !args.validationFailed) addSiteDlg.hide();"
+                                         action="#{siteEditMB.addNewSite}" process=":contentForm:addDialog"/>
+                        <p:commandButton value="Cancel" oncomplete="addSiteDlg.hide();" immediate="true"/>
+                    </f:facet>
+                </p:dialog>
             </h:form>
         </ui:define>
     </ui:composition>
 </h:body>
-</html> 
+</html>
