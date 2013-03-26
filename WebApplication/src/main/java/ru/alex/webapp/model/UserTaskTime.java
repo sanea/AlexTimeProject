@@ -15,12 +15,21 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = UserTaskTime.BY_SITE_ID, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
         @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u where u.siteTask.siteBySiteId.id = :siteId"),
-        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.userByUsername.username = :username")
+        @NamedQuery(name = UserTaskTime.BY_TASK_ID, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u where u.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.userByUsername.username = :username"),
+        @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.id = :userSiteTaskId")
 })
 public class UserTaskTime implements Serializable {
     public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
     public static final String CURRENT_BY_SITE_ID = "UserTaskTime.CURRENT_BY_SITE_ID";
+    public static final String BY_TASK_ID = "UserTaskTime.BY_TASK_ID";
+    public static final String CURRENT_BY_TASK_ID = "UserTaskTime.CURRENT_BY_TASK_ID";
     public static final String BY_USERNAME = "UserTaskTime.BY_USERNAME";
+    public static final String BY_SITE_TASK = "UserTaskTime.BY_SITE_TASK";
+    public static final String BY_USER_SITE_TASK = "UserTaskTime.BY_USER_SITE_TASK";
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -198,7 +207,7 @@ public class UserTaskTime implements Serializable {
     public void addUserAction(UserAction userAction) {
         userAction.setUserTaskTimeById(this);
         if (userActionsById == null)
-            userActionsById = new ArrayList<UserAction>();
+            userActionsById = new ArrayList<>();
         userActionsById.add(userAction);
     }
 }

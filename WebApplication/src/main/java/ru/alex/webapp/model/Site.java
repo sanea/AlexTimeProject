@@ -10,7 +10,7 @@ import java.util.Collection;
 @Table(name = "site")
 @Entity
 @NamedQueries({
-        })
+})
 public class Site implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -27,7 +27,7 @@ public class Site implements Serializable {
     private String country;
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
     private Boolean deleted;
-    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Collection<SiteTask> siteTaskList;
 
     public Site() {

@@ -23,7 +23,7 @@ public class SiteTask implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
     private Task taskByTaskId;
-    @OneToMany(mappedBy = "siteTask", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "siteTask", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Collection<UserSiteTask> userSiteTaskList;
 
     public Long getId() {

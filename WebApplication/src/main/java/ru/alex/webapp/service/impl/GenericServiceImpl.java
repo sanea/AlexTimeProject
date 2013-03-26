@@ -31,10 +31,10 @@ public abstract class GenericServiceImpl<T, ID extends Serializable> implements 
         return getDao().count();
     }
 
-    protected void throwExceptionIfNotExists(T entity, ID id) throws Exception {
+    protected void throwExceptionIfNotExists(ID id) throws Exception {
         T mergedEntity = getDao().findById(id);
-        logger.debug("throwExceptionIfNotExists {}={}", entity.getClass().getName(), mergedEntity);
+        logger.debug("throwExceptionIfNotExists {}={}", getDao().getEntityBeanType().getName(), mergedEntity);
         if (mergedEntity == null)
-            throw new Exception("Can't find " + entity.getClass().getName() + " with id=" + id);
+            throw new Exception("Can't find " + getDao().getEntityBeanType().getName() + " with id=" + id);
     }
 }

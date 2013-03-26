@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.TaskDao;
 import ru.alex.webapp.dao.UserActionDao;
-import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.dao.UserTaskTimeSeqDao;
 import ru.alex.webapp.model.Task;
@@ -25,8 +23,11 @@ import ru.alex.webapp.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -34,10 +35,6 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
     @Autowired
     private TaskDao taskDao;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private UserSiteTaskDao userTaskDao;
     @Autowired
     private UserTaskTimeDao userTaskTimeDao;
     @Autowired
@@ -71,18 +68,26 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void remove(Task task) throws Exception {
-        //TODO
         logger.debug("removeTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("Wrong task");
-        Task mergedTask = taskDao.findById(task.getId());
-        logger.debug("removeTask task={}", task);
-        if (mergedTask == null)
-            throw new Exception("Can't find task with id=" + task.getId());
-        if (!isTaskEditable(task.getId())) {
-            throw new Exception("Task is already stated, please disable this task, can't delete");
+        throwExceptionIfNotExists(task.getId());
+        if (!isTaskEditable(task)) {
+            throw new Exception("Task is already stated, please disable task, can't be delete");
         }
-        taskDao.remove(mergedTask);
+
+        Map<String, Object> params = new HashMap<>(1);
+        params.put("taskId", task.getId());
+        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_TASK_ID, params);
+        logger.debug("remove BY_TASK_ID userTaskTimeList={}", userTaskTimeList);
+        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+            task = taskDao.merge(task);
+            taskDao.remove(task);
+        } else {
+            task.setName(task.getName() + REMOVED_NAME_APPEND);
+            task.setDeleted(true);
+            taskDao.merge(task);
+        }
     }
 
     @Override
@@ -91,44 +96,41 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         logger.debug("editTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("Wrong task");
+        throwExceptionIfNotExists(task.getId());
         Task taskEntity = taskDao.findById(task.getId());
-        if (taskEntity == null)
-            throw new Exception("Can't find task with id=" + task.getId());
-        boolean isEditable = isTaskEditable(task.getId());
-        if (!isEditable) {
+        if (!isTaskEditable(task)) {
             if (!taskEntity.getType().equals(task.getType()))
                 throw new Exception("Can't change type of not editable task");
             if (!taskEntity.getPriceHour().equals(task.getPriceHour()))
                 throw new Exception("Can't change price of not editable task");
+            if (!taskEntity.getDeleted().equals(task.getDeleted()))
+                throw new Exception("Can't delete task task");
+            if (!taskEntity.getIncome().equals(task.getIncome()))
+                throw new Exception("Can't change task income");
         }
         task = taskDao.merge(task);
         logger.debug("editTask merged_task={}", task);
     }
 
-    /**
-     *
-     * @param taskId
-     * @return
-     * @throws Exception
-     */
     @Override
-    public boolean isTaskEditable(Long taskId) throws Exception {
-        logger.debug("isTaskEditable taskId={}", taskId);
-        boolean result = true;
-        if (taskId == null)
-            throw new IllegalArgumentException("Wrong taskId");
-        Task task = taskDao.findById(taskId);
-        logger.debug("removeTask task={}", task);
+    public boolean isTaskEditable(Task task) throws Exception {
+        logger.debug("isTaskEditable task={}", task);
         if (task == null)
-            throw new Exception("Can't find task with id=" + taskId);
-        //TODO
-//        Collection<UserSiteTask> userTasks = task.getUserTasksById();
-//        for (UserSiteTask userTask : userTasks) {
-//            if (TaskStatus.getStatus(userTask.getStatus()) != TaskStatus.UNKNOWN
-//                    || userTask.getUserTaskTimeList().size() > 0) {
-//                result = false;
-//            }
-//        }
+            throw new IllegalArgumentException("Wrong task");
+        throwExceptionIfNotExists(task.getId());
+        boolean result;
+        if (task.getDeleted()) {
+            result = false;
+        } else {
+            Map<String, Object> params = new HashMap<>(1);
+            params.put("taskId", task.getId());
+            Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_TASK_ID, params);
+            logger.debug("isTaskEditable CURRENT_BY_TASK_ID userTaskTimeList={}", userTaskTimeList);
+            if (userTaskTimeList == null || userTaskTimeList.size() == 0)
+                result = true;
+            else
+                result = false;
+        }
         logger.debug("isTaskEditable {}", result);
         return result;
     }
@@ -357,7 +359,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         if (nextTimeSeqList != null && nextTimeSeqList.contains(timeSeq))
             throw new Exception("Unlimited recursion in getAllTimeSeq for task");
 
-        List<UserTaskTimeSeq> timeSeqList = new ArrayList<UserTaskTimeSeq>();
+        List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
         if (nextTimeSeqList != null)
             timeSeqList.addAll(nextTimeSeqList);
         timeSeqList.add(timeSeq);
@@ -642,8 +644,6 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         //force ending task
         endTask(userSiteTask, currentTime, new Date(), true);
     }
-
-
 
 
     @Override

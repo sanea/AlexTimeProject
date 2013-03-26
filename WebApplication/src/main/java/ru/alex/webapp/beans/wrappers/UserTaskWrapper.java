@@ -94,11 +94,11 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public Integer getDurationSec() {
-        return taskTime != null ? Integer.valueOf(taskTime.getDurationPlaySec()) : null;
+        return taskTime != null ? taskTime.getDurationPlaySec() : null;
     }
 
     public String getDurationFormatted() {
-        Integer durationSec = taskTime != null ? Integer.valueOf(taskTime.getDurationPlaySec()) : null;
+        Integer durationSec = taskTime != null ? taskTime.getDurationPlaySec() : null;
         return durationSec != null ? TimeUtils.formatTimeSec(durationSec) : "";
     }
 

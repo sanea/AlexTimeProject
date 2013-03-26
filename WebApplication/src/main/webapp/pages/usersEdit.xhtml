@@ -17,17 +17,13 @@
 <p:ajax event="rowEdit" listener="#{userEditMB.onEdit}" update=":messages"/>
 <p:ajax event="rowEditCancel" listener="#{userEditMB.onCancel}" update=":messages"/>
 
-<p:column headerText="Name" sortBy="#{user.username}">
+<p:column headerText="Username" sortBy="#{user.username}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.username}"/>
         </f:facet>
         <f:facet name="input">
-            <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
-                <p:inputText id="usernameEdit" value="#{user.username}" styleClass="w100" required="true"
-                             requiredMessage="username is needed"/>
-                <p:message for="usernameEdit"/>
-            </h:panelGrid>
+            <h:outputText value="#{user.username}"/>
         </f:facet>
     </p:cellEditor>
 </p:column>

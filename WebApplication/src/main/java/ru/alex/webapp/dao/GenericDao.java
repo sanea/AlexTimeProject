@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public interface GenericDao<T, ID extends Serializable> {
 
+    Class<T> getEntityBeanType();
+
     T findById(ID id);
 
     List<T> findAll();

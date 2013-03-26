@@ -40,7 +40,7 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("update site={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         siteDao.merge(entity);
     }
 
@@ -62,7 +62,7 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("remove site={}", entity);
         if (entity == null)
             throw new IllegalArgumentException("Wrong entity");
-        throwExceptionIfNotExists(entity, entity.getId());
+        throwExceptionIfNotExists(entity.getId());
         if (!isSiteDeletable(entity))
             throw new Exception("Site has active user changes, please wait or close user session.");
 
@@ -85,12 +85,11 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         logger.debug("isSiteDeletable site={}", site);
         if (site == null)
             throw new IllegalArgumentException("Wrong site");
-        throwExceptionIfNotExists(site, site.getId());
+        throwExceptionIfNotExists(site.getId());
         boolean result;
         if (site.getDeleted()) {
             result = false;
         } else {
-            site = siteDao.merge(site);
             Map<String, Object> params = new HashMap<>(1);
             params.put("siteId", site.getId());
             Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_ID, params);

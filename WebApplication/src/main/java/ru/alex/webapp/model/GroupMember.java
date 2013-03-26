@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Table(name = "group_members", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "group_id"}))
 @NamedQueries({
         @NamedQuery(name = GroupMember.BY_USERNAME, query = "SELECT g FROM GroupMember g WHERE g.userByUsername.username = :username")
-        })
+})
 @Entity
 public class GroupMember implements Serializable {
     public static final String BY_USERNAME = "GroupMember.BY_USERNAME";

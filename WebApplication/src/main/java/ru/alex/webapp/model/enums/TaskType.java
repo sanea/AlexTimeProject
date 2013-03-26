@@ -5,7 +5,7 @@ package ru.alex.webapp.model.enums;
  */
 public enum TaskType {
     PROCESS('p'), TASK('t'), TASK_CUSTOM_PRICE('c');
-    private char type;
+    private final char type;
 
     private TaskType(char type) {
         this.type = type;

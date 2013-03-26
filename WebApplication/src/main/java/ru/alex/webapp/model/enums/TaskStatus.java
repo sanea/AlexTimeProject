@@ -5,7 +5,7 @@ package ru.alex.webapp.model.enums;
  */
 public enum TaskStatus {
     RUNNING('r'), COMPLETED('c'), STOPPED('s'), UNKNOWN('u'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');
-    private char status;
+    private final char status;
 
     private TaskStatus(char status) {
         this.status = status;

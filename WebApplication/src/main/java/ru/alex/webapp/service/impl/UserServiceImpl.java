@@ -38,6 +38,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
             throw new IllegalArgumentException("Wrong user");
+        user.setDeleted(false);
         userDao.persist(user);
     }
 
@@ -61,7 +62,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         logger.debug("deleteUser user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        throwExceptionIfNotExists(user, user.getUsername());
+        throwExceptionIfNotExists(user.getUsername());
         if (!isUserDeletable(user))
             throw new Exception("User has active user change, please wait or close user session.");
 
@@ -84,14 +85,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         logger.debug("isUserDeletable user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        User userEntity = userDao.findById(user.getUsername());
-        logger.debug("isUserDeletable userEntity={}", userEntity);
-        if (userEntity == null)
-            throw new Exception("isUserDeletable can't find user " + user.getUsername());
+        throwExceptionIfNotExists(user.getUsername());
         boolean result;
-        if (userEntity.isDeleted()) {
+        if (user.isDeleted()) {
             result = false;
         } else {
+            User userEntity = userDao.findById(user.getUsername());
             if (userEntity.getCurrentChange() != null)
                 result = false;
             else

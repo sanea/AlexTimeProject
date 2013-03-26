@@ -54,7 +54,7 @@ public class UserEditMB implements Serializable {
         try {
             userList = userService.findAll();
             logger.debug("initUsers userList={}", userList);
-            userDeletable = new HashMap(userList.size());
+            userDeletable = new HashMap<>(userList.size());
             for (User u : userList) {
                 boolean deletable = userService.isUserDeletable(u);
                 userDeletable.put(u.getUsername(), deletable);
