@@ -11,10 +11,10 @@ import java.util.Collection;
 @Table(name = "task")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Task.ALL_ENABLED_NOT_DELETED, query = "SELECT t FROM Task t where t.deleted = false and t.enabled = true")
+        @NamedQuery(name = Task.ALL_ENABLED_NOT_DELETED, query = "SELECT t FROM Task t WHERE t.deleted = false AND t.enabled = true")
 })
 public class Task implements Serializable {
-    public static final String ALL_ENABLED_NOT_DELETED = "Site.ALL_ENABLED_NOT_DELETED";
+    public static final String ALL_ENABLED_NOT_DELETED = "Task.ALL_ENABLED_NOT_DELETED";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

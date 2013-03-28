@@ -10,7 +10,7 @@ import java.util.Collection;
 @Table(name = "site")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Site.ALL_NOT_DELETED, query = "SELECT s FROM Site s where s.deleted = false")
+        @NamedQuery(name = Site.ALL_NOT_DELETED, query = "SELECT s FROM Site s WHERE s.deleted = false")
 })
 public class Site implements Serializable {
     public static final String ALL_NOT_DELETED = "Site.ALL_NOT_DELETED";

@@ -58,21 +58,12 @@
                                 <h:outputText value="#{task.task.name}"/>
                             </p:column>
 
-                            <p:column styleClass="td-center w1">
-                                <f:facet name="header">
-                                    <h:outputText value="Assign" style="padding-right: 15px;"/>
-                                    <p:selectBooleanCheckbox id="selectAllTasks">
-                                        <p:ajax update=":contentForm:taskList :contentForm:userList"
-                                                listener="#{assignTasksEditMB.selectAllTasks}"
-                                                onstart="blockTaskTable.show(); blockUserTable.show();"
-                                                oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
-                                    </p:selectBooleanCheckbox>
-                                </f:facet>
+                            <p:column styleClass="td-center w1" headerText="Assign">
                                 <p:selectBooleanCheckbox value="#{task.selected}" disabled="#{task.disabled}">
                                     <p:ajax update=":contentForm:taskList :contentForm:userList"
-                                            listener="#{assignTasksEditMB.selectTask}"
-                                            onstart="blockTaskTable.show();"
-                                            oncomplete="blockTaskTable.hide();"/>
+                                            listener="#{assignTasksEditMB.assignTask}"
+                                            onstart="blockTaskTable.show(); blockUserTable.show();"
+                                            oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
                                     <f:attribute name="task" value="#{task}"/>
                                 </p:selectBooleanCheckbox>
                             </p:column>
@@ -85,7 +76,7 @@
 
                     <h:panelGroup id="userList">
                         <p:dataTable var="user" value="#{assignTasksEditMB.assignedUserList}" id="userTable"
-                                     emptyMessage="Please Select Task ">
+                                     emptyMessage="Please Select Assigned Task ">
 
                             <f:facet name="header">
                                 Assign User List
@@ -95,12 +86,14 @@
                                 <h:outputText value="#{user.user.username}"/>
                             </p:column>
 
-                            <p:column styleClass="td-center w1">
-                                <f:facet name="header">
-                                    <h:outputText value="Assign" style="padding-right: 15px;"/>
-                                    <p:selectBooleanCheckbox/>
-                                </f:facet>
-                                <p:selectBooleanCheckbox value="#{user.selected}" disabled="#{user.disabled}"/>
+                            <p:column styleClass="td-center w1" headerText="Assign">
+                                <p:selectBooleanCheckbox value="#{user.selected}" disabled="#{user.disabled}">
+                                    <p:ajax update=":contentForm:userList"
+                                            listener="#{assignTasksEditMB.assignUser}"
+                                            onstart="blockUserTable.show();"
+                                            oncomplete="blockUserTable.hide();"/>
+                                    <f:attribute name="user" value="#{user}"/>
+                                </p:selectBooleanCheckbox>
                             </p:column>
 
                         </p:dataTable>

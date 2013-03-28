@@ -13,6 +13,8 @@ public interface TaskService extends GenericService<Task, Long> {
 
     List<Task> getEnabledNotDeletedTasks() throws Exception;
 
+    //------------------------
+
     List<UserSiteTask> getTasksForUser(String username) throws Exception;
 
     List<UserSiteTask> getOnlineTasks() throws Exception;

@@ -81,6 +81,14 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         }
     }
 
+    /**
+     * Returns true if site is not deleted and
+     * task has no current time (user_site_task is not in progress)
+     *
+     * @param site
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean isSiteDeletable(Site site) throws Exception {
         logger.debug("isSiteDeletable site={}", site);

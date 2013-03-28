@@ -10,7 +10,7 @@ import java.util.Collection;
 @Table(name = "users")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = User.ALL_ENABLED_NOT_DELETED, query = "SELECT u FROM User u where u.deleted = false and u.enabled = true")
+        @NamedQuery(name = User.ALL_ENABLED_NOT_DELETED, query = "SELECT u FROM User u WHERE u.deleted = false AND u.enabled = true")
 })
 public class User implements Serializable {
     public static final String ALL_ENABLED_NOT_DELETED = "User.ALL_ENABLED_NOT_DELETED";

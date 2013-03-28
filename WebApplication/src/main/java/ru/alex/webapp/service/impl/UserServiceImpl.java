@@ -81,6 +81,14 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         }
     }
 
+    /**
+     * Returns true if user is not deleted and
+     * task has no current change (if change is set, that means that the user is online)
+     *
+     * @param user
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean isUserDeletable(User user) throws Exception {
         logger.debug("isUserDeletable user={}", user);

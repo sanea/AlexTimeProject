@@ -9,9 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.SiteTask;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.service.*;
+import ru.alex.webapp.model.UserSiteTask;
+import ru.alex.webapp.service.SiteService;
+import ru.alex.webapp.service.SiteTaskService;
+import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.service.UserService;
+import ru.alex.webapp.service.UserSiteTaskService;
 import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +25,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex
@@ -113,77 +121,129 @@ public class AssignTasksEditMB implements Serializable {
     }
 
     public void onSiteRowSelect(SelectEvent event) {
-        logger.debug("onSiteRowSelect site={}, {}", ((Site) event.getObject()), selectedSite);
-//        FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected Site", selectedSite.toString()));
-        //TODO populate assignedTaskList
-        //test data
-        assignedTaskList = new ArrayList<>(taskList.size());
-        for (Task t : taskList) {
-            assignedTaskList.add(new AssignedTask(t, false, false));
+        logger.debug("onSiteRowSelect site={}", selectedSite);
+        try {
+            //find assigned tasks
+            List<SiteTask> siteTaskList = siteTaskService.getNotDeletedSiteTasks(selectedSite);
+            logger.debug("onSiteRowSelect siteTaskList={}", siteTaskList);
+            Set<Task> taskSet = new HashSet<>(siteTaskList.size(), 1);
+            for (SiteTask siteTask : siteTaskList)
+                taskSet.add(siteTask.getTaskByTaskId());
+            logger.debug("onSiteRowSelect taskSet={}", taskSet);
+
+            //find tasks in progress
+            List<UserSiteTask> userSiteTaskList = userSiteTaskService.getAllCurrentTime();
+            logger.debug("onSiteRowSelect userSiteTaskList={}", userSiteTaskList);
+            Set<Task> disabledTaskSet = new HashSet<>(userSiteTaskList.size(), 1);
+            for (UserSiteTask userSiteTask : userSiteTaskList)
+                disabledTaskSet.add(userSiteTask.getSiteTask().getTaskByTaskId());
+            logger.debug("onSiteRowSelect disabledTaskSet={}", disabledTaskSet);
+
+            assignedTaskList = new ArrayList<>(taskList.size());
+            for (Task t : taskList) {
+                boolean selected = taskSet.contains(t);
+                boolean disabled = disabledTaskSet.contains(t);
+                assignedTaskList.add(new AssignedTask(t, selected, disabled));
+            }
+            logger.debug("onSiteRowSelect assignedTaskList={}", assignedTaskList);
+            selectedTask = null;
+            assignedUserList = null;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in onSiteRowSelect", e.toString()));
         }
     }
 
     public void onSiteRowUnselect(UnselectEvent event) {
-        logger.debug("onSiteRowUnselect site={}, {}", ((Site) event.getObject()), selectedSite);
-//        FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Unselected Site", ((Site) event.getObject()).toString()));
-        //TODO clear assignedTaskList and assignedUserList
+        logger.debug("onSiteRowUnselect site={}", ((Site) event.getObject()));
         assignedTaskList = null;
-        assignedUserList = null;
-    }
-
-    public void onTaskRowSelect(SelectEvent event) {
-        logger.debug("onTaskRowSelect task={}, {}", ((AssignedTask) event.getObject()), selectedTask);
-//        FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected Task", selectedTask.toString()));
-        //TODO populate assignedUserList
-        //test data
-        assignedUserList = new ArrayList<>(userList.size());
-        for (User u : userList) {
-            assignedUserList.add(new AssignedUser(u, false, !selectedTask.isSelected()));
-        }
-    }
-
-    public void onTaskRowUnselect(UnselectEvent event) {
-        logger.debug("onTaskRowSelect task={}, {}", ((AssignedTask) event.getObject()), selectedTask);
-//        FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Unselected Task", ((Task) event.getObject()).toString()));
-        //TODO clear assignedUserList
-        assignedUserList = null;
-    }
-
-    public void selectAllTasks(AjaxBehaviorEvent event) {
-        SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) event.getComponent();
-        boolean isSelected = checkbox.isSelected();
-        logger.debug("selectAllTasks selectedSite={}, isSelected={}", selectedSite, isSelected);
-        //TODO save or delete SiteTask relations (on delete disable user_site_task)
-        for (AssignedTask t : assignedTaskList) {
-            t.setSelected(isSelected);
-        }
-
         selectedTask = null;
         assignedUserList = null;
     }
 
-    public void selectTask(AjaxBehaviorEvent event) {
-        SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) event.getComponent();
-        boolean isSelected = checkbox.isSelected();
-        AssignedTask assignedTask = (AssignedTask) checkbox.getAttributes().get("task");
-        logger.debug("selectAllTasks selectedSite={}, isSelected={}, assignedTask={}", selectedSite, isSelected, assignedTask);
-        //TODO save or delete SiteTask one relation
-        assignedTask.setSelected(isSelected);
-        if (assignedTask.equals(selectedTask)) {
-            for (AssignedUser u : assignedUserList) {
-                u.setDisabled(!isSelected);
+    public void onTaskRowSelect(SelectEvent event) {
+        logger.debug("onTaskRowSelect task={}", selectedTask);
+        try {
+            if (selectedTask.isSelected()) {
+                assignedUserList = buildAssignedUserList(selectedSite, selectedTask.getTask());
+            } else {
+                assignedUserList = null;
             }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in onTaskRowSelect", e.toString()));
         }
     }
 
-    public void selectAllUsers(AjaxBehaviorEvent event) {
-        //TODO save or delete UserSiteTask relations
+    private List<AssignedUser> buildAssignedUserList(Site site, Task task) throws Exception {
+        logger.debug("buildAssignedUserList site={}, task={}", site, task);
+        //find assigned siteTask for user
+        List<UserSiteTask> userSiteTaskList = userSiteTaskService.getNotDeletedUserSiteTasks(site, task);
+        logger.debug("buildAssignedUserList userSiteTaskList={}", userSiteTaskList);
+        Set<User> selectedUserSet = new HashSet<>(userSiteTaskList.size(), 1);
+        Set<User> disabledUserSet = new HashSet<>(userSiteTaskList.size());
+        for (UserSiteTask userSiteTask : userSiteTaskList) {
+            User user = userSiteTask.getUserByUsername();
+            selectedUserSet.add(user);
+            if (userSiteTask.getCurrentTime() != null)
+                disabledUserSet.add(user);
+        }
+        logger.debug("buildAssignedUserList selectedUserSet={}", selectedUserSet);
+        logger.debug("buildAssignedUserList disabledUserSet={}", disabledUserSet);
+        List<AssignedUser> assignedUserList = new ArrayList<AssignedUser>(userList.size());
+        for (User user : userList) {
+            boolean selected = selectedUserSet.contains(user);
+            boolean disabled = disabledUserSet.contains(user);
+            assignedUserList.add(new AssignedUser(user, selected, disabled));
+        }
+        logger.debug("buildAssignedUserList assignedUserList={}", assignedUserList);
+        return assignedUserList;
     }
 
-    public void selectUser(AjaxBehaviorEvent event) {
-        //TODO save or delete UserSiteTask one relation
+    public void onTaskRowUnselect(UnselectEvent event) {
+        logger.debug("onTaskRowSelect task={}, {}", ((AssignedTask) event.getObject()), selectedTask);
+        assignedUserList = null;
     }
 
+    public void assignTask(AjaxBehaviorEvent event) {
+        SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) event.getComponent();
+        boolean isSelected = checkbox.isSelected();
+        AssignedTask assignedTask = (AssignedTask) checkbox.getAttributes().get("task");
+        logger.debug("selectTask selectedSite={}, isSelected={}, assignedTask={}", selectedSite, isSelected, assignedTask);
+        try {
+            if (isSelected) {
+                siteTaskService.addSiteTask(selectedSite, assignedTask.getTask());
+            } else {
+                siteTaskService.removeSiteTask(selectedSite, assignedTask.getTask());
+            }
+            //rebuild list only when checkbox is in selected row
+            if (assignedTask.equals(selectedTask)) {
+                onTaskRowSelect(null);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in selectTask", e.toString()));
+        }
+    }
+
+    public void assignUser(AjaxBehaviorEvent event) {
+        SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) event.getComponent();
+        boolean isSelected = checkbox.isSelected();
+        AssignedUser assignedUser = (AssignedUser) checkbox.getAttributes().get("user");
+        logger.debug("assignUser selectedSite={}, isSelected={}, assignedUser={}", selectedSite, isSelected, assignedUser);
+        try {
+            if (isSelected) {
+                userSiteTaskService.addUserSiteTask(assignedUser.getUser(), selectedSite, selectedTask.getTask());
+            } else {
+                userSiteTaskService.removeUserSiteTask(assignedUser.getUser(), selectedSite, selectedTask.getTask());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in selectTask", e.toString()));
+        }
+    }
+
+    // Helper class declaration:
     public static class AssignedTask {
         private Task task;
         private boolean selected;

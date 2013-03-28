@@ -9,7 +9,15 @@ import java.util.Collection;
  */
 @Table(name = "site_task", uniqueConstraints = @UniqueConstraint(columnNames = {"site_id", "task_id"}))
 @Entity
+@NamedQueries({
+        @NamedQuery(name = SiteTask.ALL_NOT_DELETED_BY_SITE, query = "SELECT s FROM SiteTask s WHERE s.deleted = false AND s.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = SiteTask.BY_SITE_TASK_NOT_DELETED, query = "SELECT s FROM SiteTask s WHERE s.deleted = false AND s.siteBySiteId.id = :siteId AND s.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = SiteTask.BY_SITE_TASK, query = "SELECT s FROM SiteTask s WHERE s.siteBySiteId.id = :siteId AND s.taskByTaskId.id = :taskId")
+})
 public class SiteTask implements Serializable {
+    public static final String ALL_NOT_DELETED_BY_SITE = "SiteTask.ALL_NOT_DELETED_BY_SITE";
+    public static final String BY_SITE_TASK_NOT_DELETED = "SiteTask.BY_SITE_TASK_NOT_DELETED";
+    public static final String BY_SITE_TASK = "SiteTask.BY_SITE_TASK";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

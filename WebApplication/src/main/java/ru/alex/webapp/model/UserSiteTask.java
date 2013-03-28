@@ -11,10 +11,16 @@ import java.util.Date;
 @Table(name = "user_site_task", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "site_task_id"}))
 @Entity
 @NamedQueries({
-        @NamedQuery(name = UserSiteTask.BY_USERNAME, query = "SELECT u FROM UserSiteTask u where userByUsername.username = :username")
+        @NamedQuery(name = UserSiteTask.BY_USERNAME, query = "SELECT u FROM UserSiteTask u WHERE userByUsername.username = :username"),
+        @NamedQuery(name = UserSiteTask.ALL_CURRENT_TIME, query = "SELECT u FROM UserSiteTask u WHERE u.currentTime is not null"),
+        @NamedQuery(name = UserSiteTask.ALL_NOT_DELETED_BY_SITE_TASK, query = "SELECT u FROM UserSiteTask u WHERE u.deleted = false AND u.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = UserSiteTask.BY_USER_SITE_TASK, query = "SELECT u FROM UserSiteTask u WHERE u.userByUsername.username = :username AND u.siteTask.siteBySiteId.id = :siteId AND u.siteTask.taskByTaskId.id = :taskId")
 })
 public class UserSiteTask implements Serializable {
-    public static final String BY_USERNAME = "User.BY_USERNAME";
+    public static final String BY_USERNAME = "UserSiteTask.BY_USERNAME";
+    public static final String ALL_CURRENT_TIME = "UserSiteTask.ALL_CURRENT_TIME";
+    public static final String ALL_NOT_DELETED_BY_SITE_TASK = "UserSiteTask.ALL_NOT_DELETED_BY_SITE_TASK";
+    public static final String BY_USER_SITE_TASK = "UserSiteTask.BY_USER_SITE_TASK";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +43,7 @@ public class UserSiteTask implements Serializable {
     @OneToMany(mappedBy = "userSiteTaskById", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<UserTaskTime> userTaskTimeList;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "current_time", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "`current_time`", referencedColumnName = "id", nullable = true)
     private UserTaskTime currentTime;
 
     public Long getId() {

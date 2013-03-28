@@ -13,13 +13,13 @@ import java.util.Date;
 @Table(name = "user_task_time")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = UserTaskTime.BY_SITE_ID, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u where u.siteTask.siteBySiteId.id = :siteId"),
-        @NamedQuery(name = UserTaskTime.BY_TASK_ID, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.taskByTaskId.id = :taskId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u where u.siteTask.taskByTaskId.id = :taskId"),
-        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.userByUsername.username = :username"),
-        @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.siteTask.id = :siteTaskId"),
-        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u where u.userSiteTaskById.id = :userSiteTaskId")
+        @NamedQuery(name = UserTaskTime.BY_SITE_ID, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = UserTaskTime.BY_TASK_ID, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.userByUsername.username = :username"),
+        @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId")
 })
 public class UserTaskTime implements Serializable {
     public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
