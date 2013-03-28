@@ -8,11 +8,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteTaskDao;
+import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
-import ru.alex.webapp.model.Site;
-import ru.alex.webapp.model.SiteTask;
-import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.SiteTaskService;
 
 import java.util.Collection;
@@ -29,6 +27,8 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
     private static final Logger logger = LoggerFactory.getLogger(SiteTaskServiceImpl.class);
     @Autowired
     SiteTaskDao siteTaskDao;
+    @Autowired
+    UserSiteTaskDao userSIteTaskDao;
     @Autowired
     UserTaskTimeDao userTaskTimeDao;
 
@@ -69,16 +69,32 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
 
         Map<String, Object> params = new HashMap<>(1);
         params.put("siteTaskId", entity.getId());
-        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_SITE_TASK, params);
+        List<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_SITE_TASK, params);
         logger.debug("remove BY_SITE_TASK userTaskTimeList={}", userTaskTimeList);
         if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
             entity = siteTaskDao.merge(entity);
             entity.getTaskByTaskId().getSiteTasksById().remove(entity);
             entity.getSiteBySiteId().getSiteTaskList().remove(entity);
             siteTaskDao.remove(entity);
+            siteTaskDao.flush();
         } else {
+            List<UserTaskTime> currentTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_TASK_ID, params);
+            logger.debug("remove CURRENT_BY_SITE_TASK_ID currentTimeList={}", currentTimeList);
+            if (currentTimeList != null && currentTimeList.size() > 0)
+                throw new Exception("Can't remove siteTask, it is active");
             entity.setDeleted(true);
-            siteTaskDao.merge(entity);
+            entity = siteTaskDao.merge(entity);
+            Collection<UserSiteTask> userSiteTaskList = entity.getUserSiteTaskList();
+            logger.debug("remove userSiteTaskList={}", userSiteTaskList);
+            if (userSiteTaskList != null && userSiteTaskList.size() > 0) {
+                for (UserSiteTask ust : userSiteTaskList) {
+                    if (!ust.getDeleted()) {
+                        ust.setDeleted(true);
+                    }
+                }
+                entity = siteTaskDao.merge(entity);
+            }
+
         }
     }
 

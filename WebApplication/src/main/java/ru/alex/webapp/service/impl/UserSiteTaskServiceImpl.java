@@ -10,21 +10,12 @@ import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteTaskDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
-import ru.alex.webapp.model.Site;
-import ru.alex.webapp.model.SiteTask;
-import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserSiteTask;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.*;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.service.SiteTaskService;
 import ru.alex.webapp.service.UserSiteTaskService;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Alex
@@ -39,7 +30,6 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     UserTaskTimeDao userTaskTimeDao;
     @Autowired
     SiteTaskDao siteTaskDao;
-
     @Autowired
     SiteTaskService siteTaskService;
 
@@ -89,7 +79,10 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             entity.getSiteTask().getUserSiteTaskList().remove(entity);
             entity.getUserByUsername().getUserSiteTasksByUsername().remove(entity);
             userSiteTaskDao.remove(entity);
+            userSiteTaskDao.flush();
         } else {
+            if (entity.getCurrentTime() != null)
+                throw new Exception("Can't remove userSiteTask, has current time");
             entity.setDeleted(true);
             userSiteTaskDao.merge(entity);
         }

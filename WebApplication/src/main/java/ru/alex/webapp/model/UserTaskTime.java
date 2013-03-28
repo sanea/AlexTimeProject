@@ -19,7 +19,8 @@ import java.util.Date;
         @NamedQuery(name = UserTaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.taskByTaskId.id = :taskId"),
         @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.userByUsername.username = :username"),
         @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.id = :siteTaskId"),
-        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId")
+        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId"),
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.id = :siteTaskId")
 })
 public class UserTaskTime implements Serializable {
     public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
@@ -29,6 +30,7 @@ public class UserTaskTime implements Serializable {
     public static final String BY_USERNAME = "UserTaskTime.BY_USERNAME";
     public static final String BY_SITE_TASK = "UserTaskTime.BY_SITE_TASK";
     public static final String BY_USER_SITE_TASK = "UserTaskTime.BY_USER_SITE_TASK";
+    public static final String CURRENT_BY_SITE_TASK_ID = "UserTaskTime.CURRENT_BY_SITE_TASK_ID";
 
     private static final long serialVersionUID = 1L;
     @Id
