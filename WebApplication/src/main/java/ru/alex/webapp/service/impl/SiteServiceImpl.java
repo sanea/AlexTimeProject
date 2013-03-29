@@ -10,6 +10,7 @@ import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.SiteService;
 
@@ -115,6 +116,18 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
     @Override
     public List<Site> getNotDeletedSites() throws Exception {
         List<Site> siteList = siteDao.findWithNamedQuery(Site.ALL_NOT_DELETED);
+        logger.debug("getNotDeletedSites siteList={}", siteList);
+        return siteList;
+    }
+
+    @Override
+    public List<Site> getNotDeletedSites(User user) throws Exception {
+        logger.debug("getNotDeletedSites user={}", user);
+        if (user == null || user.getUsername() == null || user.getUsername().equals(""))
+            throw new IllegalArgumentException("Wrong user " + user);
+        Map<String, Object> params = new HashMap<>(1);
+        params.put("username", user.getUsername());
+        List<Site> siteList = siteDao.findWithNamedQuery(Site.BY_USER_NOT_DELETED, params);
         logger.debug("getNotDeletedSites siteList={}", siteList);
         return siteList;
     }

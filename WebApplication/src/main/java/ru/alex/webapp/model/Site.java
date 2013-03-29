@@ -10,10 +10,12 @@ import java.util.Collection;
 @Table(name = "site")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Site.ALL_NOT_DELETED, query = "SELECT s FROM Site s WHERE s.deleted = false")
+        @NamedQuery(name = Site.ALL_NOT_DELETED, query = "SELECT s FROM Site s WHERE s.deleted = false"),
+        @NamedQuery(name = Site.BY_USER_NOT_DELETED, query = "SELECT DISTINCT ust.siteTask.siteBySiteId FROM UserSiteTask ust WHERE ust.deleted = false AND ust.siteTask.deleted = false  AND ust.siteTask.siteBySiteId.deleted = false AND ust.userByUsername.username = :username")
 })
 public class Site implements Serializable {
     public static final String ALL_NOT_DELETED = "Site.ALL_NOT_DELETED";
+    public static final String BY_USER_NOT_DELETED = "Site.BY_USER_NOT_DELETED";
 
     private static final long serialVersionUID = 1L;
     @Id

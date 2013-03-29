@@ -7,13 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
+import ru.alex.webapp.dao.UserChangeDao;
 import ru.alex.webapp.dao.UserDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
+import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.UserChange;
 import ru.alex.webapp.model.UserSiteTask;
+import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.UserService;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +31,10 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
     private UserDao userDao;
     @Autowired
     private UserSiteTaskDao userSiteTaskDao;
+    @Autowired
+    private UserChangeDao userChangeDao;
+    @Autowired
+    private UserTaskTimeDao userTaskTimeDao;
 
     @Override
     protected GenericDao<User, String> getDao() {
@@ -114,5 +123,44 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         List<User> userList = userDao.findWithNamedQuery(User.ALL_ENABLED_NOT_DELETED);
         logger.debug("getEnabledNotDeletedUsers userList={}", userList);
         return userList;
+    }
+
+    @Override
+    public User startChange(User user) throws Exception {
+        logger.debug("startChange user={}", user);
+        if (user == null || user.getUsername() == null || user.getUsername().equals(""))
+            throw new IllegalArgumentException("Wrong user");
+        if (user.getCurrentChange() != null)
+            throw new Exception("Can't start change, finish existing");
+        UserChange userChange = new UserChange();
+        userChange.setStartTime(new Date());
+        user.setCurrentChange(userChange);
+        user = userDao.merge(user);
+        logger.debug("startChange mergedUser={}", user);
+        return user;
+    }
+
+    @Override
+    public User finishChange(User user) throws Exception {
+        logger.debug("finishChange user={}", user);
+        if (user == null || user.getUsername() == null || user.getUsername().equals(""))
+            throw new IllegalArgumentException("Wrong user");
+        UserChange currentChange = user.getCurrentChange();
+        if (currentChange == null)
+            throw new Exception("can't finish change, no active change");
+        Map<String, Object> params = new HashMap<>(1);
+        params.put("username", user.getUsername());
+        List<UserTaskTime> currentUserTaskTime = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_USER_ID, params);
+        logger.debug("finishChange currentUserTaskTime={}", currentUserTaskTime);
+        if (currentUserTaskTime != null && currentUserTaskTime.size() > 0)
+            throw new Exception("Can't finish change, there are unfinished tasks");
+        currentChange.setEndTime(new Date());
+        currentChange = userChangeDao.merge(currentChange);
+        userChangeDao.flush();
+        logger.debug("finishChange mergedCurrentChange={}", currentChange);
+        user.setCurrentChange(null);
+        user = userDao.merge(user);
+        logger.debug("finishChange mergedUser={}", user);
+        return user;
     }
 }

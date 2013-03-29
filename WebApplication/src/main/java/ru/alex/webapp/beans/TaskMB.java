@@ -1,17 +1,21 @@
 package ru.alex.webapp.beans;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
+import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
@@ -29,48 +33,117 @@ import java.util.List;
 public class TaskMB implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(TaskMB.class);
+    private static final int UPDATE_INTERVAL_SEC = 1;
     @Autowired
     private TaskService taskService;
-    private String userName;
+    @Autowired
+    private SiteService siteService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SessionMB sessionMB;
+
+    private List<Site> siteList;
+    private Site selectedSite;
+    private boolean finishChangeDisable;
+
+    @PostConstruct
+    private void init() {
+        initSites();
+        initAssignedTasks();
+    }
+
+    private void initSites() {
+        logger.debug("initSites");
+        try {
+            siteList = siteService.getNotDeletedSites(sessionMB.getCurrentUser());
+            logger.debug("initSites siteList={}", siteList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of sites", e.toString()));
+        }
+    }
+
+    public List<Site> getSiteList() {
+        return siteList;
+    }
+
+    public Site getSelectedSite() {
+        return selectedSite;
+    }
+
+    public void setSelectedSite(Site selectedSite) {
+        this.selectedSite = selectedSite;
+    }
+
+    public boolean isFinishChangeDisable() {
+        return finishChangeDisable;
+    }
+
+    public void onSiteRowSelect(SelectEvent event) {
+        logger.debug("onSiteRowSelect site={}", selectedSite);
+        try {
+            User mergedUser = userService.startChange(sessionMB.getCurrentUser());
+            logger.debug("onSiteRowSelect mergedUser={}", mergedUser);
+            sessionMB.setCurrentUser(mergedUser);
+            sessionMB.setSelectedSite(selectedSite);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in starting change", e.toString()));
+        }
+        initAssignedTasks();
+    }
+
+    public void finishChange(ActionEvent event) {
+        logger.debug("finishChange");
+        try {
+            User mergedUser = userService.finishChange(sessionMB.getCurrentUser());
+            logger.debug("finishChange mergedUser={}", mergedUser);
+            sessionMB.setCurrentUser(mergedUser);
+            sessionMB.setSelectedSite(null);
+            assignedTasks = null;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in starting change", e.toString()));
+        }
+        initSites();
+    }
+
+
+    //TODO----------------
     private List<UserTaskWrapper> assignedTasks;
     private int selectedMinutes;
     private UserTaskWrapper selectedTask;
     private boolean startTableUpdater;
-    private final int updateIntervalSec = 1;
-
-    @PostConstruct
-    private void init() {
-        userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.debug("init username={}", userName);
-        initAssignedTasks();
-    }
 
     private void initAssignedTasks() {
         logger.debug("initAssignedTasks");
-        try {
-            startTableUpdater = false;
-            List<UserSiteTask> tasks = taskService.getTasksForUser(userName);
-            logger.debug("tasks={}", tasks);
-            List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
-            for (UserSiteTask ut : tasks) {
-                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
-                logger.debug("currentTime={}", currentTime);
-                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), userName);
-                logger.debug("timeSpentSec={}", timeSpentSec);
-                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
-                if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
-                    startTableUpdater = true;
+        if (sessionMB.getSelectedSite() != null) {
+            try {
+                startTableUpdater = false;
+                List<UserSiteTask> tasks = taskService.getTasksForUser(sessionMB.getCurrentUser().getUsername());
+                logger.debug("tasks={}", tasks);
+                List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
+                for (UserSiteTask ut : tasks) {
+                    UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), sessionMB.getCurrentUser().getUsername());
+                    logger.debug("currentTime={}", currentTime);
+                    int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), sessionMB.getCurrentUser().getUsername());
+                    logger.debug("timeSpentSec={}", timeSpentSec);
+                    taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
+                    if (TaskStatus.getStatus(ut.getStatus()) == TaskStatus.RUNNING)
+                        startTableUpdater = true;
+                }
+                assignedTasks = taskWrappers;
+                logger.debug("startTableUpdater={}", startTableUpdater);
+                RequestContext reqCtx = RequestContext.getCurrentInstance();
+                if (startTableUpdater)
+                    reqCtx.execute("if (!tableUpdater.isActive()) { tableUpdater.start(); }");
+                else
+                    reqCtx.execute("tableUpdater.stop();");
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
             }
-            assignedTasks = taskWrappers;
-            logger.debug("startTableUpdater={}", startTableUpdater);
-            RequestContext reqCtx = RequestContext.getCurrentInstance();
-            if (startTableUpdater)
-                reqCtx.execute("if (!tableUpdater.isActive()) { tableUpdater.start(); }");
-            else
-                reqCtx.execute("tableUpdater.stop();");
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
         }
     }
 
@@ -79,13 +152,13 @@ public class TaskMB implements Serializable {
     }
 
     public void startProcess() {
-        logger.debug("startProcess selectedTask={}, userName={}, selectedMinutes={}", selectedTask, userName, selectedMinutes);
+        logger.debug("startProcess selectedTask={}, sessionMB.getCurrentUser().getUsername()={}, selectedMinutes={}", selectedTask, sessionMB.getCurrentUser().getUsername(), selectedMinutes);
         if (selectedMinutes <= 0) {
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", "minutes should be > 0"));
             return;
         }
         try {
-            taskService.startTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
+            taskService.startTask(selectedTask.getTaskId(), sessionMB.getCurrentUser().getUsername(), selectedMinutes * 60);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
@@ -97,7 +170,7 @@ public class TaskMB implements Serializable {
     public void startTask(String taskId) {
         logger.debug("startTask {}", taskId);
         try {
-            taskService.startTask(Long.valueOf(taskId), userName, 0);
+            taskService.startTask(Long.valueOf(taskId), sessionMB.getCurrentUser().getUsername(), 0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting task", e.toString()));
@@ -109,7 +182,7 @@ public class TaskMB implements Serializable {
     public void pause(String taskId) {
         logger.debug("pause {}", taskId);
         try {
-            taskService.pauseTask(Long.valueOf(taskId), userName);
+            taskService.pauseTask(Long.valueOf(taskId), sessionMB.getCurrentUser().getUsername());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error pausing task", e.toString()));
@@ -121,7 +194,7 @@ public class TaskMB implements Serializable {
     public void resume(String taskId) {
         logger.debug("resume {}", taskId);
         try {
-            taskService.resumeTask(Long.valueOf(taskId), userName);
+            taskService.resumeTask(Long.valueOf(taskId), sessionMB.getCurrentUser().getUsername());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error resuming task", e.toString()));
@@ -131,9 +204,9 @@ public class TaskMB implements Serializable {
     }
 
     public void extendProcess() {
-        logger.debug("extendProcess selectedTask={}, userName={}, selectedMinutes={}", selectedTask, userName, selectedMinutes);
+        logger.debug("extendProcess selectedTask={}, sessionMB.getCurrentUser().getUsername()={}, selectedMinutes={}", selectedTask, sessionMB.getCurrentUser().getUsername(), selectedMinutes);
         try {
-            taskService.extendTask(selectedTask.getTaskId(), userName, selectedMinutes * 60);
+            taskService.extendTask(selectedTask.getTaskId(), sessionMB.getCurrentUser().getUsername(), selectedMinutes * 60);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error extending task", e.toString()));
@@ -145,7 +218,7 @@ public class TaskMB implements Serializable {
     public void stop(String taskId) {
         logger.debug("stop {}", taskId);
         try {
-            taskService.stopTask(Long.valueOf(taskId), userName);
+            taskService.stopTask(Long.valueOf(taskId), sessionMB.getCurrentUser().getUsername());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
@@ -171,7 +244,7 @@ public class TaskMB implements Serializable {
     }
 
     public int getUpdateIntervalSec() {
-        return updateIntervalSec;
+        return UPDATE_INTERVAL_SEC;
     }
 
     public void startListener(ActionEvent event) {
@@ -184,7 +257,7 @@ public class TaskMB implements Serializable {
         boolean needInit = false;
         for (UserTaskWrapper task : assignedTasks) {
             if (TaskStatus.getStatus(task.getCurrentStatus()) == TaskStatus.RUNNING) {
-                int timeLeft = task.getTimeLeftSec() - updateIntervalSec;
+                int timeLeft = task.getTimeLeftSec() - UPDATE_INTERVAL_SEC;
                 if (timeLeft > 0)
                     task.setTimeLeftSec(timeLeft);
                 else

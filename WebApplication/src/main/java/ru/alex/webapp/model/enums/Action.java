@@ -21,8 +21,6 @@ public enum Action {
         switch (getChar(action)) {
             case 'r':
                 return START;
-            case 'c':
-                return RESUME;
             case 'e':
                 return EXTEND;
             case 'f':
@@ -44,8 +42,6 @@ public enum Action {
         switch (getAction(action)) {
             case START:
                 return "Start";
-            case RESUME:
-                return "Resume";
             case EXTEND:
                 return "Extend";
             case FINISH:

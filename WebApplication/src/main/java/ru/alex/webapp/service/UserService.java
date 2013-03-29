@@ -9,4 +9,8 @@ public interface UserService extends GenericService<User, String> {
     public boolean isUserDeletable(User user) throws Exception;
 
     List<User> getEnabledNotDeletedUsers() throws Exception;
+
+    User startChange(User user) throws Exception;
+
+    User finishChange(User user) throws Exception;
 }

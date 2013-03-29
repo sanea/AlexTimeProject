@@ -70,7 +70,7 @@ public class LoginMB implements Serializable {
 
     public String getLogoutHidden() {
         SecurityContextHolder.getContext().setAuthentication(null);
-        FacesUtil.getFacesContext().getExternalContext().getSessionMap().clear();
+        FacesUtil.getExternalContext().getSessionMap().clear();
         return "logout";
     }
 
