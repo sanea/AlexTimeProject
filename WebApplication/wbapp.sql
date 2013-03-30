@@ -121,7 +121,7 @@ CREATE TABLE `site` (
   `country` varchar(255) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +152,7 @@ CREATE TABLE `site_task` (
   KEY `fk_site_task_idx2` (`task_id`),
   CONSTRAINT `fk_site_task1` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
   CONSTRAINT `fk_site_task2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `site_task` (
 
 LOCK TABLES `site_task` WRITE;
 /*!40000 ALTER TABLE `site_task` DISABLE KEYS */;
-INSERT INTO `site_task` VALUES (1,1,1,0),(2,1,2,0),(3,1,11,0),(4,2,1,0);
+INSERT INTO `site_task` VALUES (1,1,1,0),(2,1,2,0),(3,1,11,0),(4,2,1,0),(6,1,13,0),(7,1,16,0),(8,1,20,0);
 /*!40000 ALTER TABLE `site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,7 +191,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,0),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','p',100.00,1,0,1,NULL),(20,'Охранаа','p',11.00,1,0,0,0);
+INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,0),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','c',100.00,1,0,1,0),(20,'Охранаа','p',11.00,1,0,0,0);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,7 +241,7 @@ CREATE TABLE `user_change` (
   KEY `fk_user_change_user_idx` (`username`),
   CONSTRAINT `fk_user_change_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
   CONSTRAINT `fk_user_change_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,6 +250,7 @@ CREATE TABLE `user_change` (
 
 LOCK TABLES `user_change` WRITE;
 /*!40000 ALTER TABLE `user_change` DISABLE KEYS */;
+INSERT INTO `user_change` VALUES (17,'2013-03-30 18:42:51','2013-03-30 18:42:53',1,'admin'),(18,'2013-03-30 18:42:55','2013-03-30 18:42:58',2,'admin'),(19,'2013-03-30 18:43:00',NULL,1,'admin');
 /*!40000 ALTER TABLE `user_change` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,7 +278,7 @@ CREATE TABLE `user_site_task` (
   CONSTRAINT `fk_user_task_cur_time` FOREIGN KEY (`current_time`) REFERENCES `user_task_time` (`id`),
   CONSTRAINT `fk_user_task_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_user_task_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -286,7 +287,7 @@ CREATE TABLE `user_site_task` (
 
 LOCK TABLES `user_site_task` WRITE;
 /*!40000 ALTER TABLE `user_site_task` DISABLE KEYS */;
-INSERT INTO `user_site_task` VALUES (1,'admin',1,'u','2013-03-30 09:14:55','2013-03-30 09:14:55',0,NULL),(2,'admin',2,'u','2013-03-30 09:14:58','2013-03-30 09:14:58',0,NULL),(3,'admin',3,'u','2013-03-30 09:15:02','2013-03-30 09:15:02',0,NULL),(4,'admin',4,'u','2013-03-30 09:15:08','2013-03-30 09:15:08',0,NULL);
+INSERT INTO `user_site_task` VALUES (1,'admin',1,'u','2013-03-30 09:14:55','2013-03-30 09:14:55',0,NULL),(2,'admin',2,'u','2013-03-30 09:14:58','2013-03-30 09:14:58',0,NULL),(3,'admin',3,'u','2013-03-30 09:15:02','2013-03-30 09:15:02',0,NULL),(4,'admin',4,'u','2013-03-30 09:15:08','2013-03-30 09:15:08',0,NULL),(6,'admin',6,'u','2013-03-30 17:35:32','2013-03-30 17:35:32',0,NULL),(7,'admin',7,'u','2013-03-30 17:35:39','2013-03-30 17:35:39',0,NULL),(8,'admin',8,'u','2013-03-30 17:35:41','2013-03-30 17:35:41',0,NULL);
 /*!40000 ALTER TABLE `user_site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -348,7 +349,7 @@ CREATE TABLE `user_task_time_seq` (
   `next_id` bigint(20) unsigned DEFAULT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
-  `type` char(1) NOT NULL,
+  `task_status` char(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_time_seq_prev_idx` (`prev_id`),
   KEY `fk_time_seq_next_idx` (`next_id`),
@@ -401,7 +402,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',NULL,0),('asd','1',1,'','','','','','','','','',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
+INSERT INTO `users` VALUES ('1','1',1,'','','','','','','','','',NULL,0),('admin','1',1,'','','','','(123) 333-3333',NULL,'','','23',19,0),('asd','1',1,'','','','','','','','','',NULL,0),('test','1',0,'','','','','','','','','',NULL,1),('user1','1',1,'','','','','(111) 111-1111',NULL,'','','',NULL,0),('user2','1',1,'','','','','+7(432) 234-2342',NULL,'','','',NULL,0),('user3','1',1,'','','','','','a@a.com','','','',NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -414,4 +415,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-30 15:54:22
+-- Dump completed on 2013-03-31  1:43:09

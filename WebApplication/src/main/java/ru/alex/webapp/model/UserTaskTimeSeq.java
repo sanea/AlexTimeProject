@@ -19,6 +19,8 @@ public class UserTaskTimeSeq implements Serializable {
     private Date startTime;
     @Column(name = "end_time")
     private Date endTime;
+    @Column(name = "task_status", nullable = false, length = 1, columnDefinition = "CHAR")
+    private String taskStatus;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "next_id")
     private UserTaskTimeSeq nextTimeSeq;
@@ -26,7 +28,7 @@ public class UserTaskTimeSeq implements Serializable {
     @JoinColumn(name = "prev_id")
     private UserTaskTimeSeq prevTimeSeq;
     @OneToOne(mappedBy = "timeSeq", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private UserTaskTime user;
+    private UserTaskTime userTaskTime;
 
     public Long getId() {
         return id;
@@ -52,6 +54,14 @@ public class UserTaskTimeSeq implements Serializable {
         this.endTime = finishTime;
     }
 
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
     public UserTaskTimeSeq getNextTimeSeq() {
         return nextTimeSeq;
     }
@@ -68,12 +78,12 @@ public class UserTaskTimeSeq implements Serializable {
         this.prevTimeSeq = prevTimeSeq;
     }
 
-    public UserTaskTime getUser() {
-        return user;
+    public UserTaskTime getUserTaskTime() {
+        return userTaskTime;
     }
 
-    public void setUser(UserTaskTime user) {
-        this.user = user;
+    public void setUserTaskTime(UserTaskTime userTaskTime) {
+        this.userTaskTime = userTaskTime;
     }
 
     @Override
@@ -105,6 +115,7 @@ public class UserTaskTimeSeq implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", taskStatus=").append(taskStatus);
         sb.append(", nextTimeSeq=").append(nextTimeSeq == null ? null : nextTimeSeq.getId());
         sb.append(", prevTimeSeq=").append(prevTimeSeq == null ? null : prevTimeSeq.getId());
         sb.append('}');

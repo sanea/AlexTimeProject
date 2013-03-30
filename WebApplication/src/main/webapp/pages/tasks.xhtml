@@ -25,7 +25,10 @@
 
                 <h:panelGroup id="taslTableGroup" rendered="#{sessionMB.selectedSite != null}">
                     <h2>Assigned Tasks</h2>
-                    <p:commandButton id="finishChange" value="Finish Change" actionListener="#{taskMB.finishChange}" process="@this"
+
+                    <h3><h:outputText value="Site: #{sessionMB.selectedSite.name}"/></h3>
+                    <p:commandButton id="finishChange" value="Finish Change" actionListener="#{taskMB.finishChange}"
+                                     process="@this"
                                      onstart="return confirm('Are you sure you want to finish current change?');"
                                      update=":contentForm" disabled="#{taskMB.finishChangeDisable}"/>
                     <p:dataTable id="taskTable" var="task" value="#{taskMB.assignedTasks}"
@@ -47,43 +50,69 @@
                         </p:column>
 
                         <p:column headerText="Time Left" sortBy="#{task.timeLeftSec}">
-                            <h:outputText value="#{task.timeLeftFormatted}" rendered="#{task.taskType eq 'p'}"/>
+                            <h:outputText value="#{task.timeLeftFormatted}"/>
                         </p:column>
 
                         <p:column headerText="Duration" sortBy="#{task.durationSec}">
-                            <h:outputText value="#{task.durationFormatted}" rendered="#{task.taskType eq 'p'}"/>
+                            <h:outputText value="#{task.durationFormatted}"/>
                         </p:column>
 
                         <p:column headerText="Finish Time" sortBy="#{task.finishTime}">
-                            <h:outputText value="#{task.finishTime}" rendered="#{task.taskType eq 'p'}"/>
+                            <h:outputText value="#{task.finishTime}"/>
                         </p:column>
 
                         <p:column>
                             <p:commandButton value="start" rendered="#{task.taskType eq 't'}"
-                                             action="#{taskMB.startTask(task.taskId)}"
+                                             action="#{taskMB.startTask(task)}"
                                              update=":contentForm:taskTable" process="@this"/>
+                            <p:commandButton value="start" rendered="#{task.taskType eq 'c'}"
+                                             actionListener="#{taskMB.priceListener}"
+                                             update=":contentForm:priceDialog" process="@this"
+                                             oncomplete="priceDialog.show();">
+                                <f:attribute name="task" value="#{task}"/>
+                            </p:commandButton>
                             <h:panelGroup rendered="#{task.taskType eq 'p'}">
                                 <p:commandButton value="start" oncomplete="timeDialog.show();"
                                                  actionListener="#{taskMB.startListener}"
                                                  update=":contentForm:timeDialog"
-                                                 rendered="#{task.currentStatus == 'c' or task.currentStatus == 'u' or task.currentStatus == 's'}"
+                                                 rendered="#{task.currentStatus != 'r'}"
                                                  process="@this">
                                     <f:attribute name="task" value="#{task}"/>
+                                    <f:attribute name="action" value="#{'r'}"/>
                                 </p:commandButton>
-                                <p:commandButton value="pause" action="#{taskMB.pause(task.taskId)}"
-                                                 rendered="#{task.currentStatus == 'r'}"
-                                                 update=":contentForm:taskTable" process="@this"/>
-                                <p:commandButton value="resume" action="#{taskMB.resume(task.taskId)}"
-                                                 rendered="#{task.currentStatus == 'p'}"
-                                                 update=":contentForm:taskTable" process="@this"/>
+                                <p:commandButton value="custom1" oncomplete="timeDialog.show();"
+                                                 actionListener="#{taskMB.startListener}"
+                                                 update=":contentForm:timeDialog"
+                                                 rendered="#{task.currentStatus != '1'}"
+                                                 process="@this">
+                                    <f:attribute name="task" value="#{task}"/>
+                                    <f:attribute name="action" value="#{'1'}"/>
+                                </p:commandButton>
+                                <p:commandButton value="custom2" oncomplete="timeDialog.show();"
+                                                 actionListener="#{taskMB.startListener}"
+                                                 update=":contentForm:timeDialog"
+                                                 rendered="#{task.currentStatus != '2'}"
+                                                 process="@this">
+                                    <f:attribute name="task" value="#{task}"/>
+                                    <f:attribute name="action" value="#{'2'}"/>
+                                </p:commandButton>
+                                <p:commandButton value="custom3" oncomplete="timeDialog.show();"
+                                                 actionListener="#{taskMB.startListener}"
+                                                 update=":contentForm:timeDialog"
+                                                 rendered="#{task.currentStatus != '3'}"
+                                                 process="@this">
+                                    <f:attribute name="task" value="#{task}"/>
+                                    <f:attribute name="action" value="#{'3'}"/>
+                                </p:commandButton>
                                 <p:commandButton value="extend" oncomplete="timeDialog.show();"
                                                  actionListener="#{taskMB.startListener}"
                                                  update=":contentForm:timeDialog"
-                                                 rendered="#{task.currentStatus == 'r'}" process="@this">
+                                                 rendered="#{task.currentStatus == 'r' or task.currentStatus == '1' or task.currentStatus == '2' or task.currentStatus == '3'}"
+                                                 process="@this">
                                     <f:attribute name="task" value="#{task}"/>
                                 </p:commandButton>
-                                <p:commandButton value="stop" action="#{taskMB.stop(task.taskId)}"
-                                                 rendered="#{task.currentStatus == 'r' or task.currentStatus == 'p'}"
+                                <p:commandButton value="stop" action="#{taskMB.stop(task)}"
+                                                 rendered="#{task.currentStatus == 'r' or task.currentStatus == '1' or task.currentStatus == '2' or task.currentStatus == '3'}"
                                                  update=":contentForm:taskTable" process="@this"/>
                             </h:panelGroup>
                         </p:column>
@@ -96,7 +125,9 @@
                               closeOnEscape="true">
                         <h:panelGrid id="timeDialogContent" columns="3" cellpadding="2">
                             <h:outputText value="Task: "/>
-                            <h:outputText value="#{taskMB.selectedTask.taskName}"/>
+                            <h:outputText value="#{taskMB.selectedTask.taskName}"/> <br/>
+                            <h:outputText value="Action: "/>
+                            <h:outputText value="#{taskMB.selectedAction}"/>
                             <h:panelGroup/>
                             <h:outputLabel for="minutes" value="Minutes: *"/>
                             <p:inputText id="minutes" required="true" value="#{taskMB.selectedMinutes}">
@@ -108,13 +139,13 @@
                         <f:facet name="footer">
                             <p:commandButton value="Start" action="#{taskMB.startProcess}"
                                              update=":contentForm:taskTable timeDialogContent"
-                                             oncomplete="executeTaskTimeDialogClick(args);"
+                                             oncomplete="if(args &amp;&amp; !args.validationFailed) timeDialog.hide();"
                                              rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"
                                              process=":contentForm:timeDialog"/>
                             <p:commandButton value="Extend" action="#{taskMB.extendProcess}"
                                              update=":contentForm:taskTable timeDialogContent"
-                                             oncomplete="executeTaskTimeDialogClick(args);"
-                                             rendered="#{taskMB.selectedTask.currentStatus == 'r'}"
+                                             oncomplete="if(args &amp;&amp; !args.validationFailed) timeDialog.hide();"
+                                             rendered="#{taskMB.selectedTask.currentStatus == 'r' or taskMB.selectedTask.currentStatus == '1' or taskMB.selectedTask.currentStatus == '2' or taskMB.selectedTask.currentStatus == '3'}"
                                              process=":contentForm:timeDialog"/>
                             <p:commandButton value="Close" onclick="timeDialog.hide();"
                                              update=":contentForm:taskTable"/>
@@ -124,6 +155,29 @@
                 </h:panelGroup>
 
 
+                <p:dialog id="priceDialog" header="Please enter Price" widgetVar="priceDialog" closable="false"
+                          closeOnEscape="true">
+                    <h:panelGrid id="priceDialogContent" columns="3" cellpadding="2">
+                        <h:outputText value="Task: "/>
+                        <h:outputText value="#{taskMB.selectedTask.taskName}"/>
+                        <h:panelGroup/>
+                        <h:outputLabel for="price" value="Price: *"/>
+                        <p:inputText id="price" required="true" value="#{taskMB.selectedPrice}">
+                            <f:convertNumber maxFractionDigits="2" maxIntegerDigits="10"/>
+                        </p:inputText>
+                        <p:message for="price" display="icon"/>
+                    </h:panelGrid>
+                    <f:facet name="footer">
+                        <p:commandButton value="Start" action="#{taskMB.startCustomPriceTask}"
+                                         update=":contentForm:taskTable priceDialogContent"
+                                         oncomplete="if(args &amp;&amp; !args.validationFailed) priceDialog.hide();"
+                                         rendered="#{taskMB.selectedTask.currentStatus == 'c' or taskMB.selectedTask.currentStatus == 'u' or taskMB.selectedTask.currentStatus == 's'}"
+                                         process=":contentForm:priceDialog"/>
+                        <p:commandButton value="Close" onclick="priceDialog.hide();"
+                                         update=":contentForm:taskTable"/>
+                    </f:facet>
+
+                </p:dialog>
             </h:form>
         </ui:define>
     </ui:composition>

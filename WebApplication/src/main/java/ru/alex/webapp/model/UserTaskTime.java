@@ -71,7 +71,7 @@ public class UserTaskTime implements Serializable {
     @OneToMany(mappedBy = "userTaskTimeById", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserAction> userActionsById;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "time_seq_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "time_seq_id", referencedColumnName = "id", nullable = true)
     private UserTaskTimeSeq timeSeq;
 
     public Long getId() {

@@ -139,12 +139,10 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public User finishChange(User user, Site site) throws Exception {
-        logger.debug("finishChange user={}, site={}", user, site);
+    public User finishChange(User user) throws Exception {
+        logger.debug("finishChange user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
-        if (site == null || site.getId() != null)
-            throw new IllegalArgumentException("Wrong site");
         UserChange currentChange = user.getCurrentChange();
         if (currentChange == null)
             throw new Exception("can't finish change, no active change");

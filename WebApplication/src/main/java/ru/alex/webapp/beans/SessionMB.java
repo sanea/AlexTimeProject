@@ -26,7 +26,6 @@ public class SessionMB implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(SessionMB.class);
     @Autowired
     private UserService userService;
-
     private Collection<? extends GrantedAuthority> authorities;
     private Site selectedSite;
     private User currentUser;
@@ -38,6 +37,8 @@ public class SessionMB implements Serializable {
             String userName = auth.getName();
             authorities = auth.getAuthorities();
             currentUser = userService.findById(userName);
+            if (currentUser.getCurrentChange() != null)
+                selectedSite = currentUser.getCurrentChange().getSite();
         }
         logger.debug("currentUser={}, authorities={}", currentUser, authorities);
     }

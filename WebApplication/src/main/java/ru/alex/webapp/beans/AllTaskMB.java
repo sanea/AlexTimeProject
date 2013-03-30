@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
@@ -65,16 +64,16 @@ public class AllTaskMB implements Serializable {
     private void initAllTasks() {
         logger.debug("initAllTasks");
         try {
-            total = new BigDecimal(0);
-            List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
-            logger.debug("initAllTasks taskTimeList={}", taskTimeList);
-            List<UserTaskWrapper> allTasksLocal = new ArrayList<>(taskTimeList.size());
-            for (UserTaskTime taskTime : taskTimeList) {
-                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserSiteTaskById(), taskTime);
-                allTasksLocal.add(taskWrapper);
-                total = total.add(taskWrapper.getSum());
-            }
-            allTasks = allTasksLocal;
+//            total = new BigDecimal(0);
+//            List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
+//            logger.debug("initAllTasks taskTimeList={}", taskTimeList);
+//            List<UserTaskWrapper> allTasksLocal = new ArrayList<>(taskTimeList.size());
+//            for (UserTaskTime taskTime : taskTimeList) {
+//                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserSiteTaskById(), taskTime);
+//                allTasksLocal.add(taskWrapper);
+//                total = total.add(taskWrapper.getSum());
+//            }
+//            allTasks = allTasksLocal;
             logger.debug("initAllTasks allTasks={}", allTasks);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -141,13 +140,13 @@ public class AllTaskMB implements Serializable {
         try {
             selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
             logger.debug("selectTaskListener selectedTask={}", selectedTask);
-            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTask.getTaskTime().getTimeSeq());
-            logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
-            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
-            for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
-                timeSeqList.add(new TimeSequence(timeSeq));
-            selectedTimeSeqList = timeSeqList;
-            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
+//            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTask.getTaskTime().getTimeSeq());
+//            logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
+//            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
+//            for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
+//                timeSeqList.add(new TimeSequence(timeSeq));
+//            selectedTimeSeqList = timeSeqList;
+//            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -159,8 +158,8 @@ public class AllTaskMB implements Serializable {
     public void filterListener(FilterEvent event) {
         logger.debug("filterListener filteredTasks={}", filteredTasks);
         total = new BigDecimal(0);
-        for (UserTaskWrapper taskWrapper : filteredTasks)
-            total = total.add(taskWrapper.getSum());
+//        for (UserTaskWrapper taskWrapper : filteredTasks)
+//            total = total.add(taskWrapper.getSum());
         logger.debug("filterListener total={}", total);
     }
 

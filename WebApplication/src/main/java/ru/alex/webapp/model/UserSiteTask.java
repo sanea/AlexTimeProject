@@ -14,12 +14,14 @@ import java.util.Date;
         @NamedQuery(name = UserSiteTask.BY_USERNAME, query = "SELECT u FROM UserSiteTask u WHERE userByUsername.username = :username"),
         @NamedQuery(name = UserSiteTask.ALL_CURRENT_TIME, query = "SELECT u FROM UserSiteTask u WHERE u.currentTime is not null"),
         @NamedQuery(name = UserSiteTask.ALL_NOT_DELETED_BY_SITE_TASK, query = "SELECT u FROM UserSiteTask u WHERE u.deleted = false AND u.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = UserSiteTask.ALL_NOT_DELETED_BY_SITE_USER, query = "SELECT u FROM UserSiteTask u WHERE u.deleted = false AND u.siteTask.siteBySiteId.deleted = false AND u.siteTask.taskByTaskId.deleted = false AND u.siteTask.deleted = false AND u.siteTask.siteBySiteId.id = :siteId AND u.userByUsername.username = :username"),
         @NamedQuery(name = UserSiteTask.BY_USER_SITE_TASK, query = "SELECT u FROM UserSiteTask u WHERE u.userByUsername.username = :username AND u.siteTask.siteBySiteId.id = :siteId AND u.siteTask.taskByTaskId.id = :taskId")
 })
 public class UserSiteTask implements Serializable {
     public static final String BY_USERNAME = "UserSiteTask.BY_USERNAME";
     public static final String ALL_CURRENT_TIME = "UserSiteTask.ALL_CURRENT_TIME";
     public static final String ALL_NOT_DELETED_BY_SITE_TASK = "UserSiteTask.ALL_NOT_DELETED_BY_SITE_TASK";
+    public static final String ALL_NOT_DELETED_BY_SITE_USER = "UserSiteTask.ALL_NOT_DELETED_BY_SITE_USER";
     public static final String BY_USER_SITE_TASK = "UserSiteTask.BY_USER_SITE_TASK";
     private static final long serialVersionUID = 1L;
     @Id

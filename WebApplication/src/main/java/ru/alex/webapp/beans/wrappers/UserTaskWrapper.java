@@ -10,7 +10,6 @@ import ru.alex.webapp.util.TimeUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 /**
@@ -20,28 +19,51 @@ public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserTaskWrapper.class);
     private UserSiteTask userSiteTask;
-    private UserTaskTime taskTime;
-    private int timeLeftSec;
-    private BigDecimal sum;
+    private Date startTime;
+    private Date finishTime;
+    private Integer durationSec;
+    private String durationSecFormatted;
 
-    public UserTaskWrapper(UserSiteTask userSiteTask, UserTaskTime taskTime) {
-        this(userSiteTask, taskTime, 0);
-    }
 
-    public UserTaskWrapper(UserSiteTask userSiteTask, UserTaskTime taskTime, int timeSpentSeq) {
-        logger.debug("init UserTaskWrapper userSiteTask={}, taskTime={}", userSiteTask, taskTime);
+    public UserTaskWrapper(UserSiteTask userSiteTask) {
+        logger.debug("init UserTaskWrapper userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new IllegalArgumentException("User task can't be null");
         this.userSiteTask = userSiteTask;
-        this.taskTime = taskTime;
-        if (taskTime != null) {
-            Integer durationSec = getDurationSec();
-            this.timeLeftSec = durationSec - timeSpentSeq;
-            if (TaskType.getType(userSiteTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.PROCESS)
-                this.sum = durationSec != null ? getTaskPriceHour().multiply(new BigDecimal((double) durationSec / 3600)).setScale(2, RoundingMode.HALF_UP) : null;
-            else
-                this.sum = getTaskPriceHour();
-            logger.debug("init UserTaskWrapper timeLeftSec={}, sum={}", this.timeLeftSec, this.sum);
+        init();
+    }
+
+    private void init() {
+        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        if (currentTime != null) {
+            startTime = currentTime.getStartTime();
+
+            TaskStatus status = TaskStatus.getStatus(userSiteTask.getStatus());
+            switch (status) {
+                case RUNNING:
+                    finishTime = currentTime.getFinishTimePlay();
+                    durationSec = currentTime.getDurationPlaySec();
+                    break;
+                case CUSTOM1:
+                    finishTime = currentTime.getFinishTimeCustom1();
+                    durationSec = currentTime.getDurationCustom1Sec();
+                    break;
+                case CUSTOM2:
+                    finishTime = currentTime.getFinishTimeCustom2();
+                    durationSec = currentTime.getDurationCustom2Sec();
+                    break;
+                case CUSTOM3:
+                    finishTime = currentTime.getFinishTimeCustom3();
+                    durationSec = currentTime.getDurationCustom3Sec();
+                    break;
+                default:
+                    throw new IllegalStateException("Unreachable case, current time should be null for " + status);
+            }
+            durationSecFormatted = TimeUtils.formatTimeSec(durationSec);
+        } else {
+            startTime = null;
+            finishTime = null;
+            durationSec = null;
         }
     }
 
@@ -53,32 +75,60 @@ public class UserTaskWrapper implements Serializable {
         return userSiteTask.getSiteTask().getTaskByTaskId().getName();
     }
 
-    public String getTaskTypeFormatted() {
-        return TaskType.getTypeFormatted(userSiteTask.getSiteTask().getTaskByTaskId().getType());
-    }
-
     public String getTaskType() {
         return userSiteTask.getSiteTask().getTaskByTaskId().getType();
     }
 
+    public String getTaskTypeFormatted() {
+        return TaskType.getTypeFormatted(userSiteTask.getSiteTask().getTaskByTaskId().getType());
+    }
+
     public BigDecimal getTaskPriceHour() {
+        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        if (currentTime != null)
+            return currentTime.getPriceHour();
         return userSiteTask.getSiteTask().getTaskByTaskId().getPriceHour();
     }
 
     public int getTimeLeftSec() {
+        int timeLeftSec = 0;
+        Date now = new Date();
+        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        if (currentTime != null) {
+            TaskStatus status = TaskStatus.getStatus(userSiteTask.getStatus());
+            Date finishTime;
+            switch (status) {
+                case RUNNING:
+                    finishTime = currentTime.getFinishTimePlay();
+                    break;
+                case CUSTOM1:
+                    finishTime = currentTime.getFinishTimeCustom1();
+                    break;
+                case CUSTOM2:
+                    finishTime = currentTime.getFinishTimeCustom2();
+                    break;
+                case CUSTOM3:
+                    finishTime = currentTime.getFinishTimeCustom3();
+                    break;
+                default:
+                    finishTime = null;
+            }
+            if (finishTime != null)
+                timeLeftSec = (int) (finishTime.getTime() - now.getTime()) / 1000;
+        }
         return timeLeftSec;
     }
 
-    public void setTimeLeftSec(int timeLeftSec) {
-        this.timeLeftSec = timeLeftSec;
-    }
-
-    public String getCurrentStatusFormatted() {
-        return TaskStatus.getStatusFormatted(userSiteTask.getStatus());
+    public String getTimeLeftFormatted() {
+        return TimeUtils.formatTimeSec(getTimeLeftSec());
     }
 
     public String getCurrentStatus() {
         return userSiteTask.getStatus();
+    }
+
+    public String getCurrentStatusFormatted() {
+        return TaskStatus.getStatusFormatted(userSiteTask.getStatus());
     }
 
     public Long getTaskId() {
@@ -86,32 +136,23 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public Date getStartTime() {
-        return taskTime != null ? taskTime.getStartTime() : null;
+        return startTime;
     }
 
     public Date getFinishTime() {
-        return taskTime != null ? taskTime.getFinishTime() : null;
+        return finishTime;
     }
 
     public Integer getDurationSec() {
-        return taskTime != null ? taskTime.getDurationPlaySec() : null;
+        return durationSec;
     }
 
     public String getDurationFormatted() {
-        Integer durationSec = taskTime != null ? taskTime.getDurationPlaySec() : null;
-        return durationSec != null ? TimeUtils.formatTimeSec(durationSec) : "";
+        return durationSecFormatted;
     }
 
-    public String getTimeLeftFormatted() {
-        return TimeUtils.formatTimeSec(timeLeftSec);
-    }
-
-    public BigDecimal getSum() {
-        return sum;
-    }
-
-    public UserTaskTime getTaskTime() {
-        return taskTime;
+    public UserSiteTask getUserSiteTask() {
+        return userSiteTask;
     }
 
     @Override
@@ -119,8 +160,10 @@ public class UserTaskWrapper implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskWrapper");
         sb.append("{userSiteTask=").append(userSiteTask);
-        sb.append(", taskTime=").append(taskTime);
-        sb.append(", timeLeftSec=").append(timeLeftSec);
+        sb.append("startTime=").append(startTime);
+        sb.append("finishTime=").append(finishTime);
+        sb.append("durationSec=").append(durationSec);
+        sb.append("durationSecFormatted=").append(durationSecFormatted);
         sb.append('}');
         return sb.toString();
     }

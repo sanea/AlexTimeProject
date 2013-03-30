@@ -41,15 +41,15 @@ public class OnlineTaskMB implements Serializable {
         try {
             List<UserSiteTask> tasks = taskService.getOnlineTasks();
             logger.debug("tasks={}", tasks);
-            List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
-            for (UserSiteTask ut : tasks) {
-                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
-                logger.debug("currentTime={}", currentTime);
-                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
-                logger.debug("timeSpentSec={}", timeSpentSec);
-                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
-            }
-            onlineTasks = taskWrappers;
+//            List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
+//            for (UserSiteTask ut : tasks) {
+//                UserTaskTime currentTime = taskService.getCurrentTimeForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
+//                logger.debug("currentTime={}", currentTime);
+//                int timeSpentSec = taskService.getTimeSpentSecForUserTask(ut.getSiteTask().getTaskByTaskId().getId(), ut.getUserByUsername().getUsername());
+//                logger.debug("timeSpentSec={}", timeSpentSec);
+//                taskWrappers.add(new UserTaskWrapper(ut, currentTime, timeSpentSec));
+//            }
+//            onlineTasks = taskWrappers;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
@@ -67,11 +67,11 @@ public class OnlineTaskMB implements Serializable {
     public void refreshTable() {
         boolean needInit = false;
         for (UserTaskWrapper task : onlineTasks) {
-            int timeLeft = task.getTimeLeftSec() - updateIntervalSec;
-            if (timeLeft > 0)
-                task.setTimeLeftSec(timeLeft);
-            else
-                needInit = true;
+//            int timeLeft = task.getTimeLeftSec() - updateIntervalSec;
+//            if (timeLeft > 0)
+//                task.setTimeLeftSec(timeLeft);
+//            else
+//                needInit = true;
         }
         if (needInit)
             initOnlineTasks();

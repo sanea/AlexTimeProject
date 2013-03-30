@@ -13,5 +13,5 @@ public interface UserService extends GenericService<User, String> {
 
     User startChange(User user, Site site) throws Exception;
 
-    User finishChange(User user, Site site) throws Exception;
+    User finishChange(User user) throws Exception;
 }
