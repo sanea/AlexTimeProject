@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.24, for Win64 (x86)
+-- MySQL dump 10.13  Distrib 5.5.25a, for Win64 (x86)
 --
 -- Host: localhost    Database: webapp
 -- ------------------------------------------------------
--- Server version	5.1.66-community
+-- Server version	5.5.25a
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -69,7 +69,7 @@ CREATE TABLE `group_members` (
   KEY `idx_members_group_id` (`group_id`),
   CONSTRAINT `fk_members_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`),
   CONSTRAINT `fk_members_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +152,7 @@ CREATE TABLE `site_task` (
   KEY `fk_site_task_idx2` (`task_id`),
   CONSTRAINT `fk_site_task1` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
   CONSTRAINT `fk_site_task2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,6 +161,7 @@ CREATE TABLE `site_task` (
 
 LOCK TABLES `site_task` WRITE;
 /*!40000 ALTER TABLE `site_task` DISABLE KEYS */;
+INSERT INTO `site_task` VALUES (1,1,1,0),(2,1,2,0),(3,1,11,0),(4,2,1,0);
 /*!40000 ALTER TABLE `site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +182,7 @@ CREATE TABLE `task` (
   `income` tinyint(1) NOT NULL DEFAULT '1',
   `repeat_task` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +191,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,NULL),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','p',100.00,1,0,1,NULL),(20,'Охранаа','p',11.00,1,0,0,0);
+INSERT INTO `task` VALUES (1,'Списание Часов','p',100.00,1,0,1,0),(2,'Печать1','t',250.00,1,0,1,NULL),(11,'Списание часов 2','p',100.22,1,0,1,NULL),(13,'Танцы','t',1232.22,1,0,1,NULL),(16,'час','p',100.00,1,0,1,NULL),(20,'Охранаа','p',11.00,1,0,0,0);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,8 +234,14 @@ CREATE TABLE `user_change` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `site_id` bigint(20) unsigned NOT NULL,
+  `username` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_user_change_site_idx` (`site_id`),
+  KEY `fk_user_change_user_idx` (`username`),
+  CONSTRAINT `fk_user_change_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
+  CONSTRAINT `fk_user_change_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,7 +277,7 @@ CREATE TABLE `user_site_task` (
   CONSTRAINT `fk_user_task_cur_time` FOREIGN KEY (`current_time`) REFERENCES `user_task_time` (`id`),
   CONSTRAINT `fk_user_task_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_user_task_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -279,6 +286,7 @@ CREATE TABLE `user_site_task` (
 
 LOCK TABLES `user_site_task` WRITE;
 /*!40000 ALTER TABLE `user_site_task` DISABLE KEYS */;
+INSERT INTO `user_site_task` VALUES (1,'admin',1,'u','2013-03-30 09:14:55','2013-03-30 09:14:55',0,NULL),(2,'admin',2,'u','2013-03-30 09:14:58','2013-03-30 09:14:58',0,NULL),(3,'admin',3,'u','2013-03-30 09:15:02','2013-03-30 09:15:02',0,NULL),(4,'admin',4,'u','2013-03-30 09:15:08','2013-03-30 09:15:08',0,NULL);
 /*!40000 ALTER TABLE `user_site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,6 +302,10 @@ CREATE TABLE `user_task_time` (
   `user_task_id` bigint(20) unsigned NOT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `finish_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `finish_time_play` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `finish_time_custom1` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `finish_time_custom2` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `finish_time_custom3` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `time_seq_id` bigint(20) unsigned DEFAULT NULL,
   `duration_play` int(11) NOT NULL DEFAULT '0',
   `duration_custom1` int(11) DEFAULT NULL,
@@ -402,4 +414,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-26 23:17:14
+-- Dump completed on 2013-03-30 15:54:22

@@ -2,6 +2,7 @@ package ru.alex.webapp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -16,7 +17,6 @@ import java.util.Collection;
 public class Site implements Serializable {
     public static final String ALL_NOT_DELETED = "Site.ALL_NOT_DELETED";
     public static final String BY_USER_NOT_DELETED = "Site.BY_USER_NOT_DELETED";
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,6 +34,8 @@ public class Site implements Serializable {
     private Boolean deleted;
     @OneToMany(mappedBy = "siteBySiteId", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Collection<SiteTask> siteTaskList;
+    @OneToMany(mappedBy = "site", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private Collection<UserChange> userChanges;
 
     public Site() {
     }
@@ -94,6 +96,14 @@ public class Site implements Serializable {
         this.siteTaskList = siteTaskList;
     }
 
+    public Collection<UserChange> getUserChanges() {
+        return userChanges;
+    }
+
+    public void setUserChanges(Collection<UserChange> userChanges) {
+        this.userChanges = userChanges;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,5 +133,12 @@ public class Site implements Serializable {
         sb.append(", country='").append(country).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public void addUserChange(UserChange userChange) {
+        userChange.setSite(this);
+        if (userChanges == null)
+            userChanges = new ArrayList<>();
+        userChanges.add(userChange);
     }
 }

@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.*;
-import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserChange;
-import ru.alex.webapp.model.UserSiteTask;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.UserService;
 
 import java.util.*;
@@ -27,6 +24,8 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
     private UserChangeDao userChangeDao;
     @Autowired
     private UserTaskTimeDao userTaskTimeDao;
+    @Autowired
+    private SiteDao siteDao;
 
     @Override
     protected GenericDao<User, String> getDao() {
@@ -119,14 +118,18 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public User startChange(User user) throws Exception {
-        logger.debug("startChange user={}", user);
+    public User startChange(User user, Site site) throws Exception {
+        logger.debug("startChange user={}, site={}", user, site);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
+        if (site == null || site.getId() == null)
+            throw new IllegalArgumentException("Wrong site");
         if (user.getCurrentChange() != null)
             throw new Exception("Can't start change, finish existing");
         UserChange userChange = new UserChange();
         userChange.setStartTime(new Date());
+        userChange.setCurrentChangeUser(user);
+        userChange.setSite(site);
         userChange.setUser(user);
         user.setCurrentChange(userChange);
         user = userDao.merge(user);
@@ -136,10 +139,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public User finishChange(User user) throws Exception {
-        logger.debug("finishChange user={}", user);
+    public User finishChange(User user, Site site) throws Exception {
+        logger.debug("finishChange user={}, site={}", user, site);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
             throw new IllegalArgumentException("Wrong user");
+        if (site == null || site.getId() != null)
+            throw new IllegalArgumentException("Wrong site");
         UserChange currentChange = user.getCurrentChange();
         if (currentChange == null)
             throw new Exception("can't finish change, no active change");

@@ -2,6 +2,7 @@ package ru.alex.webapp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -46,6 +47,8 @@ public class User implements Serializable {
     private GroupMember groupMemberByUsername;
     @OneToMany(mappedBy = "userByUsername", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserSiteTask> userSiteTasksByUsername;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private Collection<UserChange> userChanges;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "current_change", referencedColumnName = "id", nullable = true)
     private UserChange currentChange;
@@ -170,6 +173,14 @@ public class User implements Serializable {
         this.userSiteTasksByUsername = userSiteTasksByUsername;
     }
 
+    public Collection<UserChange> getUserChanges() {
+        return userChanges;
+    }
+
+    public void setUserChanges(Collection<UserChange> userChanges) {
+        this.userChanges = userChanges;
+    }
+
     public UserChange getCurrentChange() {
         return currentChange;
     }
@@ -212,8 +223,16 @@ public class User implements Serializable {
         sb.append(", middleName='").append(middleName).append('\'');
         sb.append(", phone1='").append(phone1).append('\'');
         sb.append(", phone2='").append(phone2).append('\'');
-        sb.append(", currentChange=").append(currentChange);
+        sb.append(", currentChange startTime=").append(currentChange != null ? currentChange.getStartTime() : "null");
         sb.append('}');
         return sb.toString();
     }
+
+    public void addUserChange(UserChange userChange) {
+        userChange.setUser(this);
+        if (userChanges == null)
+            userChanges = new ArrayList<>();
+        userChanges.add(userChange);
+    }
+
 }

@@ -33,7 +33,6 @@ public class UserTaskTime implements Serializable {
     public static final String BY_SITE_TASK = "UserTaskTime.BY_SITE_TASK";
     public static final String BY_USER_SITE_TASK = "UserTaskTime.BY_USER_SITE_TASK";
     public static final String CURRENT_BY_SITE_TASK_ID = "UserTaskTime.CURRENT_BY_SITE_TASK_ID";
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,6 +42,14 @@ public class UserTaskTime implements Serializable {
     private Date startTime;
     @Column(name = "finish_time", nullable = false)
     private Date finishTime;
+    @Column(name = "finish_time_play", nullable = false)
+    private Date finishTimePlay;
+    @Column(name = "finish_time_custom1", nullable = true)
+    private Date finishTimeCustom1;
+    @Column(name = "finish_time_custom2", nullable = true)
+    private Date finishTimeCustom2;
+    @Column(name = "finish_time_custom3", nullable = true)
+    private Date finishTimeCustom3;
     @Column(name = "duration_play", length = 11, nullable = false)
     private Integer durationPlaySec;
     @Column(name = "duration_custom1", length = 11, nullable = true)
@@ -89,6 +96,38 @@ public class UserTaskTime implements Serializable {
 
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public Date getFinishTimePlay() {
+        return finishTimePlay;
+    }
+
+    public void setFinishTimePlay(Date finishTimePlay) {
+        this.finishTimePlay = finishTimePlay;
+    }
+
+    public Date getFinishTimeCustom1() {
+        return finishTimeCustom1;
+    }
+
+    public void setFinishTimeCustom1(Date finishTimeCustom1) {
+        this.finishTimeCustom1 = finishTimeCustom1;
+    }
+
+    public Date getFinishTimeCustom2() {
+        return finishTimeCustom2;
+    }
+
+    public void setFinishTimeCustom2(Date finishTimeCustom2) {
+        this.finishTimeCustom2 = finishTimeCustom2;
+    }
+
+    public Date getFinishTimeCustom3() {
+        return finishTimeCustom3;
+    }
+
+    public void setFinishTimeCustom3(Date finishTimeCustom3) {
+        this.finishTimeCustom3 = finishTimeCustom3;
     }
 
     public Integer getDurationPlaySec() {
@@ -195,6 +234,10 @@ public class UserTaskTime implements Serializable {
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", finishTime=").append(finishTime);
+        sb.append(", finishTimePlay=").append(finishTimePlay);
+        sb.append(", finishTimeCustom1=").append(finishTimeCustom1);
+        sb.append(", finishTimeCustom2=").append(finishTimeCustom2);
+        sb.append(", finishTimeCustom3=").append(finishTimeCustom3);
         sb.append(", durationPlaySec=").append(durationPlaySec);
         sb.append(", durationCustom1Sec=").append(durationCustom1Sec);
         sb.append(", durationCustom2Sec=").append(durationCustom2Sec);

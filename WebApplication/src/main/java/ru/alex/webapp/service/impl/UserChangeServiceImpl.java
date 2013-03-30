@@ -49,6 +49,10 @@ public class UserChangeServiceImpl extends GenericServiceImpl<UserChange, Long> 
             throw new IllegalArgumentException("Wrong entity");
         if (entity.getStartTime() == null)
             throw new Exception("StartTime can't be empty");
+        if (entity.getSite() == null)
+            throw new Exception("Site can't be empty");
+        if (entity.getUser() == null)
+            throw new Exception("User can't be empty");
         userChangeDao.persist(entity);
     }
 

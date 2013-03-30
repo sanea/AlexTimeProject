@@ -42,10 +42,14 @@ public class TaskMB implements Serializable {
     private UserService userService;
     @Autowired
     private SessionMB sessionMB;
-
     private List<Site> siteList;
     private Site selectedSite;
     private boolean finishChangeDisable;
+    //TODO----------------
+    private List<UserTaskWrapper> assignedTasks;
+    private int selectedMinutes;
+    private UserTaskWrapper selectedTask;
+    private boolean startTableUpdater;
 
     @PostConstruct
     private void init() {
@@ -83,7 +87,7 @@ public class TaskMB implements Serializable {
     public void onSiteRowSelect(SelectEvent event) {
         logger.debug("onSiteRowSelect site={}", selectedSite);
         try {
-            User mergedUser = userService.startChange(sessionMB.getCurrentUser());
+            User mergedUser = userService.startChange(sessionMB.getCurrentUser(), selectedSite);
             logger.debug("onSiteRowSelect mergedUser={}", mergedUser);
             sessionMB.setCurrentUser(mergedUser);
             sessionMB.setSelectedSite(selectedSite);
@@ -97,7 +101,7 @@ public class TaskMB implements Serializable {
     public void finishChange(ActionEvent event) {
         logger.debug("finishChange");
         try {
-            User mergedUser = userService.finishChange(sessionMB.getCurrentUser());
+            User mergedUser = userService.finishChange(sessionMB.getCurrentUser(), sessionMB.getSelectedSite());
             logger.debug("finishChange mergedUser={}", mergedUser);
             sessionMB.setCurrentUser(mergedUser);
             sessionMB.setSelectedSite(null);
@@ -108,13 +112,6 @@ public class TaskMB implements Serializable {
         }
         initSites();
     }
-
-
-    //TODO----------------
-    private List<UserTaskWrapper> assignedTasks;
-    private int selectedMinutes;
-    private UserTaskWrapper selectedTask;
-    private boolean startTableUpdater;
 
     private void initAssignedTasks() {
         logger.debug("initAssignedTasks");
