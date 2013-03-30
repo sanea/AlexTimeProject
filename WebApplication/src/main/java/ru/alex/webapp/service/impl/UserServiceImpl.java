@@ -6,22 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.webapp.dao.GenericDao;
-import ru.alex.webapp.dao.UserChangeDao;
-import ru.alex.webapp.dao.UserDao;
-import ru.alex.webapp.dao.UserSiteTaskDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
+import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserChange;
 import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.UserService;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -126,6 +118,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public User startChange(User user) throws Exception {
         logger.debug("startChange user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
@@ -134,6 +127,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
             throw new Exception("Can't start change, finish existing");
         UserChange userChange = new UserChange();
         userChange.setStartTime(new Date());
+        userChange.setUser(user);
         user.setCurrentChange(userChange);
         user = userDao.merge(user);
         logger.debug("startChange mergedUser={}", user);
@@ -141,6 +135,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public User finishChange(User user) throws Exception {
         logger.debug("finishChange user={}", user);
         if (user == null || user.getUsername() == null || user.getUsername().equals(""))
