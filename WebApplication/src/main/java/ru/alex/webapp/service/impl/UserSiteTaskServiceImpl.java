@@ -11,9 +11,11 @@ import ru.alex.webapp.dao.*;
 import ru.alex.webapp.model.*;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
+import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteTaskService;
 import ru.alex.webapp.service.UserSiteTaskService;
 
+import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -201,7 +203,6 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         logger.debug("checkAllTasks");
         try {
             List<UserSiteTask> runningTasks = getAllCurrentTime();
-            logger.debug("checkAllTasks runningTasks={}", runningTasks);
             for (UserSiteTask task : runningTasks) {
                 checkTask(task);
             }
@@ -211,23 +212,350 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     }
 
     @Override
-    public void startTask(UserSiteTask userSiteTask, BigDecimal customPrice) throws Exception {
-        //TODO implement Method
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void startTask(UserSiteTask task, BigDecimal customPrice) throws Exception {
+        logger.debug("startTask task={}, customPrice={}", task, customPrice);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType == TaskType.PROCESS)
+            throw new Exception("Can't start Process, only task");
+        if (taskType == TaskType.TASK_CUSTOM_PRICE && (customPrice == null || customPrice.compareTo(new BigDecimal(0)) < 0))
+            throw new IllegalArgumentException("wrong custom price");
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.COMPLETED && taskStatus != TaskStatus.STOPPED && taskStatus != TaskStatus.UNKNOWN)
+            throw new Exception("Can't start task with status " + taskStatus.getStatusFormatted());
+        if (task.getCurrentTime() != null)
+            throw new Exception("Task can't have current time");
+        if (task.getUserByUsername().getCurrentChange() == null)
+            throw new Exception("Can't start task without change");
+
+        Date now = new Date();
+
+        //change user_task status
+        task.setStatus(TaskStatus.COMPLETED.getStatusStr());
+        task.setUpdateTime(now);
+        task = userSiteTaskDao.merge(task);
+
+        //add user_task_time
+        UserTaskTime userTaskTime = new UserTaskTime();
+        userTaskTime.setDurationPlaySec(0);
+        userTaskTime.setFinishTimePlay(now);
+        userTaskTime.setStartTime(now);
+        userTaskTime.setFinishTime(now);
+        if (taskType == TaskType.TASK_CUSTOM_PRICE) {
+            userTaskTime.setPriceHour(customPrice);
+            userTaskTime.setTotal(customPrice);
+        } else {
+            userTaskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
+            userTaskTime.setTotal(task.getSiteTask().getTaskByTaskId().getPriceHour());
+        }
+        userTaskTime.setUserChange(task.getUserByUsername().getCurrentChange());
+        task.addUserTaskTime(userTaskTime);
+        userTaskTimeDao.persist(userTaskTime);
+        userTaskTimeDao.flush();
+        userTaskTimeDao.clear();
+
+        //add user_action
+        addUserAction(Action.START, now, userTaskTime);
     }
 
     @Override
-    public void startProcess(UserSiteTask userSiteTask, int seconds, Action action) throws Exception {
-        //TODO implement Method
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void startProcess(UserSiteTask task, int seconds, Action action) throws Exception {
+        logger.debug("startProcess task={}, seconds={}, action={}", task, seconds, action);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't start Task, only process");
+        if (seconds <= 0)
+            throw new IllegalArgumentException("wrong seconds param: " + seconds);
+        if (action != Action.START && action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
+            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.COMPLETED && taskStatus != TaskStatus.STOPPED && taskStatus != TaskStatus.UNKNOWN)
+            throw new Exception("Can't start process with status " + taskStatus.getStatusFormatted());
+        if (task.getCurrentTime() != null)
+            throw new Exception("Process can't have current time on start");
+        if (task.getUserByUsername().getCurrentChange() == null)
+            throw new Exception("Can't start process without change");
+
+        Date now = new Date();
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.SECOND, seconds);
+
+        TaskStatus newTaskStatus = null;
+        switch (action) {
+            case START:
+                newTaskStatus = TaskStatus.RUNNING;
+                break;
+            case CUSTOM1:
+                newTaskStatus = TaskStatus.CUSTOM1;
+                break;
+            case CUSTOM2:
+                newTaskStatus = TaskStatus.CUSTOM2;
+                break;
+            case CUSTOM3:
+                newTaskStatus = TaskStatus.CUSTOM3;
+                break;
+        }
+
+        //change user_task status
+        task.setStatus(newTaskStatus.getStatusStr());
+        task.setUpdateTime(now);
+        task = userSiteTaskDao.merge(task);
+
+        //add user_task_time
+        UserTaskTime userTaskTime = new UserTaskTime();
+        if (action == Action.START) {
+            userTaskTime.setDurationPlaySec(seconds);
+            userTaskTime.setFinishTimePlay(endTime.getTime());
+        } else if (action == Action.CUSTOM1) {
+            userTaskTime.setDurationPlaySec(0);
+            userTaskTime.setFinishTimePlay(endTime.getTime());
+            userTaskTime.setDurationCustom1Sec(seconds);
+            userTaskTime.setFinishTimeCustom1(endTime.getTime());
+        } else if (action == Action.CUSTOM2) {
+            userTaskTime.setDurationPlaySec(0);
+            userTaskTime.setFinishTimePlay(endTime.getTime());
+            userTaskTime.setDurationCustom2Sec(seconds);
+            userTaskTime.setFinishTimeCustom2(endTime.getTime());
+        } else if (action == Action.CUSTOM3) {
+            userTaskTime.setDurationPlaySec(0);
+            userTaskTime.setFinishTimePlay(endTime.getTime());
+            userTaskTime.setDurationCustom3Sec(seconds);
+            userTaskTime.setFinishTimeCustom3(endTime.getTime());
+        }
+        userTaskTime.setStartTime(now);
+        userTaskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
+        userTaskTime.setUserChange(task.getUserByUsername().getCurrentChange());
+        task.addUserTaskTime(userTaskTime);
+        task.setCurrentTime(userTaskTime);
+
+        //add user_task_time_seq
+        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        timeSeq.setStartTime(now);
+        timeSeq.setUserTaskTime(userTaskTime);
+        timeSeq.setTaskStatus(newTaskStatus.getStatusStr());
+        userTaskTime.setTimeSeq(timeSeq);
+
+        userTaskTimeDao.persist(userTaskTime);
+        userTaskTimeDao.flush();
+        userTaskTimeDao.clear();
+
+        //add user_action
+        addUserAction(Action.START, now, userTaskTime);
     }
 
     @Override
-    public void extendProcess(UserSiteTask userSiteTask, int seconds) throws Exception {
-        //TODO implement Method
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    //running->custom
+    public void switchProcess(UserSiteTask task, int seconds, Action action) throws Exception {
+        logger.debug("switchProcess task={}, seconds={}, action={}", task, seconds, action);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't start Task, only process");
+        if (seconds <= 0)
+            throw new IllegalArgumentException("wrong seconds param: " + seconds);
+        if (action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
+            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.RUNNING)
+            throw new Exception("Can't switch process with status " + taskStatus.getStatusFormatted());
+        UserTaskTime currentTime = task.getCurrentTime();
+        if (currentTime == null)
+            throw new Exception("Process should have current time on start");
+
+        Date now = new Date();
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.SECOND, seconds);
+
+        //get Time Seq in reverse order
+        List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        logger.debug("endTask timeSeqList={}", timeSeqList);
+        if (timeSeqList.size() == 0)
+            throw new Exception("timeSeqList should have size >= 1");
+        UserTaskTimeSeq currentTimeSeq = timeSeqList.get(0);
+        TaskStatus currentTimeSeqStatus = TaskStatus.getStatus(currentTimeSeq.getTaskStatus());
+        if (currentTimeSeqStatus != TaskStatus.RUNNING)
+            throw new Exception("last timeSeq should have status RUNNING");
+
+        //change user_task status
+        TaskStatus newTaskStatus = null;
+        switch (action) {
+            case CUSTOM1:
+                newTaskStatus = TaskStatus.CUSTOM1;
+                break;
+            case CUSTOM2:
+                newTaskStatus = TaskStatus.CUSTOM2;
+                break;
+            case CUSTOM3:
+                newTaskStatus = TaskStatus.CUSTOM3;
+                break;
+        }
+        task.setStatus(newTaskStatus.getStatusStr());
+        task.setUpdateTime(now);
+        task = userSiteTaskDao.merge(task);
+        userSiteTaskDao.flush();
+        userSiteTaskDao.clear();
+
+        //change duration_custom
+        if (action == Action.CUSTOM1) {
+            currentTime.setDurationCustom1Sec(seconds);
+            currentTime.setFinishTimeCustom1(endTime.getTime());
+        } else if (action == Action.CUSTOM2) {
+            currentTime.setDurationCustom2Sec(seconds);
+            currentTime.setFinishTimeCustom2(endTime.getTime());
+        } else if (action == Action.CUSTOM3) {
+            currentTime.setDurationCustom3Sec(seconds);
+            currentTime.setFinishTimeCustom3(endTime.getTime());
+        }
+        currentTime = userTaskTimeDao.merge(currentTime);
+        userTaskTimeDao.flush();
+        userTaskTimeDao.clear();
+
+
+        //set the last time_seq end_time value
+        currentTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        currentTimeSeq.setEndTime(now);
+        //add user_task_time_seq to the end of current user_task_time with status running
+        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        timeSeq.setTaskStatus(newTaskStatus.getStatusStr());
+        timeSeq.setStartTime(now);
+        timeSeq.setPrevTimeSeq(currentTimeSeq);
+        currentTimeSeq.setNextTimeSeq(timeSeq);
+        userTaskTimeSeqDao.merge(currentTimeSeq);
+        userTaskTimeSeqDao.flush();
+        userTaskTimeSeqDao.clear();
+
+        //add user_action
+        addUserAction(action, now, currentTime);
     }
 
     @Override
-    public void stopProcess(UserSiteTask userSiteTask) throws Exception {
-        //TODO implement Method
+    //custom -> running
+    public void resumeProcess(UserSiteTask task) throws Exception {
+        logger.debug("resumeProcess task={}", task);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't start Task, only process");
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
+            throw new Exception("Can't only Custom process can be processed: " + taskStatus.getStatusFormatted());
+        if (task.getCurrentTime() == null)
+            throw new Exception("Process should have current time on resume");
+        //force ending custom
+        endCustom(task, new Date(), true);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    //custom->custom
+    public void switchCustom(UserSiteTask task, int seconds, Action action) throws Exception {
+        logger.debug("switchCustom task={}, seconds={}, action={}", task, seconds, action);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't start Task, only process");
+        if (seconds <= 0)
+            throw new IllegalArgumentException("wrong seconds param: " + seconds);
+        if (action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
+            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
+            throw new Exception("Can't switchCustom process with status " + taskStatus.getStatusFormatted());
+        if (task.getCurrentTime() == null)
+            throw new Exception("Process should have current time on resume");
+
+        throw new UnsupportedOperationException("switching between custom tasks isn't permited!");
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void extendProcess(UserSiteTask task, int seconds) throws Exception {
+        logger.debug("extendProcess task={}, seconds={}", task, seconds);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't extend Task, only process");
+        if (seconds <= 0)
+            throw new IllegalArgumentException("wrong seconds param: " + seconds);
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
+            throw new Exception("Can't extend process with status " + taskStatus.getStatusFormatted());
+        UserTaskTime currentTime = task.getCurrentTime();
+        if (currentTime == null)
+            throw new Exception("Process should have current time on extend");
+
+
+        Date now = new Date();
+
+        //change user_task status no needed, has RUNNING or CUSTOM status
+        //extend finish_time of user_task_time and duration
+        Calendar finisTime = Calendar.getInstance();
+        switch (taskStatus) {
+            case RUNNING:
+                finisTime.setTime(currentTime.getFinishTimePlay());
+                finisTime.add(Calendar.SECOND, seconds);
+                currentTime.setDurationPlaySec(currentTime.getDurationPlaySec() + seconds);
+                currentTime.setFinishTimePlay(finisTime.getTime());
+                break;
+            case CUSTOM1:
+                finisTime.setTime(currentTime.getFinishTimeCustom1());
+                finisTime.add(Calendar.SECOND, seconds);
+                currentTime.setDurationCustom1Sec(currentTime.getDurationCustom1Sec() + seconds);
+                currentTime.setFinishTimeCustom1(finisTime.getTime());
+                break;
+            case CUSTOM2:
+                finisTime.setTime(currentTime.getFinishTimeCustom2());
+                finisTime.add(Calendar.SECOND, seconds);
+                currentTime.setDurationCustom2Sec(currentTime.getDurationCustom2Sec() + seconds);
+                currentTime.setFinishTimeCustom2(finisTime.getTime());
+                break;
+            case CUSTOM3:
+                finisTime.setTime(currentTime.getFinishTimeCustom3());
+                finisTime.add(Calendar.SECOND, seconds);
+                currentTime.setDurationCustom3Sec(currentTime.getDurationCustom3Sec() + seconds);
+                currentTime.setFinishTimeCustom3(finisTime.getTime());
+                break;
+        }
+        currentTime = userTaskTimeDao.merge(currentTime);
+        userTaskTimeDao.flush();
+        userTaskTimeDao.clear();
+
+        //add user action
+        addUserAction(Action.EXTEND, now, currentTime);
+    }
+
+    @Override
+    public void stopProcess(UserSiteTask task) throws Exception {
+        logger.debug("stopProcess task={}", task);
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+        TaskType taskType = TaskType.getType(task.getSiteTask().getTaskByTaskId().getType());
+        if (taskType != TaskType.PROCESS)
+            throw new Exception("Can't extend Task, only process");
+        TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
+        if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
+            throw new Exception("Can't stop process with status " + taskStatus.getStatusFormatted());
+        UserTaskTime currentTime = task.getCurrentTime();
+        if (currentTime == null)
+            throw new Exception("Process should have current time on stop");
+
+        if (taskStatus == TaskStatus.RUNNING) {
+            //force ending task
+            endTask(task, new Date(), true);
+        } else {
+            //force ending custom
+            endCustom(task, new Date(), true);
+        }
     }
 
     /**
@@ -250,7 +578,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             switch (status) {
                 case RUNNING:
                     if (now.after(currentTime.getFinishTimePlay()))
-                        entTask(task, currentTime.getFinishTimePlay(), false);
+                        endTask(task, currentTime.getFinishTimePlay(), false);
                     break;
                 case CUSTOM1:
                     if (now.after(currentTime.getFinishTimeCustom1()))
@@ -272,10 +600,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         return false;
     }
 
-
-
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    private void entTask(UserSiteTask task, Date finishTime, boolean stop) throws Exception {
+    private void endTask(UserSiteTask task, Date finishTime, boolean stop) throws Exception {
         logger.debug("entTask task={}, finishTime={}, stop={}", task, finishTime, stop);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
@@ -284,6 +610,11 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new Exception("Can't end process without current time and without timeSeq");
         if (TaskStatus.getStatus(task.getStatus()) != TaskStatus.RUNNING)
             throw new Exception("Only running process can be finished");
+
+        task = userSiteTaskDao.merge(task);
+        currentTime = task.getCurrentTime();
+        userSiteTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
+        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
@@ -326,7 +657,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         }
 
         //set user_tak_time finishTime
-        BigDecimal total = currentTime.getPriceHour().multiply(new BigDecimal(currentTime.getDurationPlaySec() / 3600));
+        BigDecimal total = currentTime.getPriceHour().multiply(new BigDecimal((double) currentTime.getDurationPlaySec() / 3600));
         currentTime.setTotal(total);
         currentTime.setFinishTime(finishTime);
         currentTime = userTaskTimeDao.merge(currentTime);
@@ -337,17 +668,23 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         addUserAction(stop ? Action.STOP : Action.FINISH, finishTime, currentTime);
     }
 
+    //end custom and resume to play
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     private void endCustom(UserSiteTask task, Date finishTime, boolean force) throws Exception {
-        logger.debug("entTask task={}, finishTime={}, force={}", task, finishTime, force);
+        logger.debug("endCustom task={}, finishTime={}, force={}", task, finishTime, force);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
         UserTaskTime currentTime = task.getCurrentTime();
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("Can't end process without current time and without timeSeq");
         TaskStatus customTaskStatus = TaskStatus.getStatus(task.getStatus());
-        if (customTaskStatus != TaskStatus.CUSTOM1 || customTaskStatus != TaskStatus.CUSTOM2 || customTaskStatus != TaskStatus.CUSTOM3)
+        if (customTaskStatus != TaskStatus.CUSTOM1 && customTaskStatus != TaskStatus.CUSTOM2 && customTaskStatus != TaskStatus.CUSTOM3)
             throw new Exception("Only Custom process can be finished");
+
+        task = userSiteTaskDao.merge(task);
+        currentTime = task.getCurrentTime();
+        userSiteTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
+        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
         List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
@@ -356,7 +693,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new Exception("timeSeqList should have size >= 1");
         UserTaskTimeSeq currentTimeSeq = timeSeqList.get(0);
         TaskStatus currentTimeSeqStatus = TaskStatus.getStatus(currentTimeSeq.getTaskStatus());
-        if (currentTimeSeqStatus != TaskStatus.CUSTOM1 || currentTimeSeqStatus != TaskStatus.CUSTOM2 || currentTimeSeqStatus != TaskStatus.CUSTOM3)
+        if (currentTimeSeqStatus != TaskStatus.CUSTOM1 && currentTimeSeqStatus != TaskStatus.CUSTOM2 && currentTimeSeqStatus != TaskStatus.CUSTOM3)
             throw new Exception("last timeSeq should have status CUSTOM");
 
         //set the last time_seq end_time value
@@ -386,17 +723,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         newFinishTimePlay.setTime(finishTime);
         newFinishTimePlay.add(Calendar.SECOND, secondToAdd);
 
-        //add user_task_time_seq to the end of current user_task_time with status running
-        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
-        timeSeq.setTaskStatus(TaskStatus.RUNNING.getStatusStr());
-        timeSeq.setStartTime(finishTime);
-        timeSeq.setPrevTimeSeq(currentTimeSeq);
-        currentTimeSeq.setNextTimeSeq(timeSeq);
-        userTaskTimeSeqDao.persist(timeSeq);
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
-
-        //change user_site_task status and remove current_time
+        //change user_site_task status
         task.setStatus(TaskStatus.RUNNING.getStatusStr());
         task.setUpdateTime(finishTime);
         task = userSiteTaskDao.merge(task);
@@ -419,6 +746,17 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTimeDao.flush();
         userTaskTimeDao.clear();
 
+        //add user_task_time_seq to the end of current user_task_time with status running
+        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        timeSeq.setTaskStatus(TaskStatus.RUNNING.getStatusStr());
+        timeSeq.setStartTime(finishTime);
+        UserTaskTimeSeq prevTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        timeSeq.setPrevTimeSeq(prevTimeSeq);
+        prevTimeSeq.setNextTimeSeq(timeSeq);
+        userTaskTimeSeqDao.merge(prevTimeSeq);
+        userTaskTimeSeqDao.flush();
+        userTaskTimeSeqDao.clear();
+
         //add user_action
         addUserAction(Action.RESUME, finishTime, currentTime);
     }
@@ -434,6 +772,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     private List<UserTaskTimeSeq> getAllTimeSeq(UserTaskTimeSeq timeSeq) throws Exception {
         logger.debug("getAllTimeSeq timeSeq={}", timeSeq);
         List<UserTaskTimeSeq> nextTimeSeqList = null;
+        if (timeSeq.equals(timeSeq.getNextTimeSeq()))
+            throw new Exception("Unlimited recursion in getAllTimeSeq for task");
+
         if (timeSeq.getNextTimeSeq() != null)
             nextTimeSeqList = getAllTimeSeq(timeSeq.getNextTimeSeq());
 

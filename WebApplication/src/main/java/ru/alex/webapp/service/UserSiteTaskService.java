@@ -31,6 +31,12 @@ public interface UserSiteTaskService extends GenericService<UserSiteTask, Long> 
 
     void startProcess(UserSiteTask userSiteTask, int seconds, Action action) throws Exception;
 
+    void switchProcess(UserSiteTask userSiteTask, int seconds, Action action) throws Exception;
+
+    void resumeProcess(UserSiteTask userSiteTask) throws Exception;
+
+    void switchCustom(UserSiteTask userSiteTask, int seconds, Action action) throws Exception;
+
     void extendProcess(UserSiteTask userSiteTask, int seconds) throws Exception;
 
     void stopProcess(UserSiteTask userSiteTask) throws Exception;

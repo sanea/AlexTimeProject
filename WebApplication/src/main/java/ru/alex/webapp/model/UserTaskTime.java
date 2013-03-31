@@ -40,7 +40,7 @@ public class UserTaskTime implements Serializable {
     private Long id;
     @Column(name = "start_time", nullable = false)
     private Date startTime;
-    @Column(name = "finish_time", nullable = false)
+    @Column(name = "finish_time", nullable = true)
     private Date finishTime;
     @Column(name = "finish_time_play", nullable = false)
     private Date finishTimePlay;

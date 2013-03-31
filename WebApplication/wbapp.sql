@@ -121,7 +121,7 @@ CREATE TABLE `site` (
   `country` varchar(255) DEFAULT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,7 +302,7 @@ CREATE TABLE `user_task_time` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_task_id` bigint(20) unsigned NOT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `finish_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `finish_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `finish_time_play` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `finish_time_custom1` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `finish_time_custom2` timestamp NULL DEFAULT '0000-00-00 00:00:00',
@@ -313,7 +313,7 @@ CREATE TABLE `user_task_time` (
   `duration_custom2` int(11) DEFAULT NULL,
   `duration_custom3` int(11) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `total` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
   `user_change_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `time_seq_id_UNIQUE` (`time_seq_id`),
@@ -415,4 +415,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-31  1:43:09
+-- Dump completed on 2013-03-31 14:04:59

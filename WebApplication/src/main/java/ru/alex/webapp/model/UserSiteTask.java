@@ -2,6 +2,7 @@ package ru.alex.webapp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -148,8 +149,15 @@ public class UserSiteTask implements Serializable {
         sb.append(", deleted=").append(deleted);
         sb.append(", siteTask=").append(siteTask);
         sb.append(", userByUsername=").append(userByUsername);
-        sb.append(", currentTime=").append(currentTime);
+        sb.append(", currentTime=").append(currentTime != null ? currentTime.getId() : "null");
         sb.append('}');
         return sb.toString();
+    }
+
+    public void addUserTaskTime(UserTaskTime userTaskTime) {
+        userTaskTime.setUserSiteTaskById(this);
+        if (userTaskTimeList == null)
+            userTaskTimeList = new ArrayList<>();
+        userTaskTimeList.add(userTaskTime);
     }
 }

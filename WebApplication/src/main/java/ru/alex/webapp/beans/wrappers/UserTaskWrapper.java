@@ -87,6 +87,8 @@ public class UserTaskWrapper implements Serializable {
         UserTaskTime currentTime = userSiteTask.getCurrentTime();
         if (currentTime != null)
             return currentTime.getPriceHour();
+        if (TaskType.getType(userSiteTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.TASK_CUSTOM_PRICE)
+            return null;
         return userSiteTask.getSiteTask().getTaskByTaskId().getPriceHour();
     }
 
@@ -116,7 +118,7 @@ public class UserTaskWrapper implements Serializable {
             if (finishTime != null)
                 timeLeftSec = (int) (finishTime.getTime() - now.getTime()) / 1000;
         }
-        return timeLeftSec;
+        return timeLeftSec < 0 ? 0 : timeLeftSec;
     }
 
     public String getTimeLeftFormatted() {

@@ -52,6 +52,7 @@ public class TaskMB implements Serializable {
     private Action selectedAction;
     private int selectedMinutes;
     private BigDecimal selectedPrice;
+    private boolean showExtend;
 
     @PostConstruct
     private void init() {
@@ -75,6 +76,7 @@ public class TaskMB implements Serializable {
         if (sessionMB.getSelectedSite() != null) {
             try {
                 startTableUpdater = false;
+                finishChangeDisable = false;
                 List<UserSiteTask> userSiteTaskList = userSiteTaskService.getNotDeletedUserSiteTasks(sessionMB.getSelectedSite(), sessionMB.getCurrentUser());
                 logger.debug("initAssignedTasks userSiteTaskList={}", userSiteTaskList);
                 assignedTasks = new ArrayList<>(userSiteTaskList.size());
@@ -82,6 +84,7 @@ public class TaskMB implements Serializable {
                     assignedTasks.add(new UserTaskWrapper(ut));
                     if (ut.getCurrentTime() != null) {
                         startTableUpdater = true;
+                        finishChangeDisable = true;
                     }
                 }
                 logger.debug("assignedTasks={}", assignedTasks);
@@ -142,6 +145,10 @@ public class TaskMB implements Serializable {
         this.selectedPrice = selectedPrice;
     }
 
+    public boolean isShowExtend() {
+        return showExtend;
+    }
+
     public int getUpdateIntervalSec() {
         return UPDATE_INTERVAL_SEC;
     }
@@ -182,7 +189,11 @@ public class TaskMB implements Serializable {
     public void startListener(ActionEvent event) {
         selectedMinutes = 30;
         selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
-        selectedAction = Action.getAction((String) event.getComponent().getAttributes().get("action"));
+        Object actionAttr = event.getComponent().getAttributes().get("action");
+        if (actionAttr != null)
+            selectedAction = Action.getAction((String) actionAttr);
+        Object showExtendAttr = event.getComponent().getAttributes().get("showExtend");
+        showExtend = showExtendAttr != null && ((Boolean) showExtendAttr).booleanValue();
         logger.debug("startListener selectedTask={}, selectedAction={}", selectedTask, selectedAction);
     }
 
@@ -225,7 +236,22 @@ public class TaskMB implements Serializable {
             return;
         }
         try {
-            userSiteTaskService.startProcess(selectedTask.getUserSiteTask(), selectedMinutes * 60, selectedAction);
+            TaskStatus taskStatus = TaskStatus.getStatus(selectedTask.getCurrentStatus());
+            if (taskStatus != TaskStatus.RUNNING)
+                userSiteTaskService.startProcess(selectedTask.getUserSiteTask(), selectedMinutes * 60, selectedAction);
+            else
+                userSiteTaskService.switchProcess(selectedTask.getUserSiteTask(), selectedMinutes * 60, selectedAction);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
+        }
+        initAssignedTasks();
+    }
+
+    public void resumeProcess(UserTaskWrapper task) {
+        logger.debug("startProcess selectedTask={}", task);
+        try {
+            userSiteTaskService.resumeProcess(task.getUserSiteTask());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting process", e.toString()));
@@ -247,7 +273,7 @@ public class TaskMB implements Serializable {
     public void stop(UserTaskWrapper task) {
         logger.debug("stop {}", task);
         try {
-            userSiteTaskService.stopProcess(selectedTask.getUserSiteTask());
+            userSiteTaskService.stopProcess(task.getUserSiteTask());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
@@ -261,8 +287,10 @@ public class TaskMB implements Serializable {
             TaskStatus taskStatus = TaskStatus.getStatus(task.getCurrentStatus());
             if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.CUSTOM1 || taskStatus == TaskStatus.CUSTOM2 || taskStatus == TaskStatus.CUSTOM3) {
                 int timeLeft = task.getTimeLeftSec() - UPDATE_INTERVAL_SEC;
-                if (timeLeft < 0)
+                if (timeLeft <= 0) {
                     needInit = true;
+                    break;
+                }
             }
         }
         if (needInit)
