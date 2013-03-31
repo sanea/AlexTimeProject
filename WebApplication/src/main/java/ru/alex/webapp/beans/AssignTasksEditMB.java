@@ -132,7 +132,7 @@ public class AssignTasksEditMB implements Serializable {
             logger.debug("onSiteRowSelect taskSet={}", taskSet);
 
             //find tasks in progress
-            List<UserSiteTask> userSiteTaskList = userSiteTaskService.getAllCurrentTime();
+            List<UserSiteTask> userSiteTaskList = userSiteTaskService.getAllCurrentTime(selectedSite);
             logger.debug("onSiteRowSelect userSiteTaskList={}", userSiteTaskList);
             Set<Task> disabledTaskSet = new HashSet<>(userSiteTaskList.size(), 1);
             for (UserSiteTask userSiteTask : userSiteTaskList)

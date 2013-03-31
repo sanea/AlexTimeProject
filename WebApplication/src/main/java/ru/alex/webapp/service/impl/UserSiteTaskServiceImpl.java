@@ -97,7 +97,19 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     @Override
     public List<UserSiteTask> getAllCurrentTime() throws Exception {
         List<UserSiteTask> userSiteTaskList = userSiteTaskDao.findWithNamedQuery(UserSiteTask.ALL_CURRENT_TIME);
-        logger.debug("getAllCurrentTime getAllCurrentTime userSiteTaskList={}", userSiteTaskList);
+        logger.debug("getAllCurrentTime userSiteTaskList={}", userSiteTaskList);
+        return userSiteTaskList;
+    }
+
+    @Override
+    public List<UserSiteTask> getAllCurrentTime(Site site) throws Exception {
+        logger.debug("getAllCurrentTime site={}", site);
+        if (site == null || site.getId() == null)
+            throw new IllegalArgumentException("Wrong site");
+        Map<String, Object> params = new HashMap<>(1);
+        params.put("siteId", site.getId());
+        List<UserSiteTask> userSiteTaskList = userSiteTaskDao.findWithNamedQuery(UserSiteTask.ALL_CURRENT_TIME_BY_SITE, params);
+        logger.debug("getAllCurrentTime userSiteTaskList={}", userSiteTaskList);
         return userSiteTaskList;
     }
 
@@ -798,4 +810,5 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userActionDao.clear();
 
     }
+
 }

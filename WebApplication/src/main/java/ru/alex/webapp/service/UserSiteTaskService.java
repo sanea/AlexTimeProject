@@ -15,6 +15,8 @@ import java.util.List;
 public interface UserSiteTaskService extends GenericService<UserSiteTask, Long> {
     List<UserSiteTask> getAllCurrentTime() throws Exception;
 
+    List<UserSiteTask> getAllCurrentTime(Site site) throws Exception;
+
     List<UserSiteTask> getNotDeletedUserSiteTasks(Site site, Task task) throws Exception;
 
     List<UserSiteTask> getNotDeletedUserSiteTasks(Site site, User user) throws Exception;
@@ -40,4 +42,5 @@ public interface UserSiteTaskService extends GenericService<UserSiteTask, Long> 
     void extendProcess(UserSiteTask userSiteTask, int seconds) throws Exception;
 
     void stopProcess(UserSiteTask userSiteTask) throws Exception;
+
 }

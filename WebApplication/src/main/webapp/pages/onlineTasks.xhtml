@@ -10,12 +10,20 @@
             <h2>Running Tasks</h2>
             <h:form id="contentForm">
                 <p:dataTable id="onlineTasks" var="task" value="#{onlineTaskMB.onlineTasks}">
+                    <p:column headerText="Site Name" sortBy="#{task.siteName}">
+                        <h:outputText value="#{task.siteName}"/>
+                    </p:column>
+
                     <p:column headerText="User Name" sortBy="#{task.username}">
                         <h:outputText value="#{task.username}"/>
                     </p:column>
 
                     <p:column headerText="Task Name" sortBy="#{task.taskName}">
                         <h:outputText value="#{task.taskName}"/>
+                    </p:column>
+
+                    <p:column headerText="Task Status" sortBy="#{task.currentStatus}">
+                        <h:outputText value="#{task.currentStatusFormatted}"/>
                     </p:column>
 
                     <p:column headerText="Task Type" sortBy="#{task.taskTypeFormatted}">

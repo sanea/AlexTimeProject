@@ -71,6 +71,10 @@ public class UserTaskWrapper implements Serializable {
         return userSiteTask.getUserByUsername().getUsername();
     }
 
+    public String getSiteName() {
+        return userSiteTask.getSiteTask().getSiteBySiteId().getName();
+    }
+
     public String getTaskName() {
         return userSiteTask.getSiteTask().getTaskByTaskId().getName();
     }
