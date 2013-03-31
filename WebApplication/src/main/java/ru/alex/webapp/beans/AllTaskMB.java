@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.beans.wrappers.UserTaskWrapper;
+import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.TaskService;
@@ -37,11 +40,18 @@ public class AllTaskMB implements Serializable {
     private List<UserTaskWrapper> allTasks;
     private BigDecimal total = new BigDecimal(0);
     private List<UserTaskWrapper> filteredTasks;
-    private UserTaskWrapper selectedTask;
+    private UserTaskWrapper selectedTaskWrapper;
     private List<TimeSequence> selectedTimeSeqList;
     private SelectItem[] taskTypeOptions;
     private Date dateFrom;
     private Date dateTo;
+    private List<Site> siteList;
+    private List<User> userList;
+    private List<Task> taskList;
+    private Site selectedSite;
+    private User selectedUser;
+    private Task selectedTask;
+
 
     //TODO implement LazyDataModel
 
@@ -97,12 +107,12 @@ public class AllTaskMB implements Serializable {
         this.filteredTasks = filteredTasks;
     }
 
-    public UserTaskWrapper getSelectedTask() {
-        return selectedTask;
+    public UserTaskWrapper getSelectedTaskWrapper() {
+        return selectedTaskWrapper;
     }
 
-    public void setSelectedTask(UserTaskWrapper selectedTask) {
-        this.selectedTask = selectedTask;
+    public void setSelectedTaskWrapper(UserTaskWrapper selectedTaskWrapper) {
+        this.selectedTaskWrapper = selectedTaskWrapper;
     }
 
     public List<TimeSequence> getSelectedTimeSeqList() {
@@ -136,9 +146,45 @@ public class AllTaskMB implements Serializable {
         this.dateFrom = dateFrom;
     }
 
+    public List<Site> getSiteList() {
+        return siteList;
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public Site getSelectedSite() {
+        return selectedSite;
+    }
+
+    public void setSelectedSite(Site selectedSite) {
+        this.selectedSite = selectedSite;
+    }
+
+    public User getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(User selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
+    }
+
     public void selectTaskListener(ActionEvent event) {
         try {
-            selectedTask = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
+            selectedTaskWrapper = (UserTaskWrapper) event.getComponent().getAttributes().get("task");
             logger.debug("selectTaskListener selectedTask={}", selectedTask);
 //            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTask.getTaskTime().getTimeSeq());
 //            logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);

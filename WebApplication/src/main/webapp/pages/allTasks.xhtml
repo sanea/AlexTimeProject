@@ -9,14 +9,33 @@
 
             <h2>All Tasks</h2>
             <h:form id="contentForm">
-                <p:panel header="Choose Date">
-                    <h:panelGrid columns="3">
-                        <h:outputText value="Date From" />
-                        <h:outputText value="Date To" />
+                <p:panel header="Choose Values">
+                    <h:panelGrid columns="6">
+                        <h:outputText value="Select Site"/>
+                        <h:outputText value="Select User"/>
+                        <h:outputText value="Select Task"/>
+                        <h:outputText value="Date From"/>
+                        <h:outputText value="Date To"/>
                         <h:panelGroup/>
-                        <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm" />
-                        <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm" />
-                        <p:commandButton value="Choose" update="allTasks allTaskTotal" action="#{allTaskMB.updateTable}"/>
+                        <p:selectOneMenu value="#{allTaskMB.selectedSite}">
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.siteList}" var="site" itemLabel="#{site.name}"
+                                           itemValue="#{site}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{allTaskMB.selectedUser}">
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.userList}" var="user" itemLabel="#{user.username}"
+                                           itemValue="#{user}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{allTaskMB.selectedTask}">
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.taskList}" var="task" itemLabel="#{task.name}"
+                                           itemValue="#{task}"/>
+                        </p:selectOneMenu>
+                        <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
+                        <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
+                        <p:commandButton value="Choose" update="allTasks allTaskTotal"
+                                         action="#{allTaskMB.updateTable}"/>
                     </h:panelGrid>
                 </p:panel>
 
@@ -62,8 +81,10 @@
                     </p:column>
 
                     <p:column style="width: 40px;">
-                        <p:commandButton id="selectButton" update=":contentForm:taskDialog" oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDlg.show(); }" icon="ui-icon-search" title="Details"
-                                actionListener="#{allTaskMB.selectTaskListener}">
+                        <p:commandButton id="selectButton" update=":contentForm:taskDialog"
+                                         oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDlg.show(); }"
+                                         icon="ui-icon-search" title="Details"
+                                         actionListener="#{allTaskMB.selectTaskListener}">
                             <f:attribute name="task" value="#{task}"/>
                         </p:commandButton>
                     </p:column>
@@ -73,43 +94,45 @@
                 <p:panelGrid columns="1" id="allTaskTotal" style="float: right; margin-right: 61px;">
                     <p:outputPanel style="font-weight: bold;">
                         <h:outputText value="Total:  "/>
-                        <h:outputText value="#{allTaskMB.total}" />
+                        <h:outputText value="#{allTaskMB.total}"/>
                     </p:outputPanel>
                 </p:panelGrid>
 
-                <p:dialog id="taskDialog" header="Task Details" widgetVar="taskDlg" resizable="false" modal="true" closeOnEscape="true">
-                    <h:outputText value="#{allTaskMB.selectedTask.username} - #{allTaskMB.selectedTask.taskName}"/>
+                <p:dialog id="taskDialog" header="Task Details" widgetVar="taskDlg" resizable="false" modal="true"
+                          closeOnEscape="true">
+                    <h:outputText
+                            value="#{allTaskMB.selectedTaskWrapper.username} - #{allTaskMB.selectedTask.taskName}"/>
 
                     <p:dataTable var="timeSeq" value="#{allTaskMB.selectedTimeSeqList}"
-                                 rendered="#{allTaskMB.selectedTask.taskType eq 'p'}" paginator="true" rows="10"
+                                 rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 'p'}" paginator="true" rows="10"
                                  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                    paginatorPosition="top">
-                        <p:column headerText="Start Time" >
+                                 paginatorPosition="top">
+                        <p:column headerText="Start Time">
                             <h:outputText value="#{timeSeq.startTime}"/>
                         </p:column>
 
-                        <p:column headerText="End Time" >
+                        <p:column headerText="End Time">
                             <h:outputText value="#{timeSeq.endTime}"/>
                         </p:column>
 
-                        <p:column headerText="Duration" >
+                        <p:column headerText="Duration">
                             <h:outputText value="#{timeSeq.durationFormatted}"/>
                         </p:column>
 
                         <p:columnGroup type="footer">
                             <p:row>
                                 <p:column footerText="Total: " colspan="2" style="text-align:right"/>
-                                <p:column footerText="#{allTaskMB.selectedTask.durationFormatted}" />
+                                <p:column footerText="#{allTaskMB.selectedTaskWrapper.durationFormatted}"/>
                             </p:row>
                         </p:columnGroup>
 
                     </p:dataTable>
-                    <h:panelGrid columns="2" rendered="#{allTaskMB.selectedTask.taskType eq 't'}" >
+                    <h:panelGrid columns="2" rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 't'}">
                         <h:outputText value="Time: "/>
-                        <h:outputText value="#{allTaskMB.selectedTask.startTime}"/>
+                        <h:outputText value="#{allTaskMB.selectedTaskWrapper.startTime}"/>
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Ok" onclick="taskDlg.hide()" />
+                        <p:commandButton value="Ok" onclick="taskDlg.hide()"/>
                     </f:facet>
                 </p:dialog>
             </h:form>
