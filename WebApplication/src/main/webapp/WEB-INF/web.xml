@@ -78,9 +78,9 @@
         <welcome-file>/pages/index.jsf</welcome-file>
     </welcome-file-list>
 
-    <!--<session-config>-->
-        <!--<session-timeout>2</session-timeout>-->
-    <!--</session-config>-->
+    <session-config>
+        <session-timeout>-1</session-timeout>
+    </session-config>
 
     <!-- Error pages handling -->
     <error-page>

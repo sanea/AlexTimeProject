@@ -6,7 +6,8 @@
         <ui:define name="content">
 
            <h1>Error</h1>
-
+           Message: <h:outputText value="#{requestScope['javax.servlet.error.message']}"/>  <br/>
+           Exception: <h:outputText value="#{requestScope['javax.servlet.error.exception']}"/>
         </ui:define>
     </ui:composition>
 </h:body>
