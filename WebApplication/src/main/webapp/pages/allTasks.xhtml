@@ -139,7 +139,7 @@
                 <p:dialog id="taskDialog" header="Task Details" widgetVar="taskDialog" resizable="false" modal="true"
                           closeOnEscape="true">
                     <h:outputText
-                            value="#{allTaskMB.selectedTaskWrapper.username} - #{allTaskMB.selectedTaskWrapper.taskName}"/>
+                            value="#{allTaskMB.selectedTaskWrapper.siteName} - #{allTaskMB.selectedTaskWrapper.username} - #{allTaskMB.selectedTaskWrapper.taskName}"/>
 
                     <p:dataTable var="timeSeq" value="#{allTaskMB.selectedTimeSeqList}"
                                  rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 'p'}" paginator="true" rows="10"

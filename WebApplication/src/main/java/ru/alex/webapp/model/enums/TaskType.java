@@ -13,7 +13,7 @@ public enum TaskType {
 
     private static char getChar(String str) {
         if (str == null || str.length() != 1)
-            throw new IllegalArgumentException("wrong str");
+            throw new IllegalArgumentException("wrong str " + str);
         return str.charAt(0);
     }
 
@@ -26,7 +26,7 @@ public enum TaskType {
             case 'c':
                 return TASK_CUSTOM_PRICE;
             default:
-                throw new IllegalArgumentException("wrong task type");
+                throw new IllegalArgumentException("wrong task type " + type);
         }
     }
 
@@ -39,7 +39,7 @@ public enum TaskType {
             case TASK_CUSTOM_PRICE:
                 return "Custom price task";
             default:
-                throw new IllegalArgumentException("wrong task type");
+                throw new IllegalArgumentException("wrong task type " + type);
         }
     }
 

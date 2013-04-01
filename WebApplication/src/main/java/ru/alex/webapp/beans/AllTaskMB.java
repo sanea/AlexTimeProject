@@ -12,6 +12,7 @@ import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
+import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.UserTaskTimeService;
 import ru.alex.webapp.util.FacesUtil;
@@ -204,16 +205,15 @@ public class AllTaskMB implements Serializable {
 
     public void selectTaskListener(ActionEvent event) {
         selectedTaskWrapper = (UserTaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
-        logger.debug("selectTaskListener selectedTaskWrapper={}", selectedTask);
+        logger.debug("selectTaskListener selectedTaskWrapper={}", selectedTaskWrapper);
         try {
-            //TODO
-//            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTask.getTaskTime().getTimeSeq());
-//            logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
-//            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
-//            for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
-//                timeSeqList.add(new TimeSequence(timeSeq));
-//            selectedTimeSeqList = timeSeqList;
-//            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
+            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getUserTaskTimeSeq());
+            logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
+            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
+            for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
+                timeSeqList.add(new TimeSequence(timeSeq));
+            selectedTimeSeqList = timeSeqList;
+            RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -250,7 +250,7 @@ public class AllTaskMB implements Serializable {
             this.endTime = timeSeq.getEndTime();
             this.durationSec = (int) ((endTime.getTime() - startTime.getTime()) / 1000);
             this.durationFormatted = TimeUtils.formatTimeSec(durationSec);
-            this.statusFormatted = TaskType.getTypeFormatted(timeSeq.getTaskStatus());
+            this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus());
         }
 
         public Date getStartTime() {

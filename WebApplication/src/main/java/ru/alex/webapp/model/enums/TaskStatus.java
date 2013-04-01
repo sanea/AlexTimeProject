@@ -13,7 +13,7 @@ public enum TaskStatus {
 
     private static char getChar(String str) {
         if (str == null || str.length() != 1)
-            throw new IllegalArgumentException("wrong str");
+            throw new IllegalArgumentException("wrong str " + str);
         return str.charAt(0);
     }
 
@@ -34,7 +34,7 @@ public enum TaskStatus {
             case '3':
                 return CUSTOM3;
             default:
-                throw new IllegalArgumentException("wrong status");
+                throw new IllegalArgumentException("wrong status " + status);
         }
     }
 
@@ -55,7 +55,7 @@ public enum TaskStatus {
             case CUSTOM3:
                 return "Custom3";
             default:
-                throw new IllegalArgumentException("wrong status");
+                throw new IllegalArgumentException("wrong status " + status);
         }
     }
 
