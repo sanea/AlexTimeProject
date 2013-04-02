@@ -14,6 +14,9 @@ import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
+import ru.alex.webapp.service.SiteService;
+import ru.alex.webapp.service.TaskService;
+import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.service.UserTaskTimeService;
 import ru.alex.webapp.util.FacesUtil;
 import ru.alex.webapp.util.TimeUtils;
@@ -24,6 +27,7 @@ import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +41,12 @@ public class AllTaskMB implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(AllTaskMB.class);
     @Autowired
     private UserTaskTimeService userTaskTimeService;
+    @Autowired
+    private SiteService siteService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TaskService taskService;
 
     private List<Site> siteList;
     private List<User> userList;
@@ -64,31 +74,43 @@ public class AllTaskMB implements Serializable {
     @PostConstruct
     private void init() {
         logger.debug("init");
-
+        try {
+            siteList = siteService.getNotDeletedSites();
+            userList = userService.getEnabledNotDeletedUsers();
+            taskList = taskService.getEnabledNotDeletedTasks();
+            taskTypeList = Arrays.asList(TaskType.values());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of allTasks", e.toString()));
+        }
     }
 
-    private void initFilteredTasks(Site site, User user, Task task, TaskType taskType, Date from, Date to) {
-        logger.debug("initFilteredTasks site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
+    private void getFilteredTasks(Site site, User user, Task task, TaskType taskType, Date from, Date to) {
+        logger.debug("getFilteredTasks site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
         try {
-            //TODO
             List<UserTaskTime> userTaskTimeList = userTaskTimeService.getAll(site, user, task, taskType, from, to);
-            logger.debug("initFilteredTasks userTaskTimeList={}", userTaskTimeList);
+            logger.debug("getFilteredTasks userTaskTimeList={}", userTaskTimeList);
             filteredTasks = new ArrayList<>(userTaskTimeList.size());
+            totalMinutesIncome = 0;
+            totalMinutesOutcome = 0;
+            totalIncome = new BigDecimal(0);
+            totalOutcome = new BigDecimal(0);
+            summ = new BigDecimal(0);
             for (UserTaskTime taskTime : userTaskTimeList) {
-                filteredTasks.add(new UserTaskTimeWrapper(taskTime));
+                UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime);
+                filteredTasks.add(taskTimeWrapper);
+                if (taskTimeWrapper.getTaskIncome()) {
+                    totalMinutesIncome += taskTimeWrapper.getDurationPlaySec();
+                    totalIncome.add(taskTimeWrapper.getTotal());
+                } else {
+                    totalMinutesOutcome += taskTimeWrapper.getDurationPlaySec();
+                    totalOutcome.add(taskTimeWrapper.getTotal());
+                }
             }
-            logger.debug("initFilteredTasks filteredTasks={}", filteredTasks);
-//            total = new BigDecimal(0);
-//            List<UserTaskTime> taskTimeList = taskService.getAllNotCurrentTime(dateFrom, dateTo);
-//            logger.debug("initAllTasks taskTimeList={}", taskTimeList);
-//            List<UserTaskWrapper> allTasksLocal = new ArrayList<>(taskTimeList.size());
-//            for (UserTaskTime taskTime : taskTimeList) {
-//                UserTaskWrapper taskWrapper = new UserTaskWrapper(taskTime.getUserSiteTaskById(), taskTime);
-//                allTasksLocal.add(taskWrapper);
-//                total = total.add(taskWrapper.getSum());
-//            }
-//            allTasks = allTasksLocal;
-//            logger.debug("initAllTasks allTasks={}", allTasks);
+            summ = totalIncome.subtract(totalIncome);
+            logger.debug("getFilteredTasks filteredTasks={}", filteredTasks);
+            logger.debug("getFilteredTasks totalMinutesIncome={}, totalMinutesOutcome={}, totalIncome={}, totalOutcome={}, sum={}",
+                    totalMinutesIncome, totalMinutesOutcome, totalIncome, totalOutcome, summ);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in initialization of tasks", e.toString()));
@@ -224,7 +246,7 @@ public class AllTaskMB implements Serializable {
 
     public void filterTable() {
         logger.debug("filterTable selectedSite={}, selectedUser={}, selectedTask={}, selectedTaskType={}, dateFrom={}, dateTo={}", selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
-        initFilteredTasks(selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
+        getFilteredTasks(selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
     }
 
     private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {

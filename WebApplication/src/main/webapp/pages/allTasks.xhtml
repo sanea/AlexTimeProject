@@ -18,21 +18,25 @@
                         <h:outputText value="Date From"/>
                         <h:outputText value="Date To"/>
                         <h:panelGroup/>
-                        <p:selectOneMenu value="#{allTaskMB.selectedSite}">
+                        <p:selectOneMenu value="#{allTaskMB.selectedSite}" converter="#{siteConverter}">
                             <f:selectItem itemLabel="Select One" itemValue=""/>
-                            <f:selectItems value="#{allTaskMB.siteList}" var="site" itemValue="#{site}"/>
+                            <f:selectItems value="#{allTaskMB.siteList}" var="site" itemLabel="#{site.name}"
+                                           itemValue="#{site}"/>
                         </p:selectOneMenu>
-                        <p:selectOneMenu value="#{allTaskMB.selectedUser}">
+                        <p:selectOneMenu value="#{allTaskMB.selectedUser}" converter="#{userConverter}">
                             <f:selectItem itemLabel="Select One" itemValue=""/>
-                            <f:selectItems value="#{allTaskMB.userList}" var="user" itemValue="#{user}"/>
+                            <f:selectItems value="#{allTaskMB.userList}" var="user" itemLabel="#{user.username}"
+                                           itemValue="#{user}"/>
                         </p:selectOneMenu>
-                        <p:selectOneMenu value="#{allTaskMB.selectedTask}">
+                        <p:selectOneMenu value="#{allTaskMB.selectedTask}" converter="#{taskConverter}">
                             <f:selectItem itemLabel="Select One" itemValue=""/>
-                            <f:selectItems value="#{allTaskMB.taskList}" var="task" itemValue="#{task}"/>
+                            <f:selectItems value="#{allTaskMB.taskList}" var="task" itemLabel="#{task.name}"
+                                           itemValue="#{task}"/>
                         </p:selectOneMenu>
-                        <p:selectOneMenu value="#{allTaskMB.selectedTaskType}">
+                        <p:selectOneMenu value="#{allTaskMB.selectedTaskType}" converter="#{taskTypeConverter}">
                             <f:selectItem itemLabel="Select One" itemValue=""/>
-                            <f:selectItems value="#{allTaskMB.taskTypeList}" var="taskType" itemValue="#{taskType}"/>
+                            <f:selectItems value="#{allTaskMB.taskTypeList}" var="taskType"
+                                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType}"/>
                         </p:selectOneMenu>
                         <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
                         <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
@@ -185,7 +189,7 @@
                         <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.startTime}"/> -
                         <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.endTime}"
                                       rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime != null}"/>
-                        <h:outputText value="NOW"
+                        <h:outputText value="NOW" style="font-weight: bold;"
                                       rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime == null}"/>
                     </div>
                     <f:facet name="footer">

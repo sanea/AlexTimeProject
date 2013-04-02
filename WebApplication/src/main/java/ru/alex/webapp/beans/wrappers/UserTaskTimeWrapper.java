@@ -55,6 +55,10 @@ public class UserTaskTimeWrapper implements Serializable {
         return userTaskTime.getPriceHour();
     }
 
+    public boolean getTaskIncome() {
+        return userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome();
+    }
+
     public BigDecimal getTotal() {
         if (userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome())
             return userTaskTime.getTotal();

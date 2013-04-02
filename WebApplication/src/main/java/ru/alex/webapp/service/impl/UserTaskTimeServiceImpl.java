@@ -50,9 +50,12 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
     }
 
     @Override
-    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) {
+    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) throws Exception {
         logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
-        //TODO
-        return userTaskTimeDao.findAll();
+        if (site == null && user == null && task == null && taskType == null && from == null && to == null)
+            return userTaskTimeDao.findAll();
+        if (site.getId() == null || user.getUsername() == null || user.getUsername().isEmpty() || task.getId() == null)
+            throw new IllegalArgumentException("Wrong input params");
+        return userTaskTimeDao.getAll(site, user, task, taskType, from, to);
     }
 }
