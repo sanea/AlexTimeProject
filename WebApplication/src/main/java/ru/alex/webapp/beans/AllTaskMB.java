@@ -70,6 +70,7 @@ public class AllTaskMB implements Serializable {
     private List<TimeSequence> selectedTimeSeqList;
 
     //TODO implement LazyDataModel
+    //TODO Fix Duration custom
 
     @PostConstruct
     private void init() {
@@ -101,13 +102,13 @@ public class AllTaskMB implements Serializable {
                 filteredTasks.add(taskTimeWrapper);
                 if (taskTimeWrapper.getTaskIncome()) {
                     totalMinutesIncome += taskTimeWrapper.getDurationPlaySec();
-                    totalIncome.add(taskTimeWrapper.getTotal());
+                    totalIncome = totalIncome.add(taskTimeWrapper.getTotal());
                 } else {
                     totalMinutesOutcome += taskTimeWrapper.getDurationPlaySec();
-                    totalOutcome.add(taskTimeWrapper.getTotal());
+                    totalOutcome = totalOutcome.add(taskTimeWrapper.getTotal());
                 }
             }
-            summ = totalIncome.subtract(totalIncome);
+            summ = totalIncome.add(totalOutcome);
             logger.debug("getFilteredTasks filteredTasks={}", filteredTasks);
             logger.debug("getFilteredTasks totalMinutesIncome={}, totalMinutesOutcome={}, totalIncome={}, totalOutcome={}, sum={}",
                     totalMinutesIncome, totalMinutesOutcome, totalIncome, totalOutcome, summ);

@@ -54,7 +54,8 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
         logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
         if (site == null && user == null && task == null && taskType == null && from == null && to == null)
             return userTaskTimeDao.findAll();
-        if (site.getId() == null || user.getUsername() == null || user.getUsername().isEmpty() || task.getId() == null)
+        if ((site != null && site.getId() == null) || (user != null && user.getUsername() == null)
+                || (task != null && task.getId() == null))
             throw new IllegalArgumentException("Wrong input params");
         return userTaskTimeDao.getAll(site, user, task, taskType, from, to);
     }
