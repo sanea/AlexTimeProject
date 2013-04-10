@@ -250,6 +250,21 @@ public class AllTaskMB implements Serializable {
         getFilteredTasks(selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
     }
 
+    public void reset() {
+        selectedSite = null;
+        selectedUser = null;
+        selectedTask = null;
+        selectedTaskType = null;
+        dateFrom = null;
+        dateTo = null;
+        filteredTasks = null;
+        totalMinutesIncome = 0;
+        totalMinutesOutcome = 0;
+        totalIncome = null;
+        totalOutcome = null;
+        summ = null;
+    }
+
     private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {
         logger.debug("buildTimeSeqList timeSeq={}", timeSeq);
         List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
