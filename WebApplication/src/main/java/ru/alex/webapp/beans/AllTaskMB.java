@@ -1,5 +1,6 @@
 package ru.alex.webapp.beans;
 
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -39,6 +42,25 @@ import java.util.List;
 public class AllTaskMB implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(AllTaskMB.class);
+
+    private static final Map<String, ColumnModel> COLUMN_MODEL = new LinkedHashMap<>();
+
+    static {
+        COLUMN_MODEL.put("id", new ColumnModel("id", "id", "id"));
+        COLUMN_MODEL.put("siteName", new ColumnModel("Site Name", "siteName", "siteName"));
+        COLUMN_MODEL.put("username", new ColumnModel("User Name", "username", "username"));
+        COLUMN_MODEL.put("taskName", new ColumnModel("Task Name", "taskName", "taskName"));
+        COLUMN_MODEL.put("taskType", new ColumnModel("Task Type", "taskTypeFormatted", "taskType"));
+        COLUMN_MODEL.put("taskPriceHour", new ColumnModel("Price Hour", "taskPriceHour", "taskPriceHour"));
+        COLUMN_MODEL.put("durationPlaySec", new ColumnModel("Duration Play", "durationPlayFormatted", "durationPlaySec"));
+        COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel("Duration Custom1", "durationCustom1Formatted", "durationCustom1Sec"));
+        COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel("Duration Custom2", "durationCustom2Formatted", "durationCustom2Sec"));
+        COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel("Duration Custom3", "durationCustom3Formatted", "durationCustom3Sec"));
+        COLUMN_MODEL.put("total", new ColumnModel("Total", "total", "total"));
+        COLUMN_MODEL.put("startTime", new ColumnModel("Start time", "startTime", "startTime"));
+        COLUMN_MODEL.put("finishTime", new ColumnModel("Finish time", "finishTime", "finishTime"));
+    }
+
     @Autowired
     private UserTaskTimeService userTaskTimeService;
     @Autowired
@@ -66,10 +88,26 @@ public class AllTaskMB implements Serializable {
     private BigDecimal totalOutcome;
     private BigDecimal summ;
 
+    private DataTable dataTable;
+    private List<ColumnModel> columns;
+    private Map<String, Boolean> colSelectedMap;
+    private List<String> colNameList;
+
     private UserTaskTimeWrapper selectedTaskWrapper;
     private List<TimeSequence> selectedTimeSeqList;
 
     //No LazyDataModel - no need, to count sums and salaries, we need to get all records! memory is more cheap
+
+    public AllTaskMB() {
+        logger.debug("COLUMN_MODEL={}", COLUMN_MODEL);
+        columns = new ArrayList<>(COLUMN_MODEL.size());
+        colSelectedMap = new LinkedHashMap<>(COLUMN_MODEL.size());
+        for (String col : COLUMN_MODEL.keySet()) {
+            colSelectedMap.put(col, true);
+        }
+        colNameList = new ArrayList<>(colSelectedMap.keySet());
+        createDynamicColumns();
+    }
 
     @PostConstruct
     private void init() {
@@ -213,6 +251,30 @@ public class AllTaskMB implements Serializable {
         return summ;
     }
 
+    public void setDataTable(DataTable dataTable) {
+        this.dataTable = dataTable;
+    }
+
+    public DataTable getDataTable() {
+        return dataTable;
+    }
+
+    public List<ColumnModel> getColumns() {
+        return columns;
+    }
+
+    public Map<String, Boolean> getColSelectedMap() {
+        return colSelectedMap;
+    }
+
+    public List<String> getColNameList() {
+        return colNameList;
+    }
+
+    public Map<String, ColumnModel> getColumnModel() {
+        return COLUMN_MODEL;
+    }
+
     public UserTaskTimeWrapper getSelectedTaskWrapper() {
         return selectedTaskWrapper;
     }
@@ -247,6 +309,24 @@ public class AllTaskMB implements Serializable {
     public void filterTable() {
         logger.debug("filterTable selectedSite={}, selectedUser={}, selectedTask={}, selectedTaskType={}, dateFrom={}, dateTo={}", selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
         getFilteredTasks(selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
+    }
+
+    public void selectColumnListener() {
+        logger.debug("selectColumnListener");
+        createDynamicColumns();
+        dataTable.setSortBy(null);
+    }
+
+    private void createDynamicColumns() {
+        logger.debug("createDynamicColumns colSelectedMap={}", colSelectedMap);
+        columns.clear();
+        for (String col : colSelectedMap.keySet()) {
+            if (colSelectedMap.get(col)) {
+                ColumnModel columnModel = COLUMN_MODEL.get(col);
+                columns.add(columnModel);
+            }
+        }
+        logger.debug("createDynamicColumns columns={}", columns);
     }
 
     public void reset() {
@@ -319,6 +399,42 @@ public class AllTaskMB implements Serializable {
             sb.append(", durationSec=").append(durationSec);
             sb.append(", durationFormatted='").append(durationFormatted).append('\'');
             sb.append(", statusFormatted='").append(statusFormatted).append('\'');
+            sb.append('}');
+            return sb.toString();
+        }
+    }
+
+    public static class ColumnModel implements Serializable {
+
+        private String header;
+        private String val;
+        private String sortVal;
+
+        public ColumnModel(String header, String val, String sortVal) {
+            this.header = header;
+            this.val = val;
+            this.sortVal = sortVal;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getVal() {
+            return val;
+        }
+
+        public String getSortVal() {
+            return sortVal;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("ColumnModel");
+            sb.append("{header='").append(header).append('\'');
+            sb.append(", val='").append(val).append('\'');
+            sb.append(", sortVal='").append(sortVal).append('\'');
             sb.append('}');
             return sb.toString();
         }
