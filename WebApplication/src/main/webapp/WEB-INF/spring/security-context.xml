@@ -25,33 +25,34 @@
         <intercept-url pattern="/pages/sitesEdit*" access="hasRole('EDIT_SITES')"/>
         <intercept-url pattern="/pages/assignTasks*" access="hasRole('ASSIGN_TASKS')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
-        <form-login login-page="/pages/login.xhtml" default-target-url="/pages/index.xhtml" always-use-default-target="true"
-                    authentication-failure-url="/pages/login.xhtml" />
+        <form-login login-page="/pages/login.xhtml" default-target-url="/pages/index.xhtml"
+                    always-use-default-target="true"
+                    authentication-failure-url="/pages/login.xhtml"/>
         <logout logout-url="/logout" logout-success-url="/pages/login.xhtml" invalidate-session="true"/>
         <!--<remember-me key="mssKey" token-validity-seconds="60"/>-->
     </http>
 
     <authentication-manager alias="authenticationManager">
-        <authentication-provider user-service-ref="userServiceJDBC"/>
+        <!--<authentication-provider user-service-ref="userServiceJDBC"/>-->
+        <authentication-provider user-service-ref="userDetailsService"/>
     </authentication-manager>
 
-    <!-- replaced with jdbc -->
     <!--<user-service id="userServiceJDBC">
     <user name="user1" password="1" authorities="ROLE_USER"/>
     <user name="user2" password="1" authorities="ROLE_USER"/>
     <user name="admin" password="1" authorities="ROLE_ADMIN"/>
     </user-service>-->
 
-    <jdbc-user-service id="userServiceJDBC"
-        data-source-ref="dataSource"
-        group-authorities-by-username-query="select g.id, g.group_name, ga.authority
-                                                from groups g, group_members gm, group_authorities ga
-                                                where gm.username = ? and g.id = ga.group_id and g.id = gm.group_id"
-        users-by-username-query="SELECT username, password, enabled FROM users WHERE username = ?"
-        authorities-by-username-query="SELECT gm.username, ga.authority
-                                        FROM group_members gm, group_authorities ga
-                                        WHERE gm.group_id = ga.group_id AND gm.username = ?"
-    />
+   <!-- <jdbc-user-service id="userServiceJDBC"
+                       data-source-ref="dataSource"
+                       group-authorities-by-username-query="select g.id, g.group_name, ga.authority
+                                                    from groups g, group_members gm, group_authorities ga
+                                                    where gm.username = ? and g.id = ga.group_id and g.id = gm.group_id"
+                       users-by-username-query="SELECT username, password, enabled FROM users WHERE username = ?"
+                       authorities-by-username-query="SELECT gm.username, ga.authority
+                                            FROM group_members gm, group_authorities ga
+                                            WHERE gm.group_id = ga.group_id AND gm.username = ?"
+            />-->
 
     <!--Enable @Secured({"ROLE_1", "ROLE_2"}) annotation-->
     <global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>

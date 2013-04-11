@@ -19,6 +19,8 @@
     <context:component-scan base-package="ru.alex.webapp.beans"/>
     <context:component-scan base-package="ru.alex.webapp.converters"/>
 
+    <bean id="userDetailsService" class="ru.alex.webapp.security.UserDetailsServiceImpl"/>
+
     <!-- Hibernate without JPA
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>

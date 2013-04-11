@@ -21,6 +21,8 @@ public class User implements Serializable {
     private String username;
     @Column(name = "password", length = 50, nullable = false)
     private String password;
+    @Column(name = "password_salt", length = 50, nullable = false)
+    private String passwordSalt;
     @Column(name = "enabled", nullable = false, columnDefinition = "BIT")
     private boolean enabled;
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
@@ -67,6 +69,14 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
     }
 
     public boolean isEnabled() {
@@ -212,6 +222,7 @@ public class User implements Serializable {
         sb.append("User");
         sb.append("{username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
+        sb.append(", passwordSalt='").append(passwordSalt).append('\'');
         sb.append(", enabled=").append(enabled);
         sb.append(", deleted=").append(deleted);
         sb.append(", address='").append(address).append('\'');

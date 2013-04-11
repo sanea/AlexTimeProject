@@ -7,8 +7,20 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.webapp.dao.*;
-import ru.alex.webapp.model.*;
+import ru.alex.webapp.dao.GenericDao;
+import ru.alex.webapp.dao.SiteTaskDao;
+import ru.alex.webapp.dao.UserActionDao;
+import ru.alex.webapp.dao.UserSiteTaskDao;
+import ru.alex.webapp.dao.UserTaskTimeDao;
+import ru.alex.webapp.dao.UserTaskTimeSeqDao;
+import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.SiteTask;
+import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.UserAction;
+import ru.alex.webapp.model.UserSiteTask;
+import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
@@ -17,7 +29,13 @@ import ru.alex.webapp.service.UserSiteTaskService;
 
 import javax.persistence.LockModeType;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -212,7 +230,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     @Override
     @Scheduled(fixedDelay = 1000)
     public void checkAllTasks() {
-        logger.debug("checkAllTasks");
+        //logger.debug("checkAllTasks");
         try {
             List<UserSiteTask> runningTasks = getAllCurrentTime();
             for (UserSiteTask task : runningTasks) {
