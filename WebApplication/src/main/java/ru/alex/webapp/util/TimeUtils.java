@@ -11,6 +11,6 @@ public class TimeUtils {
         int seconds = timeSec - minutes * 60;
         return (hours != 0 ? String.valueOf(hours) + " hours " : "")
                 + (minutes != 0 ? String.valueOf(minutes) + " minutes " : "")
-                + (seconds != 0 ? String.valueOf(seconds) + " seconds" : "0 seconds");
+                + (seconds != 0 ? String.valueOf(seconds) + " seconds" : "");
     }
 }

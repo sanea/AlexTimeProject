@@ -69,8 +69,7 @@ public class AllTaskMB implements Serializable {
     private UserTaskTimeWrapper selectedTaskWrapper;
     private List<TimeSequence> selectedTimeSeqList;
 
-    //TODO implement LazyDataModel
-    //TODO Fix Duration custom
+    //No LazyDataModel - no need, to count sums and salaries, we need to get all records! memory is more cheap
 
     @PostConstruct
     private void init() {

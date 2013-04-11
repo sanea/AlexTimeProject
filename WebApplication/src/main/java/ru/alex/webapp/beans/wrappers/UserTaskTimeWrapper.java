@@ -99,7 +99,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public Integer getDurationCustom3Sec() {
-        return userTaskTime.getDurationCustom1Sec();
+        return userTaskTime.getDurationCustom3Sec();
     }
 
     public String getDurationCustom3Formatted() {
