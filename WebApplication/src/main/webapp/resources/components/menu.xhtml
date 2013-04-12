@@ -35,6 +35,8 @@
                             rendered="#{sessionMB.hasRole('EDIT_USERS')}"/>
                 <p:menuitem value="Groups Edit" url="/pages/groupsEdit.jsf" ajax="false"
                             rendered="#{sessionMB.hasRole('EDIT_GROUPS')}"/>
+                <p:menuitem value="Groups Edit" url="/pages/customEdit.jsf" ajax="false"
+                            rendered="#{sessionMB.hasRole('CHANGE_CUSTOM')}"/>
                 <p:menuitem value="Logout" url="/logout" ajax="false"/>
                 <f:facet name="options">
                     <span>Username: <b><h:outputText value="#{sessionMB.currentUser.username}"/></b></span>

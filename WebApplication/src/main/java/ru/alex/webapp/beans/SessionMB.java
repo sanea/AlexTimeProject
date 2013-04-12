@@ -15,6 +15,8 @@ import ru.alex.webapp.service.UserService;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alex
@@ -26,7 +28,7 @@ public class SessionMB implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(SessionMB.class);
     @Autowired
     private UserService userService;
-    private Collection<? extends GrantedAuthority> authorities;
+    private Set<String> authorities;
     private Site selectedSite;
     private User currentUser;
 
@@ -35,7 +37,11 @@ public class SessionMB implements Serializable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             String userName = auth.getName();
-            authorities = auth.getAuthorities();
+            Collection<? extends GrantedAuthority> grantedAuthorities = auth.getAuthorities();
+            authorities = new HashSet<>(grantedAuthorities.size());
+            for (GrantedAuthority grantedAuthority : grantedAuthorities) {
+                authorities.add(grantedAuthority.getAuthority());
+            }
             currentUser = userService.findById(userName);
             if (currentUser.getCurrentChange() != null)
                 selectedSite = currentUser.getCurrentChange().getSite();
@@ -46,12 +52,7 @@ public class SessionMB implements Serializable {
     public boolean hasRole(String roleName) {
         boolean result = false;
         if (authorities != null) {
-            for (GrantedAuthority authority : authorities) {
-                if (authority.getAuthority().equals(roleName)) {
-                    result = true;
-                    break;
-                }
-            }
+            result = authorities.contains(roleName);
         }
         logger.debug("hasRole {} {}", roleName, result);
         return result;

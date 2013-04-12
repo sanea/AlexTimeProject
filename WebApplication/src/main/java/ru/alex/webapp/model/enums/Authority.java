@@ -11,5 +11,6 @@ public enum Authority {
     STAT_ALL,
     EDIT_GROUPS,
     EDIT_SITES,
-    ASSIGN_TASKS
+    ASSIGN_TASKS,
+    CHANGE_CUSTOM
 }
