@@ -59,12 +59,12 @@ public class LoginMB implements Serializable {
             request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
             return "/pages/index?faces-redirect=true";
-        } catch (AuthenticationException ex) {
+        } catch (Exception ex) {
             logger.debug("Login Failed {}", ex.getMessage(), ex);
-            logger.info("Login Failed");
-            FacesUtil.getFacesContext().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
-            return null;
         }
+        logger.info("Login Failed");
+        FacesUtil.getFacesContext().addMessage("formLogin", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "User Name and Password Not Match!"));
+        return null;
 
     }
 

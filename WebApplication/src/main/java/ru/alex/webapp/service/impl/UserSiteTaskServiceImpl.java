@@ -228,7 +228,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     }
 
     @Override
-    @Scheduled(fixedDelay = 1000)
+    //TODO change to 1 second
+    @Scheduled(fixedDelay = 60000)
     public void checkAllTasks() {
         //logger.debug("checkAllTasks");
         try {

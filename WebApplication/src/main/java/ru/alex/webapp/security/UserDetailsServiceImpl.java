@@ -30,11 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    @PostConstruct
-    public void init() {
-
-    }
-
     /**
      * Retrieve an account depending on its login this method is not case sensitive.<br>
      * use <code>obtainAccount</code> to match the login to either email, login or whatever is your login logic
@@ -45,6 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @throws org.springframework.dao.DataAccessException
      *                                   when an error occured while retrieving the account
      */
+    @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.debug("loadUserByUsername username={}", username);

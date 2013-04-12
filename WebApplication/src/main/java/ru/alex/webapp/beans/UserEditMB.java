@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Group;
 import ru.alex.webapp.model.GroupMember;
@@ -37,12 +38,15 @@ public class UserEditMB implements Serializable {
     private GroupService groupService;
     @Autowired
     private GroupMemberService groupMemberService;
+    @Autowired
+    private StandardPasswordEncoder passwordEncoder;
     private List<User> userList;
     private Map<String, Boolean> userDeletable;
     private User newUser = new User();
     private User selectedUser;
     private List<Group> groupList;
     private Group selectedGroup;
+    private String password;
 
     @PostConstruct
     private void init() {
@@ -112,6 +116,14 @@ public class UserEditMB implements Serializable {
         this.selectedGroup = selectedGroup;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void onEdit(RowEditEvent event) {
         User user = (User) event.getObject();
         logger.debug("onEdit user={}", user);
@@ -140,6 +152,9 @@ public class UserEditMB implements Serializable {
     public void addNewUser() {
         logger.debug("addNewUser newUser={}", newUser);
         try {
+            String encodedPassword = passwordEncoder.encode(password);
+            logger.debug("changePassword encodedPassword={}", encodedPassword);
+            newUser.setPassword(encodedPassword);
             userService.add(newUser);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Added", newUser.getUsername()));
         } catch (Exception e) {
@@ -199,6 +214,19 @@ public class UserEditMB implements Serializable {
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in assigning task", e.toString()));
         }
         initUsers();
+    }
+
+    public void changePassword() {
+        logger.debug("changePassword password={}, selectedUser={}", password, selectedUser);
+        try {
+            String encodedPassword = passwordEncoder.encode(password);
+            logger.debug("changePassword encodedPassword={}", encodedPassword);
+            selectedUser.setPassword(encodedPassword);
+            userService.update(selectedUser);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in changing password", e.toString()));
+        }
     }
 
 }

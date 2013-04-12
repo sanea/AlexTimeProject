@@ -28,21 +28,18 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Password" sortBy="#{user.password}" style="text-align: center;">
+<p:column headerText="Password" style="text-align: center;">
     <p:cellEditor>
         <f:facet name="output">
-            <!--<h:outputText value="#{user.password}"/>-->
-            <p:commandButton value="Change password TODO"/>
+            <p:commandButton value="Change password" process="@this"
+                             oncomplete="changePasswordDlg.show();"
+                             update=":contentForm:changePasswordDialog"
+                             disabled="#{user.deleted}">
+                <f:setPropertyActionListener value="#{user}" target="#{userEditMB.selectedUser}"/>
+            </p:commandButton>
         </f:facet>
         <f:facet name="input">
-            <!--<h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
-                <p:password id="passwordEdit" value="#{user.password}" styleClass="w100" required="true"
-                            requiredMessage="Password needed" feedback="true"
-                            validatorMessage="Length is between 1 and 30">
-                    <f:validateLength minimum="1" maximum="30"/>
-                </p:password>
-                <p:message for="passwordEdit"/>
-            </h:panelGrid>-->
+            <h:panelGroup/>
         </f:facet>
     </p:cellEditor>
 </p:column>
@@ -328,8 +325,28 @@
     </f:facet>
 </p:dialog>
 
+<p:dialog id="changePasswordDialog" header="Enter new password" widgetVar="changePasswordDlg" modal="true"
+          closable="true" closeOnEscape="true">
+    <h:outputText value="Please enter new password"/>
+    <h:panelGrid columns="2">
+        <p:password id="newPassword" value="#{userEditMB.password}" styleClass="w100" required="true"
+                    requiredMessage="Password needed" feedback="true"
+                    validatorMessage="Length is between 1 and 30">
+            <f:validateLength minimum="1" maximum="30"/>
+        </p:password>
+        <p:message for="newPassword"/>
+    </h:panelGrid>
+    <f:facet name="footer">
+        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:changePasswordDialog"
+                         oncomplete="if(args &amp;&amp; !args.validationFailed) changePasswordDlg.hide();"
+                         action="#{userEditMB.changePassword}" process=":contentForm:changePasswordDialog"/>
+        <p:commandButton id="cancelBtn" value="Cancel" oncomplete="changePasswordDlg.hide();" update=":contentForm:userTable"
+                         immediate="true"/>
+    </f:facet>
+</p:dialog>
+
 </h:form>
 </ui:define>
 </ui:composition>
 </h:body>
-</html> 
+</html>
