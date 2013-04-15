@@ -26,6 +26,31 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `webapp` /*!40100 DEFAULT CHARACTER SET
 USE `webapp`;
 
 --
+-- Table structure for table `config_custom_action`
+--
+
+DROP TABLE IF EXISTS `config_custom_action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config_custom_action` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `config_custom_action`
+--
+
+LOCK TABLES `config_custom_action` WRITE;
+/*!40000 ALTER TABLE `config_custom_action` DISABLE KEYS */;
+INSERT INTO `config_custom_action` VALUES (1,'custom1',1),(2,'custom2',1),(3,'custom3',1);
+/*!40000 ALTER TABLE `config_custom_action` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `group_authorities`
 --
 
@@ -39,7 +64,7 @@ CREATE TABLE `group_authorities` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `fk_authorities_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +73,7 @@ CREATE TABLE `group_authorities` (
 
 LOCK TABLES `group_authorities` WRITE;
 /*!40000 ALTER TABLE `group_authorities` DISABLE KEYS */;
-INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL'),(11,1,'EDIT_SITES'),(12,1,'ASSIGN_TASKS'),(25,6,'EDIT_USERS'),(26,6,'MANAGE_TASK'),(27,6,'EDIT_TASKS'),(28,6,'STAT_ONLINE'),(29,6,'STAT_ALL'),(30,6,'EDIT_GROUPS'),(31,6,'EDIT_SITES'),(32,6,'ASSIGN_TASKS');
+INSERT INTO `group_authorities` VALUES (2,1,'EDIT_USERS'),(3,1,'MANAGE_TASK'),(4,1,'EDIT_TASKS'),(5,1,'STAT_ONLINE'),(8,2,'MANAGE_TASK'),(9,1,'EDIT_GROUPS'),(10,1,'STAT_ALL'),(11,1,'EDIT_SITES'),(12,1,'ASSIGN_TASKS'),(25,6,'EDIT_USERS'),(26,6,'MANAGE_TASK'),(27,6,'EDIT_TASKS'),(28,6,'STAT_ONLINE'),(29,6,'STAT_ALL'),(30,6,'EDIT_GROUPS'),(31,6,'EDIT_SITES'),(32,6,'ASSIGN_TASKS'),(33,1,'CHANGE_CUSTOM');
 /*!40000 ALTER TABLE `group_authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +304,7 @@ CREATE TABLE `user_site_task` (
   CONSTRAINT `fk_user_task_cur_time` FOREIGN KEY (`current_time`) REFERENCES `user_task_time` (`id`),
   CONSTRAINT `fk_user_task_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_user_task_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +313,7 @@ CREATE TABLE `user_site_task` (
 
 LOCK TABLES `user_site_task` WRITE;
 /*!40000 ALTER TABLE `user_site_task` DISABLE KEYS */;
-INSERT INTO `user_site_task` VALUES (1,'admin',1,'c','2013-04-02 09:52:00','2013-03-30 09:14:55',0,NULL),(2,'admin',2,'c','2013-04-01 07:21:30','2013-03-30 09:14:58',0,NULL),(3,'admin',3,'c','2013-04-01 07:23:28','2013-03-30 09:15:02',0,NULL),(6,'admin',6,'c','2013-04-01 07:21:31','2013-03-30 17:35:32',0,NULL),(7,'admin',7,'c','2013-04-01 07:21:40','2013-03-30 17:35:39',0,NULL),(8,'admin',8,'s','2013-04-03 11:45:03','2013-03-30 17:35:41',0,NULL),(9,'1',9,'c','2013-04-01 12:11:20','2013-04-01 07:22:02',0,NULL),(11,'1',11,'c','2013-04-01 12:12:23','2013-04-01 07:22:09',0,NULL),(12,'Озерки1 оператор',1,'c','2013-04-10 10:42:54','2013-04-10 08:20:36',0,NULL),(16,'Озерки1 оператор',31,'c','2013-04-10 10:42:51','2013-04-10 08:24:44',0,NULL);
+INSERT INTO `user_site_task` VALUES (1,'admin',1,'c','2013-04-15 09:36:22','2013-03-30 09:14:55',0,NULL),(2,'admin',2,'c','2013-04-01 07:21:30','2013-03-30 09:14:58',0,NULL),(3,'admin',3,'c','2013-04-01 07:23:28','2013-03-30 09:15:02',0,NULL),(6,'admin',6,'c','2013-04-01 07:21:31','2013-03-30 17:35:32',0,NULL),(7,'admin',7,'c','2013-04-01 07:21:40','2013-03-30 17:35:39',0,NULL),(8,'admin',8,'s','2013-04-03 11:45:03','2013-03-30 17:35:41',0,NULL),(9,'1',9,'c','2013-04-01 12:11:20','2013-04-01 07:22:02',0,NULL),(11,'1',11,'c','2013-04-01 12:12:23','2013-04-01 07:22:09',0,NULL),(12,'Озерки1 оператор',1,'c','2013-04-15 09:36:25','2013-04-10 08:20:36',0,NULL),(16,'Озерки1 оператор',31,'c','2013-04-10 10:42:51','2013-04-10 08:24:44',0,NULL),(17,'1',1,'u','2013-04-15 09:36:22','2013-04-15 09:22:24',0,NULL),(18,'Васиостровская оператор',1,'u','2013-04-15 09:22:25','2013-04-15 09:22:25',1,NULL);
 /*!40000 ALTER TABLE `user_site_task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -418,4 +443,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-12 20:40:36
+-- Dump completed on 2013-04-15 14:06:58
