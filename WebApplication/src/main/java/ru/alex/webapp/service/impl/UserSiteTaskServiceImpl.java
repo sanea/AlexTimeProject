@@ -209,7 +209,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         } else {
             if (userSiteTask.getDeleted()) {
                 userSiteTask.setUpdateTime(now);
-                userSiteTask.setDeleted(true);
+                userSiteTask.setDeleted(false);
                 userSiteTaskDao.merge(userSiteTask);
             } else {
                 throw new Exception("Can't add, userSiteTask exists already with siteId=" + site.getId() + ", taskId=" + task.getId() + ", username" + user.getUsername());
@@ -228,8 +228,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     }
 
     @Override
-    //TODO change to 1 second
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 1000)
     public void checkAllTasks() {
         //logger.debug("checkAllTasks");
         try {

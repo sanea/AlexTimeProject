@@ -76,7 +76,6 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
             entity.getTaskByTaskId().getSiteTasksById().remove(entity);
             entity.getSiteBySiteId().getSiteTaskList().remove(entity);
             siteTaskDao.remove(entity);
-            siteTaskDao.flush();
         } else {
             List<UserTaskTime> currentTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_TASK_ID, params);
             logger.debug("remove CURRENT_BY_SITE_TASK_ID currentTimeList={}", currentTimeList);
@@ -94,8 +93,8 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
                 }
                 entity = siteTaskDao.merge(entity);
             }
-
         }
+        siteTaskDao.flush();
     }
 
     @Override
