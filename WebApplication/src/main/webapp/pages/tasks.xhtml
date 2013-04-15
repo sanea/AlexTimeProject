@@ -85,26 +85,29 @@
                                                  update=":contentForm:taskTable :contentForm:finishChange"
                                                  rendered="#{task.currentStatus == '1' or task.currentStatus == '2' or task.currentStatus == '3'}"
                                                  process="@this"/>
-                                <p:commandButton value="custom1" oncomplete="timeDialog.show();"
+                                <p:commandButton value="#{sessionMB.getCustomActionName(1)}"
+                                                 oncomplete="timeDialog.show();"
                                                  actionListener="#{taskMB.startListener}"
                                                  update=":contentForm:timeDialog"
-                                                 rendered="#{task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
+                                                 rendered="#{sessionMB.getCustomActionEnabled(1) and task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
                                                  process="@this">
                                     <f:attribute name="task" value="#{task}"/>
                                     <f:attribute name="action" value="#{'1'}"/>
                                 </p:commandButton>
-                                <p:commandButton value="custom2" oncomplete="timeDialog.show();"
+                                <p:commandButton value="#{sessionMB.getCustomActionName(2)}"
+                                                 oncomplete="timeDialog.show();"
                                                  actionListener="#{taskMB.startListener}"
                                                  update=":contentForm:timeDialog"
-                                                 rendered="#{task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
+                                                 rendered="#{sessionMB.getCustomActionEnabled(2) and task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
                                                  process="@this">
                                     <f:attribute name="task" value="#{task}"/>
                                     <f:attribute name="action" value="#{'2'}"/>
                                 </p:commandButton>
-                                <p:commandButton value="custom3" oncomplete="timeDialog.show();"
+                                <p:commandButton value="#{sessionMB.getCustomActionName(3)}"
+                                                 oncomplete="timeDialog.show();"
                                                  actionListener="#{taskMB.startListener}"
                                                  update=":contentForm:timeDialog"
-                                                 rendered="#{task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
+                                                 rendered="#{sessionMB.getCustomActionEnabled(3) and task.currentStatus != '1' and task.currentStatus != '2' and task.currentStatus != '3'}"
                                                  process="@this">
                                     <f:attribute name="task" value="#{task}"/>
                                     <f:attribute name="action" value="#{'3'}"/>
@@ -119,12 +122,14 @@
                                 </p:commandButton>
                                 <p:commandButton value="stop" action="#{taskMB.stop(task)}"
                                                  rendered="#{task.currentStatus == 'r' or task.currentStatus == '1' or task.currentStatus == '2' or task.currentStatus == '3'}"
-                                                 update=":contentForm:taskTable :contentForm:finishChange" process="@this"/>
+                                                 update=":contentForm:taskTable :contentForm:finishChange"
+                                                 process="@this"/>
                             </h:panelGroup>
                         </p:column>
                     </p:dataTable>
 
-                    <p:poll interval="#{taskMB.updateIntervalSec}" listener="#{taskMB.refreshTable}" update=":contentForm:taskTable :contentForm:finishChange"
+                    <p:poll interval="#{taskMB.updateIntervalSec}" listener="#{taskMB.refreshTable}"
+                            update=":contentForm:taskTable :contentForm:finishChange"
                             autoStart="#{taskMB.startTableUpdater}" widgetVar="tableUpdater" process="@this"/>
 
                     <p:dialog id="timeDialog" header="Please enter minutes" widgetVar="timeDialog" closable="false"

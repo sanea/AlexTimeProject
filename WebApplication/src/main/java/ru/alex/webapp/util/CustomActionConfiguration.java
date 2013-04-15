@@ -9,6 +9,7 @@ import ru.alex.webapp.model.CustomAction;
 import ru.alex.webapp.model.enums.CustomActionEnum;
 import ru.alex.webapp.service.CustomActionService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,18 +21,15 @@ public class CustomActionConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(CustomActionConfiguration.class);
     private static volatile CustomActionConfiguration instance;
 
+    CustomActionService customActionService;
     Map<Long, CustomAction> customActionMap;
 
     private CustomActionConfiguration() throws Exception {
         logger.info("loading Custom Action Configuration");
         try {
             ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
-            CustomActionService customActionService = ctx.getBean(CustomActionService.class);
-            List<CustomAction> customActionList = customActionService.findAll();
-            customActionMap = new HashMap<>(customActionList.size());
-            for (CustomAction customAction : customActionList) {
-                customActionMap.put(customAction.getId(), customAction);
-            }
+            customActionService = ctx.getBean(CustomActionService.class);
+            loadFromDb();
             logger.info("loaded success! customActionMap={}", customActionMap);
         } catch (Exception e) {
             logger.error("Can't load CustomActionConfiguration", e);
@@ -56,8 +54,29 @@ public class CustomActionConfiguration {
         return localInstance;
     }
 
+    private void loadFromDb() {
+        List<CustomAction> customActionList = customActionService.findAll();
+        customActionMap = new HashMap<>(customActionList.size());
+        for (CustomAction customAction : customActionList) {
+            customActionMap.put(customAction.getId(), customAction);
+        }
+    }
+
     public CustomAction getCustomAction(CustomActionEnum customActionEnum) {
-        return customActionMap.get(customActionEnum.getId());
+        if (customActionEnum == null)
+            throw new IllegalArgumentException("Wrong customActionEnum = null");
+        return customActionMap.get(new Long(customActionEnum.getId()));
+    }
+
+    public List<CustomAction> getAll() {
+        List<CustomAction> customActionList = new ArrayList<>(customActionMap.size());
+        for (CustomAction customAction : customActionMap.values())
+            customActionList.add(customAction);
+        return customActionList;
+    }
+
+    public synchronized void reload() {
+        loadFromDb();
     }
 
 }

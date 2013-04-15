@@ -13,12 +13,14 @@ import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
+import ru.alex.webapp.model.enums.CustomActionEnum;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.service.UserTaskTimeService;
+import ru.alex.webapp.util.CustomActionConfiguration;
 import ru.alex.webapp.util.FacesUtil;
 import ru.alex.webapp.util.TimeUtils;
 
@@ -53,9 +55,12 @@ public class AllTaskMB implements Serializable {
         COLUMN_MODEL.put("taskType", new ColumnModel("Task Type", "taskTypeFormatted", "taskType"));
         COLUMN_MODEL.put("taskPriceHour", new ColumnModel("Price Hour", "taskPriceHour", "taskPriceHour"));
         COLUMN_MODEL.put("durationPlaySec", new ColumnModel("Duration Play", "durationPlayFormatted", "durationPlaySec"));
-        COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel("Duration Custom1", "durationCustom1Formatted", "durationCustom1Sec"));
-        COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel("Duration Custom2", "durationCustom2Formatted", "durationCustom2Sec"));
-        COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel("Duration Custom3", "durationCustom3Formatted", "durationCustom3Sec"));
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getEnabled())
+            COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName(), "durationCustom1Formatted", "durationCustom1Sec"));
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getEnabled())
+            COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName(), "durationCustom2Formatted", "durationCustom2Sec"));
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getEnabled())
+            COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName(), "durationCustom3Formatted", "durationCustom3Sec"));
         COLUMN_MODEL.put("total", new ColumnModel("Total", "total", "total"));
         COLUMN_MODEL.put("startTime", new ColumnModel("Start time", "startTime", "startTime"));
         COLUMN_MODEL.put("finishTime", new ColumnModel("Finish time", "finishTime", "finishTime"));

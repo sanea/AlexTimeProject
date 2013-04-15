@@ -10,7 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.enums.CustomActionEnum;
 import ru.alex.webapp.service.UserService;
+import ru.alex.webapp.util.CustomActionConfiguration;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -72,5 +74,15 @@ public class SessionMB implements Serializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public String getCustomActionName(int id) {
+        CustomActionEnum customActionEnum = CustomActionEnum.getCustomAction(id);
+        return CustomActionConfiguration.getInstance().getCustomAction(customActionEnum).getName();
+    }
+
+    public boolean getCustomActionEnabled(int id) {
+        CustomActionEnum customActionEnum = CustomActionEnum.getCustomAction(id);
+        return CustomActionConfiguration.getInstance().getCustomAction(customActionEnum).getEnabled();
     }
 }

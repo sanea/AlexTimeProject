@@ -152,8 +152,21 @@ public class UserEditMB implements Serializable {
     public void addNewUser() {
         logger.debug("addNewUser newUser={}", newUser);
         try {
-            String encodedPassword = passwordEncoder.encode(password);
-            logger.debug("changePassword encodedPassword={}", encodedPassword);
+            newUser.setUsername(newUser.getUsername().trim());
+            if (newUser.getUsername().isEmpty()) {
+                FacesUtil.getFacesContext().addMessage("contentForm:userName", new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Wrong username: '" + newUser.getUsername() + "'"));
+                FacesUtil.getFacesContext().validationFailed();
+                return;
+            }
+            User existingUser = userService.findById(newUser.getUsername());
+            logger.debug("addNewUser existingUser={}", existingUser);
+            if (existingUser != null) {
+                FacesUtil.getFacesContext().addMessage("contentForm:userName", new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "User '" + newUser.getUsername() + "' already exists!"));
+                FacesUtil.getFacesContext().validationFailed();
+                return;
+            }
+            String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+            logger.debug("addNewUser encodedPassword={}", encodedPassword);
             newUser.setPassword(encodedPassword);
             userService.add(newUser);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage("User Added", newUser.getUsername()));

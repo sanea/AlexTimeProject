@@ -1,5 +1,7 @@
 package ru.alex.webapp.model.enums;
 
+import ru.alex.webapp.util.CustomActionConfiguration;
+
 /**
  * @author Alexander.Isaenco
  */
@@ -49,11 +51,11 @@ public enum Action {
             case STOP:
                 return "Stop";
             case CUSTOM1:
-                return "Custom 1";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
             case CUSTOM2:
-                return "Custom 2";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName();
             case CUSTOM3:
-                return "Custom 3";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName();
             default:
                 throw new IllegalArgumentException("wrong action " + action);
         }

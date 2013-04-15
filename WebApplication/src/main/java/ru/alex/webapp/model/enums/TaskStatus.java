@@ -1,5 +1,7 @@
 package ru.alex.webapp.model.enums;
 
+import ru.alex.webapp.util.CustomActionConfiguration;
+
 /**
  * @author Alexander.Isaenco
  */
@@ -49,11 +51,11 @@ public enum TaskStatus {
             case UNKNOWN:
                 return "Unknown";
             case CUSTOM1:
-                return "Custom1";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
             case CUSTOM2:
-                return "Custom2";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName();
             case CUSTOM3:
-                return "Custom3";
+                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName();
             default:
                 throw new IllegalArgumentException("wrong status " + status);
         }

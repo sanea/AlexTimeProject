@@ -86,7 +86,7 @@ DROP TABLE IF EXISTS `group_members`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `group_members` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) BINARY NOT NULL,
   `group_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_members_username` (`username`,`group_id`),
@@ -261,7 +261,7 @@ CREATE TABLE `user_change` (
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
   `site_id` bigint(20) unsigned NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) BINARY NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user_change_site_idx` (`site_id`),
   KEY `fk_user_change_user_idx` (`username`),
@@ -289,7 +289,7 @@ DROP TABLE IF EXISTS `user_site_task`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_site_task` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) BINARY NOT NULL,
   `site_task_id` bigint(20) unsigned NOT NULL,
   `status` char(1) NOT NULL DEFAULT 'u',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -403,7 +403,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) BINARY NOT NULL,
   `password` varchar(80) NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `first_name` varchar(255) DEFAULT NULL,

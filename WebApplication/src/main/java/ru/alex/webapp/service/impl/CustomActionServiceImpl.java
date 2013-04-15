@@ -24,8 +24,13 @@ public class CustomActionServiceImpl extends GenericServiceImpl<CustomAction, Lo
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void update(CustomAction entity) throws Exception {
-        throw new NoSuchMethodException("not supported");
+        logger.debug("update customAction={}", entity);
+        if (entity == null)
+            throw new IllegalArgumentException("Wrong entity");
+        throwExceptionIfNotExists(entity.getId());
+        customActionDao.merge(entity);
     }
 
     @Override
