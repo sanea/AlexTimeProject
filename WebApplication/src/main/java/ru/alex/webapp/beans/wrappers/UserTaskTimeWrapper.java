@@ -60,6 +60,8 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public BigDecimal getTotal() {
+        if (userTaskTime.getTotal() == null)
+            return null;
         if (userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome())
             return userTaskTime.getTotal();
         else

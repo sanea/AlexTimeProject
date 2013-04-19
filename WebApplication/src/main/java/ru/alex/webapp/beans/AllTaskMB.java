@@ -140,6 +140,9 @@ public class AllTaskMB implements Serializable {
             totalOutcome = new BigDecimal(0);
             summ = new BigDecimal(0);
             for (UserTaskTime taskTime : userTaskTimeList) {
+                //check if task is not current (null check for data consistence and performance)
+                if (taskTime.getTotal() == null && taskTime.getUserSiteTaskById().getCurrentTime().equals(taskTime))
+                    continue;
                 UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime);
                 filteredTasks.add(taskTimeWrapper);
                 if (taskTimeWrapper.getTaskIncome()) {
