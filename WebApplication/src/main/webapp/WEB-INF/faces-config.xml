@@ -6,7 +6,20 @@
               version="2.0">
     <!-- JSF and Spring are integrated -->
     <application>
+        <resource-handler>ru.alex.webapp.util.PrimeResourceHandlerWithCache</resource-handler>
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+
+        <!-- locale application properties -->
+        <resource-bundle>
+            <base-name>messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        <message-bundle>messages</message-bundle>
+        <locale-config>
+            <default-locale>ru</default-locale>
+            <supported-locale>en</supported-locale>
+            <supported-locale>ru</supported-locale>
+        </locale-config>
     </application>
     <factory>
         <exception-handler-factory>ru.alex.webapp.util.CustomExceptionHandlerFactory</exception-handler-factory>

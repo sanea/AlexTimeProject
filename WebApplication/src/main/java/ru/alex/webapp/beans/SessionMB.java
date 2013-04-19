@@ -13,11 +13,13 @@ import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.enums.CustomActionEnum;
 import ru.alex.webapp.service.UserService;
 import ru.alex.webapp.util.CustomActionConfiguration;
+import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -33,6 +35,7 @@ public class SessionMB implements Serializable {
     private Set<String> authorities;
     private Site selectedSite;
     private User currentUser;
+    private Locale locale;
 
     @PostConstruct
     private void init() {
@@ -49,6 +52,8 @@ public class SessionMB implements Serializable {
                 selectedSite = currentUser.getCurrentChange().getSite();
         }
         logger.debug("currentUser={}, authorities={}", currentUser, authorities);
+        locale = FacesUtil.getViewRoot().getLocale();
+        logger.info("Current locale={}", locale);
     }
 
     public boolean hasRole(String roleName) {
@@ -84,5 +89,24 @@ public class SessionMB implements Serializable {
     public boolean getCustomActionEnabled(int id) {
         CustomActionEnum customActionEnum = CustomActionEnum.getCustomAction(id);
         return CustomActionConfiguration.getInstance().getCustomAction(customActionEnum).getEnabled();
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public String switchLocaleRU() {
+        logger.info("switching to russian");
+        Locale german = new Locale("ru");
+        FacesUtil.getViewRoot().setLocale(german);
+        locale = FacesUtil.getViewRoot().getLocale();
+        return null;
+    }
+
+    public String switchLocaleEN() {
+        logger.info("switching to english");
+        FacesUtil.getViewRoot().setLocale(Locale.ENGLISH);
+        locale = FacesUtil.getViewRoot().getLocale();
+        return null;
     }
 }

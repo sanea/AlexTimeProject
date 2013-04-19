@@ -1,15 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://java.sun.com/jsf/html">
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
             <h1>Welcome to Time Project</h1>
 
-            <p>Here will be some description of the project<br/>
-                And here also we will write what to do!</p>
-
+            <p><h:outputText value="#{msg['welcome.title']}"/></p>
 
         </ui:define>
     </ui:composition>
