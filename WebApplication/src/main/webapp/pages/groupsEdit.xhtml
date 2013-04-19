@@ -7,18 +7,19 @@
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
-            <h2>Edit Groups</h2>
+            <h2><h:outputText value="#{msg['groups.edit.title']}"/></h2>
             <h:form id="contentForm">
                 <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
                                  actionListener="#{groupEditMB.addNewGroupListener}"
-                                 oncomplete="addGroupDlg.show();" process="@this" title="add new group"/>
+                                 oncomplete="addGroupDlg.show();" process="@this"
+                                 title="#{msg['groups.edit.add.new']}"/>
                 <p:dataTable var="group" value="#{groupEditMB.groupList}" id="groupTable" editable="true"
                              editMode="row">
 
                     <p:ajax event="rowEdit" listener="#{groupEditMB.onEdit}" update=":messages"/>
                     <p:ajax event="rowEditCancel" listener="#{groupEditMB.onCancel}" update=":messages"/>
 
-                    <p:column headerText="Group Name" sortBy="#{group.groupName}">
+                    <p:column headerText="#{msg['group']}" sortBy="#{group.groupName}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{group.groupName}"/>
@@ -41,51 +42,56 @@
 
                     <p:column>
                         <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
-                                         title="delete"
+                                         title="#{msg['delete']}"
                                          update=":contentForm:removeConfirmDialog">
                             <f:setPropertyActionListener value="#{group}" target="#{groupEditMB.selectedGroup}"/>
                         </p:commandButton>
-                        <p:commandButton value="Authorities" process="@this"
+                        <p:commandButton value="#{msg['authorities']}" process="@this"
                                          actionListener="#{groupEditMB.assignListener}"
                                          oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
-                                         update=":contentForm:assignDialog" title="Group">
+                                         update=":contentForm:assignDialog" title="#{msg['group']}">
                             <f:attribute value="#{group}" name="group"/>
                         </p:commandButton>
                     </p:column>
 
                 </p:dataTable>
 
-                <p:dialog id="addDialog" header="Add group" widgetVar="addGroupDlg" modal="true" closable="true"
+                <p:dialog id="addDialog" header="#{msg['groups.edit.add']}" widgetVar="addGroupDlg" modal="true"
+                          closable="true"
                           closeOnEscape="true">
                     <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="groupName" value="Name:"/>
+                        <h:outputLabel for="groupName" value="#{msg['name']}:"/>
                         <p:inputText value="#{groupEditMB.newGroup.groupName}" id="groupName" required="true"
-                                     requiredMessage="Name can't be empty"/>
+                                     requiredMessage="#{msg['name.mess.needed']}"/>
                         <p:message for="groupName"/>
 
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:groupTable :contentForm:addDialogContent"
+                        <p:commandButton value="#{msg['button.save']}"
+                                         update=":contentForm:groupTable :contentForm:addDialogContent"
                                          oncomplete="if(args &amp;&amp; !args.validationFailed) addGroupDlg.hide();"
                                          action="#{groupEditMB.addNewGroup}" process=":contentForm:addDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="addGroupDlg.hide();" immediate="true"/>
+                        <p:commandButton value="#{msg['button.cancel']}" oncomplete="addGroupDlg.hide();"
+                                         immediate="true"/>
                     </f:facet>
                 </p:dialog>
 
-                <p:dialog id="removeConfirmDialog" header="Remove Group" widgetVar="removeConfirmDlg" modal="true"
+                <p:dialog id="removeConfirmDialog" header="#{msg['groups.edit.remove']}" widgetVar="removeConfirmDlg"
+                          modal="true"
                           closeOnEscape="true">
 
-                    <h:outputText value="Are you sure you want to remove '#{groupEditMB.selectedGroup.groupName}'?"/>
+                    <h:outputText value="#{msg['are.you.sure.remove']} '#{groupEditMB.selectedGroup.groupName}'?"/>
 
                     <f:facet name="footer">
-                        <p:commandButton value="Yes" update=":contentForm:groupTable"
+                        <p:commandButton value="#{msg['button.yes']}" update=":contentForm:groupTable"
                                          oncomplete="removeConfirmDlg.hide()"
                                          action="#{groupEditMB.removeGroup}" process="@this"/>
-                        <p:commandButton value="No" onclick="removeConfirmDlg.hide()"/>
+                        <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmDlg.hide()"/>
                     </f:facet>
                 </p:dialog>
 
-                <p:dialog id="assignDialog" header="Assign Group for Group" widgetVar="assignDlg" modal="true"
+                <p:dialog id="assignDialog" header="#{msg['groups.edit.assign.auth.title']}" widgetVar="assignDlg"
+                          modal="true"
                           closable="true"
                           closeOnEscape="true">
                     <h:panelGrid id="assignDialogContent">
@@ -93,16 +99,19 @@
                         <p:message for="groups"/>
                         <p:selectManyCheckbox id="groups" value="#{groupEditMB.selectedAuthorities}"
                                               layout="pageDirection" converter="#{authorityConverter}"
-                                              required="true" requiredMessage="Please select at least one authority">
+                                              required="true"
+                                              requiredMessage="#{msg['groups.edit.assign.auth.needed']}">
                             <f:selectItems value="#{groupEditMB.authorityList}" var="auth"
                                            itemLabel="#{auth}" itemValue="#{auth}"/>
                         </p:selectManyCheckbox>
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:groupTable :contentForm:assignDialogContent"
+                        <p:commandButton value="#{msg['button.save']}"
+                                         update=":contentForm:groupTable :contentForm:assignDialogContent"
                                          oncomplete="if(args &amp;&amp; !args.validationFailed) assignDlg.hide();"
                                          action="#{groupEditMB.assignGroup}" process=":contentForm:assignDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:groupTable"
+                        <p:commandButton value="#{msg['button.cancel']}" oncomplete="assignDlg.hide();"
+                                         update=":contentForm:groupTable"
                                          immediate="true"/>
                     </f:facet>
                 </p:dialog>

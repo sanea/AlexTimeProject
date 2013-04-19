@@ -1,54 +1,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
-            <h2>Running Tasks</h2>
+            <h2><h:outputText value="#{msg['online.tasks.title']}"/></h2>
             <h:form id="contentForm">
                 <p:dataTable id="onlineTasks" var="task" value="#{onlineTaskMB.onlineTasks}">
-                    <p:column headerText="Site Name" sortBy="#{task.siteName}">
+                    <p:column headerText="#{msg['site']}" sortBy="#{task.siteName}">
                         <h:outputText value="#{task.siteName}"/>
                     </p:column>
 
-                    <p:column headerText="User Name" sortBy="#{task.username}">
+                    <p:column headerText="#{msg['user']}" sortBy="#{task.username}">
                         <h:outputText value="#{task.username}"/>
                     </p:column>
 
-                    <p:column headerText="Task Name" sortBy="#{task.taskName}">
+                    <p:column headerText="#{msg['task']}" sortBy="#{task.taskName}">
                         <h:outputText value="#{task.taskName}"/>
                     </p:column>
 
-                    <p:column headerText="Task Status" sortBy="#{task.currentStatus}">
+                    <p:column headerText="#{msg['status']}" sortBy="#{task.currentStatus}">
                         <h:outputText value="#{task.currentStatusFormatted}"/>
                     </p:column>
 
-                    <p:column headerText="Task Type" sortBy="#{task.taskTypeFormatted}">
+                    <p:column headerText="#{msg['type']}" sortBy="#{task.taskTypeFormatted}">
                         <h:outputText value="#{task.taskTypeFormatted}"/>
                     </p:column>
 
-                    <p:column headerText="Task Price" sortBy="#{task.taskPriceHour}">
+                    <p:column headerText="#{msg['price']}" sortBy="#{task.taskPriceHour}">
                         <h:outputText value="#{task.taskPriceHour}"/>
                     </p:column>
 
-                    <p:column headerText="Time Left" sortBy="#{task.timeLeftSec}">
+                    <p:column headerText="#{msg['time.left']}" sortBy="#{task.timeLeftSec}">
                         <h:outputText value="#{task.timeLeftFormatted}"/>
                     </p:column>
 
-                    <p:column headerText="Duration" sortBy="#{task.durationSec}">
+                    <p:column headerText="#{msg['duration']}" sortBy="#{task.durationSec}">
                         <h:outputText value="#{task.durationFormatted}"/>
                     </p:column>
 
-                    <p:column headerText="Finish Time" sortBy="#{task.finishTime}">
+                    <p:column headerText="#{msg['finish.time']}" sortBy="#{task.finishTime}">
                         <h:outputText value="#{task.finishTime}"/>
                     </p:column>
 
                 </p:dataTable>
                 <p:poll interval="#{onlineTaskMB.updateIntervalSec}" listener="#{onlineTaskMB.refreshTable}"
-                        update="onlineTasks" autoStart="true" widgetVar="tableUpdater" />
+                        update="onlineTasks" autoStart="true" widgetVar="tableUpdater"/>
             </h:form>
         </ui:define>
     </ui:composition>

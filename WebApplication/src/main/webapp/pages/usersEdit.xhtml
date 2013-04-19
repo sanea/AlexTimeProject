@@ -7,17 +7,17 @@
 <ui:composition template="templates/template.xhtml">
 <ui:define name="content">
 
-<h2>Edit Users</h2>
+<h2><h:outputText value="#{msg['users.edit.title']}"/></h2>
 <h:form id="contentForm">
 <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
                  actionListener="#{userEditMB.addNewUserListener}"
-                 oncomplete="addUserDlg.show();" process="@this" title="add new user"/>
+                 oncomplete="addUserDlg.show();" process="@this" title="#{msg['users.edit.add.new']}"/>
 <p:dataTable var="user" value="#{userEditMB.userList}" id="userTable" editable="true" editMode="row">
 
 <p:ajax event="rowEdit" listener="#{userEditMB.onEdit}" update=":messages"/>
 <p:ajax event="rowEditCancel" listener="#{userEditMB.onCancel}" update=":messages"/>
 
-<p:column headerText="Username" sortBy="#{user.username}">
+<p:column headerText="#{msg['username']}" sortBy="#{user.username}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.username}"/>
@@ -28,7 +28,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Password" style="text-align: center;">
+<p:column headerText="#{msg['password']}" style="text-align: center;">
     <p:cellEditor>
         <f:facet name="output">
             <p:commandButton value="Change password" process="@this"
@@ -44,7 +44,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="First Name" sortBy="#{user.firstName}">
+<p:column headerText="#{msg['name.first']}" sortBy="#{user.firstName}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.firstName}"/>
@@ -55,7 +55,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Last Name" sortBy="#{user.lastName}">
+<p:column headerText="#{msg['name.last']}" sortBy="#{user.lastName}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.lastName}"/>
@@ -66,7 +66,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Middle Name" sortBy="#{user.middleName}">
+<p:column headerText="#{msg['name.middle']}" sortBy="#{user.middleName}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.middleName}"/>
@@ -77,7 +77,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Phone 1" sortBy="#{user.phone1}">
+<p:column headerText="#{msg['phone']} 1" sortBy="#{user.phone1}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.phone1}"/>
@@ -88,7 +88,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Phone 2" sortBy="#{user.phone2}">
+<p:column headerText="#{msg['phone']} 2" sortBy="#{user.phone2}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.phone2}"/>
@@ -99,7 +99,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Email" sortBy="#{user.email}">
+<p:column headerText="#{msg['email']}" sortBy="#{user.email}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.email}"/>
@@ -107,7 +107,7 @@
         <f:facet name="input">
             <h:panelGrid cellspacing="0" cellpadding="0" columns="2" columnClasses="noBorder, noBorder">
                 <p:inputText id="emailEdit" label="email"
-                             validatorMessage="Invalid email format"
+                             validatorMessage="#{msg['users.edit.email.mess.invalid']}"
                              value="#{user.email}">
                     <f:validateRegex
                             pattern="(^$)|(^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)"/>
@@ -118,7 +118,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Country" sortBy="#{user.country}">
+<p:column headerText="#{msg['country']}" sortBy="#{user.country}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.country}"/>
@@ -129,7 +129,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="City" sortBy="#{user.city}">
+<p:column headerText="#{msg['city']}" sortBy="#{user.city}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.city}"/>
@@ -140,7 +140,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Address" sortBy="#{user.address}">
+<p:column headerText="#{msg['address']}" sortBy="#{user.address}">
     <p:cellEditor>
         <f:facet name="output">
             <h:outputText value="#{user.address}"/>
@@ -151,7 +151,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Enabled" sortBy="#{user.enabled}">
+<p:column headerText="#{msg['enabled']}" sortBy="#{user.enabled}">
     <p:cellEditor>
         <f:facet name="output">
             <p:selectBooleanCheckbox value="#{user.enabled}"
@@ -164,7 +164,7 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Deleted" sortBy="#{user.deleted}">
+<p:column headerText="#{msg['deleted']}" sortBy="#{user.deleted}">
     <p:cellEditor>
         <f:facet name="output">
             <p:selectBooleanCheckbox value="#{user.deleted}"
@@ -177,14 +177,14 @@
     </p:cellEditor>
 </p:column>
 
-<p:column headerText="Group" sortBy="#{user.groupMemberByUsername.groupByGroupId.groupName}">
+<p:column headerText="#{msg['group']}" sortBy="#{user.groupMemberByUsername.groupByGroupId.groupName}">
     <p:cellEditor>
         <f:facet name="output">
 
             <p:commandLink value="#{user.groupMemberByUsername.groupByGroupId.groupName}"
                            process="@this" actionListener="#{userEditMB.assignListener}"
                            oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
-                           update=":contentForm:assignDialog" title="add group"
+                           update=":contentForm:assignDialog" title="#{msg['users.edit.add']}"
                            rendered="#{user.groupMemberByUsername != null}"
                            disabled="#{user.deleted}">
                 <f:attribute value="#{user}" name="user"/>
@@ -192,7 +192,7 @@
             <p:commandButton icon="ui-icon-plus"
                              process="@this" actionListener="#{userEditMB.assignListener}"
                              oncomplete="if (args &amp;&amp; args.showAssignDlg) { assignDlg.show(); }"
-                             update=":contentForm:assignDialog" title="add group"
+                             update=":contentForm:assignDialog" title="#{msg['users.edit.add.group']}"
                              rendered="#{user.groupMemberByUsername == null}"
                              disabled="#{user.deleted}">
                 <f:attribute value="#{user}" name="user"/>
@@ -221,45 +221,45 @@
 
 </p:dataTable>
 
-<p:dialog id="addDialog" header="Add user" widgetVar="addUserDlg" modal="true" closable="true"
+<p:dialog id="addDialog" header="#{msg['users.edit.add']}" widgetVar="addUserDlg" modal="true" closable="true"
           closeOnEscape="true">
     <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
-        <h:outputLabel for="userName" value="Name:"/>
+        <h:outputLabel for="userName" value="#{msg['name']}:"/>
         <p:inputText value="#{userEditMB.newUser.username}" id="userName" required="true"
-                     requiredMessage="Name can't be empty"/>
+                     requiredMessage="#{msg['name.mess.needed']}"/>
         <p:message for="userName"/>
 
-        <h:outputLabel for="password" value="Password:"/>
+        <h:outputLabel for="password" value="#{msg['password']}:"/>
         <p:password id="password" value="#{userEditMB.newUser.password}" required="true"
-                    requiredMessage="Password needed" feedback="true"
-                    validatorMessage="Length is between 1 and 30">
+                    requiredMessage="#{msg['users.edit.pass.mess.needed']}" feedback="true"
+                    validatorMessage="#{msg['users.edit.pass.mess.length']}">
             <f:validateLength minimum="1" maximum="30"/>
         </p:password>
         <p:message for="password"/>
 
-        <h:outputLabel for="firstName" value="First Name:"/>
+        <h:outputLabel for="firstName" value="#{msg['name.first']}:"/>
         <p:inputText id="firstName" value="#{userEditMB.newUser.firstName}"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="lastName" value="Last Name:"/>
+        <h:outputLabel for="lastName" value="#{msg['name.last']}:"/>
         <p:inputText id="lastName" value="#{userEditMB.newUser.lastName}"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="middleName" value="Middle Name:"/>
+        <h:outputLabel for="middleName" value="#{msg['name.middle']}:"/>
         <p:inputText id="middleName" value="#{userEditMB.newUser.middleName}"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="phone1" value="Phone 1:"/>
+        <h:outputLabel for="phone1" value="#{msg['phone']} 1:"/>
         <p:inputMask id="phone1" value="#{userEditMB.newUser.phone1}" mask="+7(999) 999-9999"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="phone2" value="Phone 2:"/>
+        <h:outputLabel for="phone2" value="#{msg['phone']} 2:"/>
         <p:inputMask id="phone2" value="#{userEditMB.newUser.phone2}" mask="+7(999) 999-9999"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="email" value="Email:"/>
+        <h:outputLabel for="email" value="#{msg['email']}:"/>
         <p:inputText id="email" label="email"
-                     validatorMessage="Invalid email format"
+                     validatorMessage="#{msg['users.edit.email.mess.invalid']}"
                      value="#{userEditMB.newUser.email}" required="false">
             <f:validateRegex
                     pattern="(^$)|(^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)"/>
@@ -267,80 +267,84 @@
         <p:message for="email"/>
 
 
-        <h:outputLabel for="userCountry" value="Country:"/>
+        <h:outputLabel for="userCountry" value="#{msg['country']}:"/>
         <p:inputText value="#{userEditMB.newUser.country}" id="userCountry"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="userCity" value="City:"/>
+        <h:outputLabel for="userCity" value="#{msg['city']}:"/>
         <p:inputText value="#{userEditMB.newUser.city}" id="userCity"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="userAddr" value="Address:"/>
+        <h:outputLabel for="userAddr" value="#{msg['address']}:"/>
         <p:inputText value="#{userEditMB.newUser.address}" id="userAddr"/>
         <h:panelGroup/>
 
-        <h:outputLabel for="enabled" value="Enabled:"/>
+        <h:outputLabel for="enabled" value="#{msg['enabled']}:"/>
         <p:selectBooleanCheckbox id="enabled" value="#{userEditMB.newUser.enabled}"/>
         <h:panelGroup/>
 
     </h:panelGrid>
     <f:facet name="footer">
-        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:addDialogContent"
+        <p:commandButton value="#{msg['button.save']}" update=":contentForm:userTable :contentForm:addDialogContent"
                          oncomplete="if(args &amp;&amp; !args.validationFailed) addUserDlg.hide();"
                          action="#{userEditMB.addNewUser}" process=":contentForm:addDialog"/>
-        <p:commandButton value="Cancel" oncomplete="addUserDlg.hide();" immediate="true"/>
+        <p:commandButton value="#{msg['button.cancel']}" oncomplete="addUserDlg.hide();" immediate="true"/>
     </f:facet>
 </p:dialog>
 
-<p:dialog id="removeConfirmDialog" header="Remove User" widgetVar="removeConfirmDlg" modal="true"
+<p:dialog id="removeConfirmDialog" header="#{msg['users.edit.remove']}" widgetVar="removeConfirmDlg" modal="true"
           closeOnEscape="true">
 
-    <h:outputText value="Are you sure you want to remove '#{userEditMB.selectedUser.username}'?"/>
+    <h:outputText value="#{msg['are.you.sure.remove']} '#{userEditMB.selectedUser.username}'?"/>
 
     <f:facet name="footer">
-        <p:commandButton value="Yes" update=":contentForm:userTable"
+        <p:commandButton value="#{msg['button.yes']}" update=":contentForm:userTable"
                          oncomplete="removeConfirmDlg.hide()"
                          action="#{userEditMB.removeUser}" process="@this"/>
-        <p:commandButton value="No" onclick="removeConfirmDlg.hide()"/>
+        <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmDlg.hide()"/>
     </f:facet>
 </p:dialog>
 
-<p:dialog id="assignDialog" header="Assign Group for User" widgetVar="assignDlg" modal="true" closable="true"
+<p:dialog id="assignDialog" header="#{msg['users.edit.assign.group']}" widgetVar="assignDlg" modal="true"
+          closable="true"
           closeOnEscape="true">
     <h:panelGrid id="assignDialogContent">
-        <h:outputText value="Username: #{userEditMB.selectedUser.username}"/>
+        <h:outputText value="#{msg['username']}: #{userEditMB.selectedUser.username}"/>
         <p:message for="groups"/>
         <p:selectOneRadio id="groups" value="#{userEditMB.selectedGroup}" layout="pageDirection"
-                          required="true" requiredMessage="Please select group" converter="#{groupConverter}">
+                          required="true" requiredMessage="#{msg['users.edit.assign.group.select']}"
+                          converter="#{groupConverter}">
             <f:selectItems value="#{userEditMB.groupList}" var="group"
                            itemLabel="#{group.groupName}" itemValue="#{group}"/>
         </p:selectOneRadio>
     </h:panelGrid>
     <f:facet name="footer">
-        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:assignDialogContent"
+        <p:commandButton value="#{msg['button.save']}" update=":contentForm:userTable :contentForm:assignDialogContent"
                          oncomplete="if(args &amp;&amp; !args.validationFailed) assignDlg.hide();"
                          action="#{userEditMB.assignUser}" process=":contentForm:assignDialog"/>
-        <p:commandButton value="Cancel" oncomplete="assignDlg.hide();" update=":contentForm:userTable"
+        <p:commandButton value="#{msg['button.cancel']}" oncomplete="assignDlg.hide();" update=":contentForm:userTable"
                          immediate="true"/>
     </f:facet>
 </p:dialog>
 
-<p:dialog id="changePasswordDialog" header="Enter new password" widgetVar="changePasswordDlg" modal="true"
+<p:dialog id="changePasswordDialog" header="#{msg['users.edit.new.pass.title']}" widgetVar="changePasswordDlg"
+          modal="true"
           closable="true" closeOnEscape="true">
-    <h:outputText value="Please enter new password"/>
+    <h:outputText value="#{msg['users.edit.new.pass.mess']}"/>
     <h:panelGrid columns="2">
         <p:password id="newPassword" value="#{userEditMB.password}" styleClass="w100" required="true"
-                    requiredMessage="Password needed" feedback="true"
-                    validatorMessage="Length is between 1 and 30">
+                    requiredMessage="#{msg['users.edit.pass.mess.needed']}" feedback="true"
+                    validatorMessage="#{msg['users.edit.pass.mess.length']}">
             <f:validateLength minimum="1" maximum="30"/>
         </p:password>
         <p:message for="newPassword"/>
     </h:panelGrid>
     <f:facet name="footer">
-        <p:commandButton value="Save" update=":contentForm:userTable :contentForm:changePasswordDialog"
+        <p:commandButton value="#{msg['button.save']}" update=":contentForm:userTable :contentForm:changePasswordDialog"
                          oncomplete="if(args &amp;&amp; !args.validationFailed) changePasswordDlg.hide();"
                          action="#{userEditMB.changePassword}" process=":contentForm:changePasswordDialog"/>
-        <p:commandButton id="cancelBtn" value="Cancel" oncomplete="changePasswordDlg.hide();" update=":contentForm:userTable"
+        <p:commandButton id="cancelBtn" value="#{msg['button.cancel']}" oncomplete="changePasswordDlg.hide();"
+                         update=":contentForm:userTable"
                          immediate="true"/>
     </f:facet>
 </p:dialog>

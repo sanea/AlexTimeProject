@@ -7,22 +7,23 @@
         <ui:define name="menu">
         </ui:define>
         <ui:define name="content">
-            <p:panel header="Please Login"
+            <p:panel header="#{msg['login.title']}"
                      style="width: 400px; margin-left: auto; margin-right: auto; margin-top: 50px;">
                 <h:form id="formLogin" prependId="false">
                     <h:panelGrid columns="3" cellpadding="5" style="margin: 0 auto;">
 
-                        <h:outputLabel for="j_username" value="Username:"/>
+                        <h:outputLabel for="j_username" value="#{msg['login.username']}"/>
                         <p:inputText id="j_username" label="User Name" value="#{loginMB.userName}" required="true"
-                                     requiredMessage="Please enter username"/>
+                                     requiredMessage="#{msg['login.username.required.mess']}"/>
                         <p:message for="j_username" display="icon"/>
 
-                        <h:outputLabel for="j_password" value="Password:"/>
+                        <h:outputLabel for="j_password" value="#{msg['login.password']}"/>
                         <p:password id="j_password" label="Password" value="#{loginMB.password}" required="true"
-                                    requiredMessage="Please enter password"/>
+                                    requiredMessage="#{msg['login.password.required.mess']}"/>
                         <p:message for="j_password" display="icon"/>
 
-                        <p:commandButton type="submit" id="login" action="#{loginMB.login}" value="Login"
+                        <p:commandButton type="submit" id="login" action="#{loginMB.login}"
+                                         value="#{msg['button.login']}"
                                          icon="ui-icon-person" ajax="true" update=":formLogin"/>
                     </h:panelGrid>
                     <p:messages showDetail="false" closable="false"/>

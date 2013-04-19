@@ -5,7 +5,7 @@
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
-            <h2>Assign Tasks</h2>
+            <h2><h:outputText value="#{msg['assign.tasks.title']}"/></h2>
             <h:form id="contentForm">
                 <h:panelGrid columns="3" styleClass="w100"
                              columnClasses="w333 valign-top, w333 valign-top, w333 valign-top" rowClasses="">
@@ -24,10 +24,10 @@
                                     oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
 
                             <f:facet name="header">
-                                Site List
+                                <h:outputText value="#{msg['assign.tasks.site.list']}"/>
                             </f:facet>
 
-                            <p:column headerText="Name" sortBy="#{site.name}" styleClass="td-center">
+                            <p:column headerText="#{msg['name']}" sortBy="#{site.name}" styleClass="td-center">
                                 <h:outputText value="#{site.name}"/>
                             </p:column>
 
@@ -36,7 +36,7 @@
 
                     <h:panelGroup id="taskList">
                         <p:dataTable var="task" value="#{assignTasksEditMB.assignedTaskList}" id="taskTable"
-                                     emptyMessage="Please Select Site"
+                                     emptyMessage="#{msg['assign.tasks.task.list.empty.mess']}"
                                      rowKey="#{task.task.id}" selectionMode="single"
                                      selection="#{assignTasksEditMB.selectedTask}">
 
@@ -50,10 +50,10 @@
                                     oncomplete="blockTaskTable.hide(); blockUserTable.hide();"/>
 
                             <f:facet name="header">
-                                Assign Task List
+                                <h:outputText value="#{msg['assign.tasks.task.list']}"/>
                             </f:facet>
 
-                            <p:column headerText="Name" sortBy="#{task.task.name}" styleClass="td-center">
+                            <p:column headerText="#{msg['name']}" sortBy="#{task.task.name}" styleClass="td-center">
                                 <h:outputText value="#{task.task.name}"/>
                             </p:column>
 
@@ -75,13 +75,13 @@
 
                     <h:panelGroup id="userList">
                         <p:dataTable var="user" value="#{assignTasksEditMB.assignedUserList}" id="userTable"
-                                     emptyMessage="Please Select Assigned Task ">
+                                     emptyMessage="#{msg['assign.tasks.user.list.empty.mess']}">
 
                             <f:facet name="header">
-                                Assign User List
+                                <h:outputText value="#{msg['assign.tasks.user.list']}"/>
                             </f:facet>
 
-                            <p:column headerText="Name" sortBy="#{user.user.username}" styleClass="td-center">
+                            <p:column headerText="#{msg['name']}" sortBy="#{user.user.username}" styleClass="td-center">
                                 <h:outputText value="#{user.user.username}"/>
                             </p:column>
 

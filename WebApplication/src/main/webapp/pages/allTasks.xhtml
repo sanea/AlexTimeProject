@@ -4,224 +4,177 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:body>
-<ui:composition template="templates/template.xhtml">
-<ui:define name="content">
-<h2>All Tasks</h2>
-<h:form id="contentForm">
-<p:panel id="searchPanel" header="Choose Values">
-    <h:panelGrid columns="8">
-        <h:outputText value="Select Site"/>
-        <h:outputText value="Select User"/>
-        <h:outputText value="Select Task"/>
-        <h:outputText value="Select Task Type"/>
-        <h:outputText value="Date From"/>
-        <h:outputText value="Date To"/>
-        <h:panelGroup/>
-        <h:panelGroup/>
-        <p:selectOneMenu value="#{allTaskMB.selectedSite}" converter="#{siteConverter}">
-            <f:selectItem itemLabel="Select One" itemValue=""/>
-            <f:selectItems value="#{allTaskMB.siteList}" var="site" itemLabel="#{site.name}"
-                           itemValue="#{site}"/>
-        </p:selectOneMenu>
-        <p:selectOneMenu value="#{allTaskMB.selectedUser}" converter="#{userConverter}">
-            <f:selectItem itemLabel="Select One" itemValue=""/>
-            <f:selectItems value="#{allTaskMB.userList}" var="user" itemLabel="#{user.username}"
-                           itemValue="#{user}"/>
-        </p:selectOneMenu>
-        <p:selectOneMenu value="#{allTaskMB.selectedTask}" converter="#{taskConverter}">
-            <f:selectItem itemLabel="Select One" itemValue=""/>
-            <f:selectItems value="#{allTaskMB.taskList}" var="task" itemLabel="#{task.name}"
-                           itemValue="#{task}"/>
-        </p:selectOneMenu>
-        <p:selectOneMenu value="#{allTaskMB.selectedTaskType}" converter="#{taskTypeConverter}">
-            <f:selectItem itemLabel="Select One" itemValue=""/>
-            <f:selectItems value="#{allTaskMB.taskTypeList}" var="taskType"
-                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType}"/>
-        </p:selectOneMenu>
-        <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
-        <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
-        <p:commandButton value="Choose" update=":contentForm:filteredTasks :contentForm:statPanel"
-                         action="#{allTaskMB.filterTable}" process=":contentForm:searchPanel"/>
-        <p:commandButton value="Reset" type="Reset" process="@this" update=":contentForm"
-                         actionListener="#{allTaskMB.reset}"/>
-    </h:panelGrid>
-</p:panel>
+    <ui:composition template="templates/template.xhtml">
+        <ui:define name="content">
+            <h2><h:outputText value="#{msg['all.tasks.title']}"/></h2>
+            <h:form id="contentForm">
+                <p:panel id="searchPanel" header="#{msg['all.tasks.select']}">
+                    <h:panelGrid columns="8">
+                        <h:outputText value="#{msg['all.tasks.select.site']}"/>
+                        <h:outputText value="#{msg['all.tasks.select.user']}"/>
+                        <h:outputText value="#{msg['all.tasks.select.task']}"/>
+                        <h:outputText value="#{msg['all.tasks.select.task.type']}"/>
+                        <h:outputText value="#{msg['all.tasks.select.date.from']}"/>
+                        <h:outputText value="#{msg['all.tasks.select.date.to']}"/>
+                        <h:panelGroup/>
+                        <h:panelGroup/>
+                        <p:selectOneMenu value="#{allTaskMB.selectedSite}" converter="#{siteConverter}">
+                            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.siteList}" var="site" itemLabel="#{site.name}"
+                                           itemValue="#{site}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{allTaskMB.selectedUser}" converter="#{userConverter}">
+                            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.userList}" var="user" itemLabel="#{user.username}"
+                                           itemValue="#{user}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{allTaskMB.selectedTask}" converter="#{taskConverter}">
+                            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.taskList}" var="task" itemLabel="#{task.name}"
+                                           itemValue="#{task}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{allTaskMB.selectedTaskType}" converter="#{taskTypeConverter}">
+                            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+                            <f:selectItems value="#{allTaskMB.taskTypeList}" var="taskType"
+                                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType}"/>
+                        </p:selectOneMenu>
+                        <p:calendar value="#{allTaskMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
+                        <p:calendar value="#{allTaskMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
+                        <p:commandButton value="#{msg['button.select']}"
+                                         update=":contentForm:filteredTasks :contentForm:statPanel"
+                                         action="#{allTaskMB.filterTable}" process=":contentForm:searchPanel"/>
+                        <p:commandButton value="#{msg['button.reset']}" type="Reset" process="@this"
+                                         update=":contentForm"
+                                         actionListener="#{allTaskMB.reset}"/>
+                    </h:panelGrid>
+                </p:panel>
 
-<p:panel id="statPanel" header="Statistics" style="margin-top: 20px;">
-    <h:panelGrid columns="2">
-        <h:outputText value="Total minutes Income:"/>
-        <h:outputText value="#{allTaskMB.totalMinutesIncome}"/>
-        <h:outputText value="Total minutes Outcome:"/>
-        <h:outputText value="#{allTaskMB.totalMinutesOutcome}"/>
-        <h:outputText value="Total Income:  "/>
-        <h:outputText value="#{allTaskMB.totalIncome}"/>
-        <h:outputText value="Total Outcome:"/>
-        <h:outputText value="#{allTaskMB.totalOutcome}"/>
-        <h:outputText value="Summ:"/>
-        <h:outputText value="#{allTaskMB.summ}"/>
-    </h:panelGrid>
-</p:panel>
+                <p:panel id="statPanel" header="#{msg['all.tasks.stat']}" style="margin-top: 20px;">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="#{msg['all.tasks.stat.income.minutes']}"/>
+                        <h:outputText value="#{allTaskMB.totalMinutesIncome}"/>
+                        <h:outputText value="#{msg['all.tasks.stat.outcome.minutes']}"/>
+                        <h:outputText value="#{allTaskMB.totalMinutesOutcome}"/>
+                        <h:outputText value="#{msg['all.tasks.stat.income']}"/>
+                        <h:outputText value="#{allTaskMB.totalIncome}"/>
+                        <h:outputText value="#{msg['all.tasks.stat.outcome']}"/>
+                        <h:outputText value="#{allTaskMB.totalOutcome}"/>
+                        <h:outputText value="#{msg['all.tasks.stat.summ']}"/>
+                        <h:outputText value="#{allTaskMB.summ}"/>
+                    </h:panelGrid>
+                </p:panel>
 
-<p:dataTable id="filteredTasks" var="taskTime" value="#{allTaskMB.filteredTasks}"
-             paginator="true" rows="10"
-             style="padding-top: 20px;"
-             rowsPerPageTemplate="#{allTaskMB.rowsPerPageTemplate}" paginatorPosition="top"
-             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-             binding="#{allTaskMB.dataTable}">
+                <p:dataTable id="filteredTasks" var="taskTime" value="#{allTaskMB.filteredTasks}"
+                             paginator="true" rows="10"
+                             style="padding-top: 20px;"
+                             rowsPerPageTemplate="#{allTaskMB.rowsPerPageTemplate}" paginatorPosition="top"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             binding="#{allTaskMB.dataTable}">
 
-    <p:columns var="col" value="#{allTaskMB.columns}" columnIndexVar="colIndex" sortBy="#{taskTime[col.sortVal]}">
-        <f:facet name="header">
-            <h:outputText value="#{col.header}"/>
-        </f:facet>
-        <h:outputText value="#{taskTime[col.val]}"/>
-    </p:columns>
+                    <p:columns var="col" value="#{allTaskMB.columns}" columnIndexVar="colIndex"
+                               sortBy="#{taskTime[col.sortVal]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msg[col.header]}"/>
+                        </f:facet>
+                        <h:outputText value="#{taskTime[col.val]}"/>
+                    </p:columns>
 
-    <!--<p:column>
-        <h:outputText value="#{taskTime.id}"/>
-    </p:column>
+                    <p:column style="width: 40px;">
+                        <p:commandButton update=":contentForm:taskDialog"
+                                         oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDialog.show(); }"
+                                         process="@this"
+                                         icon="ui-icon-search" title="Details"
+                                         actionListener="#{allTaskMB.selectTaskListener}">
+                            <f:attribute name="taskTime" value="#{taskTime}"/>
+                        </p:commandButton>
 
-    <p:column headerText="Site Name" sortBy="#{taskTime.siteName}">
-        <h:outputText value="#{taskTime.siteName}"/>
-    </p:column>
+                        <p:commandButton update=":contentForm:changeDialog"
+                                         oncomplete="changeDialog.show();" process="@this"
+                                         icon="ui-icon-suitcase" title="Change Details">
+                            <f:setPropertyActionListener value="#{taskTime}" target="#{allTaskMB.selectedTaskWrapper}"/>
+                        </p:commandButton>
+                    </p:column>
 
-    <p:column headerText="User Name" sortBy="#{taskTime.username}">
-        <h:outputText value="#{taskTime.username}"/>
-    </p:column>
+                </p:dataTable>
 
-    <p:column headerText="Task Name" sortBy="#{taskTime.taskName}">
-        <h:outputText value="#{taskTime.taskName}"/>
-    </p:column>
+                <p:panel id="dataTableCols" header="#{msg['all.tasks.show.cols']}" style="margin-top: 20px;"
+                         toggleable="true" collapsed="true">
+                    <table>
+                        <ui:repeat value="#{allTaskMB.colNameList}" var="colName">
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msg[allTaskMB.columnModel[colName].header]}"/>
+                                </td>
+                                <td>
+                                    <p:selectBooleanCheckbox value="#{allTaskMB.colSelectedMap[colName]}">
+                                        <p:ajax update=":contentForm" listener="#{allTaskMB.selectColumnListener}"
+                                                process=":contentForm:dataTableCols :contentForm:filteredTasks"/>
+                                    </p:selectBooleanCheckbox>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </p:panel>
 
-    <p:column headerText="Task Type" sortBy="#{taskTime.taskType}">
-        <h:outputText value="#{taskTime.taskTypeFormatted}"/>
-    </p:column>
+                <p:dialog id="taskDialog" header="#{msg['details.task']}" widgetVar="taskDialog" resizable="false"
+                          modal="true"
+                          closeOnEscape="true">
+                    <h:outputText
+                            value="#{allTaskMB.selectedTaskWrapper.siteName} - #{allTaskMB.selectedTaskWrapper.username} - #{allTaskMB.selectedTaskWrapper.taskName}"/>
 
-    <p:column headerText="Task Price" sortBy="#{taskTime.taskPriceHour}">
-        <h:outputText value="#{taskTime.taskPriceHour}"/>
-    </p:column>
+                    <p:dataTable var="timeSeq" value="#{allTaskMB.selectedTimeSeqList}"
+                                 rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 'p'}" paginator="true" rows="10"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 paginatorPosition="top">
+                        <p:column headerText="#{msg['start.time']}">
+                            <h:outputText value="#{timeSeq.startTime}"/>
+                        </p:column>
 
-    <p:column headerText="Duration Play" sortBy="#{taskTime.durationPlaySec}">
-        <h:outputText value="#{taskTime.durationPlayFormatted}"/>
-    </p:column>
+                        <p:column headerText="#{msg['end.time']}">
+                            <h:outputText value="#{timeSeq.endTime}"/>
+                        </p:column>
 
-    <p:column headerText="Duration Custom1" sortBy="#{taskTime.durationCustom1Sec}">
-        <h:outputText value="#{taskTime.durationCustom1Formatted}"/>
-    </p:column>
+                        <p:column headerText="#{msg['duration']}">
+                            <h:outputText value="#{timeSeq.durationFormatted}"/>
+                        </p:column>
 
-    <p:column headerText="Duration Custom2" sortBy="#{taskTime.durationCustom2Sec}">
-        <h:outputText value="#{taskTime.durationCustom2Formatted}"/>
-    </p:column>
+                        <p:column headerText="#{msg['status']}">
+                            <h:outputText value="#{timeSeq.statusFormatted}"/>
+                        </p:column>
 
-    <p:column headerText="Duration Custom3" sortBy="#{taskTime.durationCustom3Sec}">
-        <h:outputText value="#{taskTime.durationCustom3Formatted}"/>
-    </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column footerText="#{msg['total.play']}" colspan="3" style="text-align:right"/>
+                                <p:column footerText="#{allTaskMB.selectedTaskWrapper.durationPlayFormatted}"/>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                    <h:panelGrid columns="2" rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 't'}">
+                        <h:outputText value="#{msg['time']}"/>
+                        <h:outputText value="#{allTaskMB.selectedTaskWrapper.startTime}"/>
+                    </h:panelGrid>
+                    <f:facet name="footer">
+                        <p:commandButton value="#{msg['button.ok']}" onclick="taskDialog.hide()"/>
+                    </f:facet>
+                </p:dialog>
 
-    <p:column headerText="Total" sortBy="#{taskTime.total}">
-        <h:outputText value="#{taskTime.total}"/>
-    </p:column>
-
-    <p:column headerText="Start Time" sortBy="#{taskTime.startTime}">
-        <h:outputText value="#{taskTime.startTime}"/>
-    </p:column>
-
-    <p:column headerText="Finish Time" sortBy="#{taskTime.finishTime}">
-        <h:outputText value="#{taskTime.finishTime}"/>
-    </p:column>-->
-
-    <p:column style="width: 40px;">
-        <p:commandButton update=":contentForm:taskDialog"
-                         oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDialog.show(); }"
-                         process="@this"
-                         icon="ui-icon-search" title="Details"
-                         actionListener="#{allTaskMB.selectTaskListener}">
-            <f:attribute name="taskTime" value="#{taskTime}"/>
-        </p:commandButton>
-
-        <p:commandButton update=":contentForm:changeDialog"
-                         oncomplete="changeDialog.show();" process="@this"
-                         icon="ui-icon-suitcase" title="Change Details">
-            <f:setPropertyActionListener value="#{taskTime}" target="#{allTaskMB.selectedTaskWrapper}"/>
-        </p:commandButton>
-    </p:column>
-
-</p:dataTable>
-
-<p:panel id="dataTableCols" header="Show Columns" style="margin-top: 20px;" toggleable="true" collapsed="true">
-    <table>
-        <ui:repeat value="#{allTaskMB.colNameList}" var="colName">
-            <tr>
-                <td>
-                    <h:outputText value="#{allTaskMB.columnModel[colName].header}"/>
-                </td>
-                <td>
-                    <p:selectBooleanCheckbox value="#{allTaskMB.colSelectedMap[colName]}">
-                        <p:ajax update=":contentForm" listener="#{allTaskMB.selectColumnListener}"
-                                process=":contentForm:dataTableCols :contentForm:filteredTasks"/>
-                    </p:selectBooleanCheckbox>
-                </td>
-            </tr>
-        </ui:repeat>
-    </table>
-</p:panel>
-
-<p:dialog id="taskDialog" header="Task Details" widgetVar="taskDialog" resizable="false" modal="true"
-          closeOnEscape="true">
-    <h:outputText
-            value="#{allTaskMB.selectedTaskWrapper.siteName} - #{allTaskMB.selectedTaskWrapper.username} - #{allTaskMB.selectedTaskWrapper.taskName}"/>
-
-    <p:dataTable var="timeSeq" value="#{allTaskMB.selectedTimeSeqList}"
-                 rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 'p'}" paginator="true" rows="10"
-                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                 paginatorPosition="top">
-        <p:column headerText="Start Time">
-            <h:outputText value="#{timeSeq.startTime}"/>
-        </p:column>
-
-        <p:column headerText="End Time">
-            <h:outputText value="#{timeSeq.endTime}"/>
-        </p:column>
-
-        <p:column headerText="Duration">
-            <h:outputText value="#{timeSeq.durationFormatted}"/>
-        </p:column>
-
-        <p:column headerText="Status">
-            <h:outputText value="#{timeSeq.statusFormatted}"/>
-        </p:column>
-
-        <p:columnGroup type="footer">
-            <p:row>
-                <p:column footerText="Total Play: " colspan="3" style="text-align:right"/>
-                <p:column footerText="#{allTaskMB.selectedTaskWrapper.durationPlayFormatted}"/>
-            </p:row>
-        </p:columnGroup>
-    </p:dataTable>
-    <h:panelGrid columns="2" rendered="#{allTaskMB.selectedTaskWrapper.taskType eq 't'}">
-        <h:outputText value="Time: "/>
-        <h:outputText value="#{allTaskMB.selectedTaskWrapper.startTime}"/>
-    </h:panelGrid>
-    <f:facet name="footer">
-        <p:commandButton value="Ok" onclick="taskDialog.hide()"/>
-    </f:facet>
-</p:dialog>
-
-<p:dialog id="changeDialog" header="Change Details" widgetVar="changeDialog" resizable="false"
-          modal="true"
-          closeOnEscape="true">
-    Change Time:
-    <div>
-        <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.startTime}"/> -
-        <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.endTime}"
-                      rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime != null}"/>
-        <h:outputText value="NOW" style="font-weight: bold;"
-                      rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime == null}"/>
-    </div>
-    <f:facet name="footer">
-        <p:commandButton value="Ok" onclick="changeDialog.hide()"/>
-    </f:facet>
-</p:dialog>
-</h:form>
-</ui:define>
-</ui:composition>
+                <p:dialog id="changeDialog" header="#{msg['details.change']}" widgetVar="changeDialog" resizable="false"
+                          modal="true"
+                          closeOnEscape="true">
+                    Change Time:
+                    <div>
+                        <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.startTime}"/> -
+                        <h:outputText value="#{allTaskMB.selectedTaskWrapper.userChange.endTime}"
+                                      rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime != null}"/>
+                        <h:outputText value="#{msg['now']}" style="font-weight: bold;"
+                                      rendered="#{allTaskMB.selectedTaskWrapper.userChange.endTime == null}"/>
+                    </div>
+                    <f:facet name="footer">
+                        <p:commandButton value="#{msg['button.ok']}" onclick="changeDialog.hide()"/>
+                    </f:facet>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </h:body>
 </html> 

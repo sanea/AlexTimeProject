@@ -7,17 +7,17 @@
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
-            <h2>Sites Users</h2>
+            <h2><h:outputText value="#{msg['sites.edit.title']}"/></h2>
             <h:form id="contentForm">
                 <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
                                  actionListener="#{siteEditMB.addNewSiteListener}"
-                                 oncomplete="addSiteDlg.show();" process="@this" title="add new site"/>
+                                 oncomplete="addSiteDlg.show();" process="@this" title="#{msg['sites.edit.add.new']}"/>
                 <p:dataTable var="site" value="#{siteEditMB.siteList}" id="siteTable" editable="true" editMode="row">
 
                     <p:ajax event="rowEdit" listener="#{siteEditMB.onEdit}" update=":messages"/>
                     <p:ajax event="rowEditCancel" listener="#{siteEditMB.onCancel}" update=":messages"/>
 
-                    <p:column headerText="Name" sortBy="#{site.name}">
+                    <p:column headerText="#{msg['name']}" sortBy="#{site.name}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{site.name}"/>
@@ -33,7 +33,7 @@
                         </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Country" sortBy="#{site.country}">
+                    <p:column headerText="#{msg['country']}" sortBy="#{site.country}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{site.country}"/>
@@ -44,7 +44,7 @@
                         </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="City" sortBy="#{site.city}">
+                    <p:column headerText="#{msg['city']}" sortBy="#{site.city}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{site.city}"/>
@@ -55,7 +55,7 @@
                         </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Address" sortBy="#{site.address}">
+                    <p:column headerText="#{msg['address']}" sortBy="#{site.address}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputText value="#{site.address}"/>
@@ -66,7 +66,7 @@
                         </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Deleted" sortBy="#{site.deleted}">
+                    <p:column headerText="#{msg['deleted']}" sortBy="#{site.deleted}">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <p:selectBooleanCheckbox value="#{site.deleted}"
@@ -85,7 +85,7 @@
 
                     <p:column>
                         <p:commandButton icon="ui-icon-trash" process="@this" oncomplete="removeConfirmDlg.show();"
-                                         title="delete"
+                                         title="#{msg['delete']}"
                                          update=":contentForm:removeConfirmDialog"
                                          rendered="#{siteEditMB.siteDeletable[site.id]}">
                             <f:setPropertyActionListener value="#{site}" target="#{siteEditMB.selectedSite}"/>
@@ -94,44 +94,48 @@
 
                 </p:dataTable>
 
-                <p:dialog id="addDialog" header="Add site" widgetVar="addSiteDlg" modal="true" closable="true"
+                <p:dialog id="addDialog" header="#{msg['sites.edit.add']}" widgetVar="addSiteDlg" modal="true"
+                          closable="true"
                           closeOnEscape="true">
                     <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="siteName" value="Name:"/>
+                        <h:outputLabel for="siteName" value="#{msg['name']}:"/>
                         <p:inputText value="#{siteEditMB.newSite.name}" id="siteName" required="true"/>
                         <p:message for="siteName" display="icon"/>
 
-                        <h:outputLabel for="siteCountry" value="Country:"/>
+                        <h:outputLabel for="siteCountry" value="#{msg['country']}:"/>
                         <p:inputText value="#{siteEditMB.newSite.country}" id="siteCountry"/>
                         <h:panelGroup/>
 
-                        <h:outputLabel for="siteCity" value="City:"/>
+                        <h:outputLabel for="siteCity" value="#{msg['city']}:"/>
                         <p:inputText value="#{siteEditMB.newSite.city}" id="siteCity"/>
                         <h:panelGroup/>
 
-                        <h:outputLabel for="siteAddr" value="Address:"/>
+                        <h:outputLabel for="siteAddr" value="#{msg['address']}:"/>
                         <p:inputText value="#{siteEditMB.newSite.address}" id="siteAddr"/>
                         <h:panelGroup/>
 
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Save" update=":contentForm:siteTable :contentForm:addDialogContent"
+                        <p:commandButton value="#{msg['button.save']}"
+                                         update=":contentForm:siteTable :contentForm:addDialogContent"
                                          oncomplete="if(args &amp;&amp; !args.validationFailed) addSiteDlg.hide();"
                                          action="#{siteEditMB.addNewSite}" process=":contentForm:addDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="addSiteDlg.hide();" immediate="true"/>
+                        <p:commandButton value="#{msg['button.cancel']}" oncomplete="addSiteDlg.hide();"
+                                         immediate="true"/>
                     </f:facet>
                 </p:dialog>
 
-                <p:dialog id="removeConfirmDialog" header="Remove Site" widgetVar="removeConfirmDlg" modal="true"
+                <p:dialog id="removeConfirmDialog" header="#{msg['sites.edit.remove']}" widgetVar="removeConfirmDlg"
+                          modal="true"
                           closeOnEscape="true">
 
-                    <h:outputText value="Are you sure you want to remove '#{siteEditMB.selectedSite.name}'?"/>
+                    <h:outputText value="#{msg['are.you.sure.remove']} '#{siteEditMB.selectedSite.name}'?"/>
 
                     <f:facet name="footer">
-                        <p:commandButton value="Yes" update=":contentForm:siteTable"
+                        <p:commandButton value="#{msg['button.yes']}" update=":contentForm:siteTable"
                                          oncomplete="removeConfirmDlg.hide()"
                                          action="#{siteEditMB.removeSite}" process="@this"/>
-                        <p:commandButton value="No" onclick="removeConfirmDlg.hide()"/>
+                        <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmDlg.hide()"/>
                     </f:facet>
                 </p:dialog>
             </h:form>

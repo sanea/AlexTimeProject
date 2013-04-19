@@ -7,17 +7,17 @@
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
-            <h2>Edit Custom Actions</h2>
+            <h2><h:outputText value="#{msg['custom.edit.title']}"/></h2>
             <h:form id="contentForm">
                 <p:dataTable id="customActionTable" value="#{customActionEditMB.customActions}" var="customAction">
-                    <p:column headerText="Name">
+                    <p:column headerText="#{msg['name']}">
                         <h:outputText value="#{customAction.name}"/>
                     </p:column>
-                    <p:column headerText="Enabled">
+                    <p:column headerText="#{msg['enabled']}">
                         <p:selectBooleanCheckbox value="#{customAction.enabled}" disabled="true"/>
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Edit" oncomplete="editDlg.show();" process="@this"
+                        <p:commandButton value="#{msg['button.edit']}" oncomplete="editDlg.show();" process="@this"
                                          update=":contentForm:editDialog">
                             <f:setPropertyActionListener value="#{customAction}"
                                                          target="#{customActionEditMB.selectedCustomAction}"/>
@@ -26,28 +26,28 @@
                 </p:dataTable>
 
                 <p:dialog id="editDialog"
-                          header="Configure Custom Action #{customActionEditMB.selectedCustomAction.id}"
+                          header="#{msg['custom.edit.dialog.title']} #{customActionEditMB.selectedCustomAction.id}"
                           widgetVar="editDlg" modal="true"
                           closable="true"
                           closeOnEscape="true">
                     <h:panelGrid id="editDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="name" value="Name:"/>
+                        <h:outputLabel for="name" value="#{msg['name']}:"/>
                         <p:inputText value="#{customActionEditMB.selectedCustomAction.name}" id="name" required="true"/>
                         <p:message for="name" display="icon"/>
 
-                        <h:outputLabel for="enabled" value="Enabled:"/>
+                        <h:outputLabel for="enabled" value="#{msg['enabled']}:"/>
                         <p:selectBooleanCheckbox value="#{customActionEditMB.selectedCustomAction.enabled}"
                                                  id="enabled"/>
                         <h:panelGroup/>
 
                     </h:panelGrid>
                     <f:facet name="footer">
-                        <p:commandButton value="Save"
+                        <p:commandButton value="#{msg['button.save']}"
                                          update=":contentForm:customActionTable :contentForm:editDialogContent"
                                          oncomplete="if(args &amp;&amp; !args.validationFailed) editDlg.hide();"
                                          action="#{customActionEditMB.updateCustomAction}"
                                          process=":contentForm:editDialog"/>
-                        <p:commandButton value="Cancel" oncomplete="editDlg.hide();" immediate="true"/>
+                        <p:commandButton value="#{msg['button.cancel']}" oncomplete="editDlg.hide();" immediate="true"/>
                     </f:facet>
                 </p:dialog>
             </h:form>

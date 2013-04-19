@@ -5,9 +5,12 @@
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
-           <h1>Error</h1>
-           Message: <h:outputText value="#{requestScope['javax.servlet.error.message']}"/>  <br/>
-           Exception: <h:outputText value="#{requestScope['javax.servlet.error.exception']}"/>
+            <h1><h:outputText value="#{msg['error']}"/></h1>
+
+            <h:panelGroup rendered="#{facesContext.application.projectStage} == 'Development">
+                Message: <h:outputText value="#{requestScope['javax.servlet.error.message']}"/> <br/>
+                Exception: <h:outputText value="#{requestScope['javax.servlet.error.exception']}"/>
+            </h:panelGroup>
         </ui:define>
     </ui:composition>
 </h:body>

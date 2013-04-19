@@ -10,7 +10,7 @@
 <h:head>
     <meta http-equiv="Content-Type"
           content="text/html; charset=UTF-8"/>
-    <title>Alex time Project</title>
+    <title><h:outputText value="#{msg['project.title']}" /> </title>
     <h:outputScript library="js" name="script.js"/>
     <h:outputStylesheet library="styles" name="main.css"/>
 
@@ -38,18 +38,21 @@
 
         <f:facet name="error">
             <h:panelGroup layout="block" styleClass="ui-message-error ui-widget ui-corner-all">
-                <h:outputText value="An error has occurred!"/><br/>
-                <h:outputLink value="#" onclick="window.location.reload(true)"><h:outputText
-                        value="Please reload page and retry"/></h:outputLink><br/>
-                <h:outputLink value="mailto:support@example.com?subject=Ajax%20Error"><h:outputText
-                        value="If in vain, please contact support"/></h:outputLink>
+                <h:outputText value="#{msg['error.template.occurred']}"/><br/>
+                <h:outputLink value="#" onclick="window.location.reload(true)">
+                    <h:outputText value="#{msg['error.template.reload']}"/>
+                </h:outputLink>
+                <br/>
+                <h:outputLink value="#{msg['error.template.feedback']}">
+                    <h:outputText value="#{msg['error.template.vain']}"/>
+                </h:outputLink>
             </h:panelGroup>
         </f:facet>
     </p:ajaxStatus>
     <h:form>
-        <p:confirmDialog header="Error!" severity="alert" visible="#{not empty param['expired']}"
-                         message="View has expired." widgetVar="confirmDlg">
-            <p:commandButton type="button" value="Reload"
+        <p:confirmDialog header="#{msg['error']}" severity="alert" visible="#{not empty param['expired']}"
+                         message="#{msg['error.template.view.expired']}" widgetVar="confirmDlg">
+            <p:commandButton type="button" value="#{msg['reload']}"
                              onclick="confirmDlg.hide(); window.location.replace(window.location.href.replace('?expired=true', ''));"/>
         </p:confirmDialog>
     </h:form>

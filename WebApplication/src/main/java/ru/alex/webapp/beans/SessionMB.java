@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -36,9 +37,17 @@ public class SessionMB implements Serializable {
     private Site selectedSite;
     private User currentUser;
     private Locale locale;
+    ResourceBundle resourceBundle;
 
     @PostConstruct
     private void init() {
+        initUser();
+        locale = FacesUtil.getViewRoot().getLocale();
+        logger.info("Current locale={}", locale);
+        resourceBundle = ResourceBundle.getBundle("messages", locale);
+    }
+
+    public void initUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             String userName = auth.getName();
@@ -52,8 +61,6 @@ public class SessionMB implements Serializable {
                 selectedSite = currentUser.getCurrentChange().getSite();
         }
         logger.debug("currentUser={}, authorities={}", currentUser, authorities);
-        locale = FacesUtil.getViewRoot().getLocale();
-        logger.info("Current locale={}", locale);
     }
 
     public boolean hasRole(String roleName) {
@@ -108,5 +115,9 @@ public class SessionMB implements Serializable {
         FacesUtil.getViewRoot().setLocale(Locale.ENGLISH);
         locale = FacesUtil.getViewRoot().getLocale();
         return null;
+    }
+
+    public String getLocalizedMessage(String key) {
+        return resourceBundle.getString(key);
     }
 }

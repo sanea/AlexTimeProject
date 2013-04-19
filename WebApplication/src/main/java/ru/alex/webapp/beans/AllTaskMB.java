@@ -49,21 +49,27 @@ public class AllTaskMB implements Serializable {
 
     static {
         COLUMN_MODEL.put("id", new ColumnModel("id", "id", "id"));
-        COLUMN_MODEL.put("siteName", new ColumnModel("Site Name", "siteName", "siteName"));
-        COLUMN_MODEL.put("username", new ColumnModel("User Name", "username", "username"));
-        COLUMN_MODEL.put("taskName", new ColumnModel("Task Name", "taskName", "taskName"));
-        COLUMN_MODEL.put("taskType", new ColumnModel("Task Type", "taskTypeFormatted", "taskType"));
-        COLUMN_MODEL.put("taskPriceHour", new ColumnModel("Price Hour", "taskPriceHour", "taskPriceHour"));
-        COLUMN_MODEL.put("durationPlaySec", new ColumnModel("Duration Play", "durationPlayFormatted", "durationPlaySec"));
-        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getEnabled())
-            COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName(), "durationCustom1Formatted", "durationCustom1Sec"));
-        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getEnabled())
-            COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName(), "durationCustom2Formatted", "durationCustom2Sec"));
-        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getEnabled())
-            COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName(), "durationCustom3Formatted", "durationCustom3Sec"));
-        COLUMN_MODEL.put("total", new ColumnModel("Total", "total", "total"));
-        COLUMN_MODEL.put("startTime", new ColumnModel("Start time", "startTime", "startTime"));
-        COLUMN_MODEL.put("finishTime", new ColumnModel("Finish time", "finishTime", "finishTime"));
+        COLUMN_MODEL.put("siteName", new ColumnModel("site", "siteName", "siteName"));
+        COLUMN_MODEL.put("username", new ColumnModel("user", "username", "username"));
+        COLUMN_MODEL.put("taskName", new ColumnModel("task", "taskName", "taskName"));
+        COLUMN_MODEL.put("taskType", new ColumnModel("type", "taskTypeFormatted", "taskType"));
+        COLUMN_MODEL.put("taskPriceHour", new ColumnModel("price.hour", "taskPriceHour", "taskPriceHour"));
+        COLUMN_MODEL.put("durationPlaySec", new ColumnModel("duration.play", "durationPlayFormatted", "durationPlaySec"));
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getEnabled()) {
+//            COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName(), "durationCustom1Formatted", "durationCustom1Sec"));
+            COLUMN_MODEL.put("durationCustom1Sec", new ColumnModel("custom1", "durationCustom1Formatted", "durationCustom1Sec"));
+        }
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getEnabled()) {
+//            COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName(), "durationCustom2Formatted", "durationCustom2Sec"));
+            COLUMN_MODEL.put("durationCustom2Sec", new ColumnModel("custom2", "durationCustom2Formatted", "durationCustom2Sec"));
+        }
+        if (CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getEnabled()) {
+//            COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel(CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName(), "durationCustom3Formatted", "durationCustom3Sec"));
+            COLUMN_MODEL.put("durationCustom3Sec", new ColumnModel("custom3", "durationCustom3Formatted", "durationCustom3Sec"));
+        }
+        COLUMN_MODEL.put("total", new ColumnModel("total", "total", "total"));
+        COLUMN_MODEL.put("startTime", new ColumnModel("start.time", "startTime", "startTime"));
+        COLUMN_MODEL.put("finishTime", new ColumnModel("finish.time", "finishTime", "finishTime"));
     }
 
     @Autowired
