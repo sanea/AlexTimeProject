@@ -13,5 +13,7 @@ import java.util.List;
  * @author Alexander.Isaenco
  */
 public interface UserTaskTimeDao extends GenericDao<UserTaskTime, Long> {
-    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo);
+    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo, boolean showDeleted, int start, int end);
+
+    public Long countAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo, boolean withDeleted);
 }

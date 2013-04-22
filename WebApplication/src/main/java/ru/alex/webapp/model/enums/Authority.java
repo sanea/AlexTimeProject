@@ -12,5 +12,6 @@ public enum Authority {
     EDIT_GROUPS,
     EDIT_SITES,
     ASSIGN_TASKS,
-    CHANGE_CUSTOM
+    CHANGE_CUSTOM,
+    CANCEL_TIME
 }

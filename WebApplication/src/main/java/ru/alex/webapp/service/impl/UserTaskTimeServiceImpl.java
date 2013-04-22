@@ -14,7 +14,6 @@ import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.UserTaskTimeService;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Date;
 import java.util.List;
@@ -36,27 +35,61 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
 
     @Override
     public void update(UserTaskTime entity) throws Exception {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Can't update");
     }
 
     @Override
     public void add(UserTaskTime entity) throws Exception {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Adding is on process start");
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void remove(UserTaskTime entity) throws Exception {
-        throw new NotImplementedException();
+        if (entity == null)
+            throw new IllegalArgumentException("UserTaskTime is null");
+        if (entity.getTotal() == null && entity.getUserSiteTaskById().getCurrentTime().equals(entity))
+            throw new Exception("Can't remove current time!");
+        entity.setDeleted(true);
+        userTaskTimeDao.merge(entity);
     }
 
     @Override
     public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) throws Exception {
-        logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
-        if (site == null && user == null && task == null && taskType == null && from == null && to == null)
-            return userTaskTimeDao.findAll();
+        return getAll(site, user, task, taskType, from, to, false, 0, 0);
+    }
+
+    @Override
+    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean showDeleted, int start, int end) throws Exception {
+        logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}, showDeleted={}, start={}, end={}", site, user, task, taskType, from, to, showDeleted, start, end);
+        if (site == null && user == null && task == null && taskType == null && from == null && to == null) {
+            if (showDeleted) {
+                return userTaskTimeDao.findWithNamedQuery(UserTaskTime.ALL, start, end);
+            } else {
+                return userTaskTimeDao.findWithNamedQuery(UserTaskTime.ALL_NOT_DELETED, start, end);
+            }
+        }
+        if (start < 0 || end < 0)
+            throw new IllegalArgumentException("start and end should > 0");
         if ((site != null && site.getId() == null) || (user != null && user.getUsername() == null)
                 || (task != null && task.getId() == null))
             throw new IllegalArgumentException("Wrong input params");
-        return userTaskTimeDao.getAll(site, user, task, taskType, from, to);
+        return userTaskTimeDao.getAll(site, user, task, taskType, from, to, showDeleted, start, end);
+    }
+
+    @Override
+    public Long getAllCount(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean withDeleted) throws Exception {
+        logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}, withDeleted={}", site, user, task, taskType, from, to, withDeleted);
+        if (site == null && user == null && task == null && taskType == null && from == null && to == null) {
+            if (withDeleted) {
+                return userTaskTimeDao.count();
+            } else {
+                return userTaskTimeDao.countWithNamedQuery(UserTaskTime.COUNT_NOT_DELETED);
+            }
+        }
+        if ((site != null && site.getId() == null) || (user != null && user.getUsername() == null)
+                || (task != null && task.getId() == null))
+            throw new IllegalArgumentException("Wrong input params");
+        return userTaskTimeDao.countAll(site, user, task, taskType, from, to, withDeleted);
     }
 }

@@ -1,0 +1,215 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:body>
+<ui:composition template="templates/template.xhtml">
+<ui:define name="content">
+<h2><h:outputText value="#{msg['cancel.time.title']}"/></h2>
+<h:form id="contentForm">
+<p:panel id="searchPanel" header="#{msg['all.tasks.select']}">
+    <h:panelGrid columns="8">
+        <h:outputText value="#{msg['all.tasks.select.site']}"/>
+        <h:outputText value="#{msg['all.tasks.select.user']}"/>
+        <h:outputText value="#{msg['all.tasks.select.task']}"/>
+        <h:outputText value="#{msg['all.tasks.select.task.type']}"/>
+        <h:outputText value="#{msg['all.tasks.select.date.from']}"/>
+        <h:outputText value="#{msg['all.tasks.select.date.to']}"/>
+        <h:panelGroup/>
+        <h:panelGroup/>
+        <p:selectOneMenu value="#{cancelTaskTimeMB.selectedSite}" converter="#{siteConverter}">
+            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+            <f:selectItems value="#{cancelTaskTimeMB.siteList}" var="site" itemLabel="#{site.name}"
+                           itemValue="#{site}"/>
+        </p:selectOneMenu>
+        <p:selectOneMenu value="#{cancelTaskTimeMB.selectedUser}" converter="#{userConverter}">
+            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+            <f:selectItems value="#{cancelTaskTimeMB.userList}" var="user" itemLabel="#{user.username}"
+                           itemValue="#{user}"/>
+        </p:selectOneMenu>
+        <p:selectOneMenu value="#{cancelTaskTimeMB.selectedTask}" converter="#{taskConverter}">
+            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+            <f:selectItems value="#{cancelTaskTimeMB.taskList}" var="task" itemLabel="#{task.name}"
+                           itemValue="#{task}"/>
+        </p:selectOneMenu>
+        <p:selectOneMenu value="#{cancelTaskTimeMB.selectedTaskType}" converter="#{taskTypeConverter}">
+            <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
+            <f:selectItems value="#{cancelTaskTimeMB.taskTypeList}" var="taskType"
+                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType}"/>
+        </p:selectOneMenu>
+        <p:calendar value="#{cancelTaskTimeMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
+        <p:calendar value="#{cancelTaskTimeMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
+        <p:commandButton value="#{msg['button.select']}"
+                         update=":contentForm:filteredTasks"
+                         action="#{cancelTaskTimeMB.filterTable}" process=":contentForm:searchPanel"/>
+        <p:commandButton value="#{msg['button.reset']}" type="Reset" process="@this"
+                         update=":contentForm"
+                         actionListener="#{cancelTaskTimeMB.reset}"/>
+    </h:panelGrid>
+</p:panel>
+
+<p:dataTable id="filteredTasks" var="taskTime"
+             value="#{cancelTaskTimeMB.lazyFilteredTasks}" lazy="true"
+             paginator="true" rows="10"
+             style="padding-top: 20px;"
+             rowsPerPageTemplate="#{cancelTaskTimeMB.rowsPerPageTemplate}" paginatorPosition="top"
+             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+    <p:column>
+        <p:commandButton update=":contentForm:removeConfirmDialog" oncomplete="removeConfirmDlg.show();"
+                         process="@this"
+                         icon="ui-icon-trash" title="${msg['cancel.time.button']}">
+            <f:setPropertyActionListener value="#{taskTime}"
+                                         target="#{cancelTaskTimeMB.selectedTaskWrapper}"/>
+        </p:commandButton>
+    </p:column>
+
+    <p:column headerText="#{msg['id']}">
+        <h:outputText value="#{taskTime.id}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['site']}">
+        <h:outputText value="#{taskTime.siteName}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['user']}">
+        <h:outputText value="#{taskTime.username}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['task']}">
+        <h:outputText value="#{taskTime.taskName}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['type']}">
+        <h:outputText value="#{taskTime.taskTypeFormatted}"/>
+    </p:column>
+
+    <!--<p:column headerText="#{msg['price.hour']}">
+        <h:outputText value="#{taskTime.taskPriceHour}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['duration.play']}">
+        <h:outputText value="#{taskTime.durationPlayFormatted}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['custom1']}" >
+        <h:outputText value="#{taskTime.durationCustom1Formatted}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['custom2']}" >
+        <h:outputText value="#{taskTime.durationCustom2Formatted}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['custom3']}" >
+        <h:outputText value="#{taskTime.durationCustom3Formatted}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['total']}" >
+        <h:outputText value="#{taskTime.total}"/>
+    </p:column>-->
+
+    <p:column headerText="#{msg['start.time']}">
+        <h:outputText value="#{taskTime.startTime}"/>
+    </p:column>
+
+    <p:column headerText="#{msg['finish.time']}">
+        <h:outputText value="#{taskTime.finishTime}"/>
+    </p:column>
+
+    <p:column style="width: 40px;">
+        <p:commandButton update=":contentForm:taskDialog"
+                         oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDialog.show(); }"
+                         process="@this"
+                         icon="ui-icon-search" title="${msg['details']}"
+                         actionListener="#{cancelTaskTimeMB.selectTaskListener}">
+            <f:attribute name="taskTime" value="#{taskTime}"/>
+        </p:commandButton>
+
+        <p:commandButton update=":contentForm:changeDialog"
+                         oncomplete="changeDialog.show();" process="@this"
+                         icon="ui-icon-suitcase" title="${msg['details.change']}">
+            <f:setPropertyActionListener value="#{taskTime}"
+                                         target="#{cancelTaskTimeMB.selectedTaskWrapper}"/>
+        </p:commandButton>
+    </p:column>
+
+</p:dataTable>
+
+<p:dialog id="taskDialog" header="#{msg['details.task']}" widgetVar="taskDialog" resizable="false"
+          modal="true"
+          closeOnEscape="true">
+    <h:outputText
+            value="#{cancelTaskTimeMB.selectedTaskWrapper.siteName} - #{cancelTaskTimeMB.selectedTaskWrapper.username} - #{cancelTaskTimeMB.selectedTaskWrapper.taskName}"/>
+
+    <p:dataTable var="timeSeq" value="#{cancelTaskTimeMB.selectedTimeSeqList}"
+                 rendered="#{cancelTaskTimeMB.selectedTaskWrapper.taskType eq 'p'}" paginator="true"
+                 rows="10"
+                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                 paginatorPosition="top">
+        <p:column headerText="#{msg['start.time']}">
+            <h:outputText value="#{timeSeq.startTime}"/>
+        </p:column>
+
+        <p:column headerText="#{msg['end.time']}">
+            <h:outputText value="#{timeSeq.endTime}"/>
+        </p:column>
+
+        <p:column headerText="#{msg['duration']}">
+            <h:outputText value="#{timeSeq.durationFormatted}"/>
+        </p:column>
+
+        <p:column headerText="#{msg['status']}">
+            <h:outputText value="#{timeSeq.statusFormatted}"/>
+        </p:column>
+
+        <p:columnGroup type="footer">
+            <p:row>
+                <p:column footerText="#{msg['total.play']}" colspan="3" style="text-align:right"/>
+                <p:column footerText="#{cancelTaskTimeMB.selectedTaskWrapper.durationPlayFormatted}"/>
+            </p:row>
+        </p:columnGroup>
+    </p:dataTable>
+    <h:panelGrid columns="2" rendered="#{cancelTaskTimeMB.selectedTaskWrapper.taskType eq 't'}">
+        <h:outputText value="#{msg['time']}"/>
+        <h:outputText value="#{cancelTaskTimeMB.selectedTaskWrapper.startTime}"/>
+    </h:panelGrid>
+    <f:facet name="footer">
+        <p:commandButton value="#{msg['button.ok']}" onclick="taskDialog.hide()"/>
+    </f:facet>
+</p:dialog>
+
+<p:dialog id="changeDialog" header="#{msg['details.change']}" widgetVar="changeDialog" resizable="false"
+          modal="true"
+          closeOnEscape="true">
+    Change Time:
+    <div>
+        <h:outputText value="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.startTime}"/> -
+        <h:outputText value="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.endTime}"
+                      rendered="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.endTime != null}"/>
+        <h:outputText value="#{msg['now']}" style="font-weight: bold;"
+                      rendered="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.endTime == null}"/>
+    </div>
+    <f:facet name="footer">
+        <p:commandButton value="#{msg['button.ok']}" onclick="changeDialog.hide()"/>
+    </f:facet>
+</p:dialog>
+
+<p:dialog id="removeConfirmDialog" header="#{msg['cancel.time.remove']}" widgetVar="removeConfirmDlg"
+          modal="true"
+          closeOnEscape="true">
+
+    <h:outputText value="#{msg['are.you.sure.remove']} '#{cancelTaskTimeMB.selectedTaskWrapper.id}'?"/>
+
+    <f:facet name="footer">
+        <p:commandButton value="#{msg['button.yes']}" update=":contentForm:filteredTasks"
+                         oncomplete="removeConfirmDlg.hide()"
+                         action="#{cancelTaskTimeMB.removeTaskTimeRecord}" process="@this"/>
+        <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmDlg.hide()"/>
+    </f:facet>
+</p:dialog>
+</h:form>
+</ui:define>
+</ui:composition>
+</h:body>
+</html> 

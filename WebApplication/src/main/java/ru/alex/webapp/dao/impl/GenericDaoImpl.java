@@ -57,6 +57,23 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     }
 
     @Override
+    public Long countWithNamedQuery(String namedQueryName) {
+        return countWithNamedQuery(namedQueryName, null);
+    }
+
+    @Override
+    public Long countWithNamedQuery(String namedQueryName, Map<String, Object> parameters) {
+        TypedQuery<T> query = getEntityManager().createNamedQuery(namedQueryName, getEntityBeanType());
+        if (parameters != null) {
+            Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
+            for (Map.Entry<String, Object> entry : rawParameters) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        return ((Number) query.getSingleResult()).longValue();
+    }
+
+    @Override
     public T merge(T entity) {
         return getEntityManager().merge(entity);
     }

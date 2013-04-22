@@ -18,6 +18,10 @@ public interface GenericDao<T, ID extends Serializable> {
 
     Long count();
 
+    Long countWithNamedQuery(String namedQueryName);
+
+    Long countWithNamedQuery(String namedQueryName, Map<String, Object> parameters);
+
     T merge(T entity);
 
     void persist(T entity);
@@ -43,4 +47,5 @@ public interface GenericDao<T, ID extends Serializable> {
     List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int resultLimit);
 
     List<T> findWithNamedQuery(String namedQueryName, Map<String, Object> parameters, int start, int end);
+
 }

@@ -14,4 +14,8 @@ import java.util.List;
  */
 public interface UserTaskTimeService extends GenericService<UserTaskTime, Long> {
     List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) throws Exception;
+
+    List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean showDeleted, int start, int end) throws Exception;
+
+    Long getAllCount(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean withDeleted) throws Exception;
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.beans.wrappers.TimeSequenceWrapper;
 import ru.alex.webapp.beans.wrappers.UserTaskTimeWrapper;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
@@ -14,7 +15,6 @@ import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.CustomActionEnum;
-import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
@@ -105,7 +105,7 @@ public class AllTaskMB implements Serializable {
     private List<String> colNameList;
 
     private UserTaskTimeWrapper selectedTaskWrapper;
-    private List<TimeSequence> selectedTimeSeqList;
+    private List<TimeSequenceWrapper> selectedTimeSeqList;
 
     //No LazyDataModel - no need, to count sums and salaries, we need to get all records! memory is more cheap
 
@@ -249,8 +249,16 @@ public class AllTaskMB implements Serializable {
         return totalMinutesIncome;
     }
 
+    public String getTotalTimeIncome() {
+        return TimeUtils.formatTimeSec(totalMinutesIncome);
+    }
+
     public int getTotalMinutesOutcome() {
         return totalMinutesOutcome;
+    }
+
+    public String getTotalTimeOutcome() {
+        return TimeUtils.formatTimeSec(totalMinutesOutcome);
     }
 
     public BigDecimal getTotalIncome() {
@@ -297,7 +305,7 @@ public class AllTaskMB implements Serializable {
         this.selectedTaskWrapper = selectedTaskWrapper;
     }
 
-    public List<TimeSequence> getSelectedTimeSeqList() {
+    public List<TimeSequenceWrapper> getSelectedTimeSeqList() {
         return selectedTimeSeqList;
     }
 
@@ -307,9 +315,9 @@ public class AllTaskMB implements Serializable {
         try {
             List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getUserTaskTimeSeq());
             logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
-            List<TimeSequence> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
+            List<TimeSequenceWrapper> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
             for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
-                timeSeqList.add(new TimeSequence(timeSeq));
+                timeSeqList.add(new TimeSequenceWrapper(timeSeq));
             selectedTimeSeqList = timeSeqList;
             RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
@@ -367,55 +375,6 @@ public class AllTaskMB implements Serializable {
                 timeSeqList.addAll(buildTimeSeqList(timeSeq.getNextTimeSeq()));
         }
         return timeSeqList;
-    }
-
-    public static class TimeSequence {
-        private Date startTime;
-        private Date endTime;
-        private int durationSec;
-        private String durationFormatted;
-        private String statusFormatted;
-
-        public TimeSequence(UserTaskTimeSeq timeSeq) {
-            this.startTime = timeSeq.getStartTime();
-            this.endTime = timeSeq.getEndTime();
-            this.durationSec = (int) ((endTime.getTime() - startTime.getTime()) / 1000);
-            this.durationFormatted = TimeUtils.formatTimeSec(durationSec);
-            this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus());
-        }
-
-        public Date getStartTime() {
-            return startTime;
-        }
-
-        public Date getEndTime() {
-            return endTime;
-        }
-
-        public int getDurationSec() {
-            return durationSec;
-        }
-
-        public String getDurationFormatted() {
-            return durationFormatted;
-        }
-
-        public String getStatusFormatted() {
-            return statusFormatted;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("TimeSequence");
-            sb.append("{startTime=").append(startTime);
-            sb.append(", endTime=").append(endTime);
-            sb.append(", durationSec=").append(durationSec);
-            sb.append(", durationFormatted='").append(durationFormatted).append('\'');
-            sb.append(", statusFormatted='").append(statusFormatted).append('\'');
-            sb.append('}');
-            return sb.toString();
-        }
     }
 
     public static class ColumnModel implements Serializable {

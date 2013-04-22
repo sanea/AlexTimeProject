@@ -52,9 +52,9 @@
                 <p:panel id="statPanel" header="#{msg['all.tasks.stat']}" style="margin-top: 20px;">
                     <h:panelGrid columns="2">
                         <h:outputText value="#{msg['all.tasks.stat.income.minutes']}"/>
-                        <h:outputText value="#{allTaskMB.totalMinutesIncome}"/>
+                        <h:outputText value="#{allTaskMB.totalTimeIncome}"/>
                         <h:outputText value="#{msg['all.tasks.stat.outcome.minutes']}"/>
-                        <h:outputText value="#{allTaskMB.totalMinutesOutcome}"/>
+                        <h:outputText value="#{allTaskMB.totalTimeOutcome}"/>
                         <h:outputText value="#{msg['all.tasks.stat.income']}"/>
                         <h:outputText value="#{allTaskMB.totalIncome}"/>
                         <h:outputText value="#{msg['all.tasks.stat.outcome']}"/>
@@ -83,14 +83,14 @@
                         <p:commandButton update=":contentForm:taskDialog"
                                          oncomplete="if (args &amp;&amp; args.showTaskDlg) { taskDialog.show(); }"
                                          process="@this"
-                                         icon="ui-icon-search" title="Details"
+                                         icon="ui-icon-search" title="${msg['details']}"
                                          actionListener="#{allTaskMB.selectTaskListener}">
                             <f:attribute name="taskTime" value="#{taskTime}"/>
                         </p:commandButton>
 
                         <p:commandButton update=":contentForm:changeDialog"
                                          oncomplete="changeDialog.show();" process="@this"
-                                         icon="ui-icon-suitcase" title="Change Details">
+                                         icon="ui-icon-suitcase" title="${msg['details.change']}">
                             <f:setPropertyActionListener value="#{taskTime}" target="#{allTaskMB.selectedTaskWrapper}"/>
                         </p:commandButton>
                     </p:column>

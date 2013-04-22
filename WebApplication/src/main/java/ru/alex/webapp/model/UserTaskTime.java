@@ -21,7 +21,10 @@ import java.util.Date;
         @NamedQuery(name = UserTaskTime.CURRENT_BY_USER_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.userByUsername.username = :username"),
         @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.id = :siteTaskId"),
         @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.id = :siteTaskId")
+        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = UserTaskTime.ALL, query = "SELECT u FROM UserTaskTime u"),
+        @NamedQuery(name = UserTaskTime.ALL_NOT_DELETED, query = "SELECT u FROM UserTaskTime u WHERE u.deleted = false"),
+        @NamedQuery(name = UserTaskTime.COUNT_NOT_DELETED, query = "SELECT COUNT(u) FROM UserTaskTime u WHERE u.deleted = false")
 })
 public class UserTaskTime implements Serializable {
     public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
@@ -33,6 +36,9 @@ public class UserTaskTime implements Serializable {
     public static final String BY_SITE_TASK = "UserTaskTime.BY_SITE_TASK";
     public static final String BY_USER_SITE_TASK = "UserTaskTime.BY_USER_SITE_TASK";
     public static final String CURRENT_BY_SITE_TASK_ID = "UserTaskTime.CURRENT_BY_SITE_TASK_ID";
+    public static final String ALL = "UserTaskTime.ALL";
+    public static final String ALL_NOT_DELETED = "UserTaskTime.ALL_NOT_DELETED";
+    public static final String COUNT_NOT_DELETED = "UserTaskTime.COUNT_NOT_DELETED";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,6 +68,8 @@ public class UserTaskTime implements Serializable {
     private BigDecimal priceHour;
     @Column(name = "total", nullable = true)
     private BigDecimal total;
+    @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
+    private Boolean deleted;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_task_id", referencedColumnName = "id", nullable = false)
     private UserSiteTask userSiteTaskById;
@@ -178,6 +186,14 @@ public class UserTaskTime implements Serializable {
         this.total = total;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public UserSiteTask getUserSiteTaskById() {
         return userSiteTaskById;
     }
@@ -244,6 +260,7 @@ public class UserTaskTime implements Serializable {
         sb.append(", durationCustom3Sec=").append(durationCustom3Sec);
         sb.append(", priceHour=").append(priceHour);
         sb.append(", total=").append(total);
+        sb.append(", deleted=").append(deleted);
         sb.append(", userSiteTaskById=").append(userSiteTaskById);
         sb.append(", userChange=").append(userChange);
         sb.append(", timeSeq=").append(timeSeq);

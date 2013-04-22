@@ -116,6 +116,10 @@ public class UserTaskTimeWrapper implements Serializable {
         return userTaskTime.getUserChange();
     }
 
+    public UserTaskTime getUserTaskTime() {
+        return userTaskTime;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
