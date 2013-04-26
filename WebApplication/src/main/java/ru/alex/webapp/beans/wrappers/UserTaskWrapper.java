@@ -87,7 +87,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getTaskTypeFormatted() {
-        return TaskType.getTypeFormatted(userSiteTask.getSiteTask().getTaskByTaskId().getType());
+        return TaskType.getTypeFormatted(userSiteTask.getSiteTask().getTaskByTaskId().getType(), resourceBundle);
     }
 
     public BigDecimal getTaskPriceHour() {
@@ -136,8 +136,8 @@ public class UserTaskWrapper implements Serializable {
         return userSiteTask.getStatus();
     }
 
-    public String getCurrentStatusFormatted() {
-        return TaskStatus.getStatusFormatted(userSiteTask.getStatus());
+    public String getCurrentStatusFormatted(ResourceBundle resourceBundle) {
+        return TaskStatus.getStatusFormatted(userSiteTask.getStatus(), resourceBundle);
     }
 
     public Long getTaskId() {

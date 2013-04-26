@@ -45,7 +45,7 @@
                                                      required="true" requiredMessage="Please Select Type">
                                         <f:selectItem itemValue="" itemLabel="Select One"/>
                                         <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
-                                                       itemLabel="#{taskType.typeFormatted}"
+                                                       itemLabel="#{taskType.getTypeFormatted(sessionMB.resourceBundle)}"
                                                        itemValue="#{taskType.typeStr}"/>
                                     </p:selectOneMenu>
                                     <p:message for="editTaskName"/>
@@ -151,7 +151,7 @@
                                          requiredMessage="Please Select Type">
                             <f:selectItem itemLabel="Select One" itemValue=""/>
                             <f:selectItems value="#{taskEditMB.taskTypes}" var="taskType"
-                                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType.typeStr}"/>
+                                           itemLabel="#{taskType.getTypeFormatted(sessionMB.resourceBundle)}" itemValue="#{taskType.typeStr}"/>
                         </p:selectOneMenu>
                         <p:message for="taskType"/>
 

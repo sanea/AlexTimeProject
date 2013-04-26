@@ -51,7 +51,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public String getTaskTypeFormatted() {
-        return TaskType.getTypeFormatted(getTaskType());
+        return TaskType.getTypeFormatted(getTaskType(), resourceBundle);
     }
 
     public BigDecimal getTaskPriceHour() {

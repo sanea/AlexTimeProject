@@ -31,6 +31,8 @@ public class TaskEditMB implements Serializable {
     private Map<Long, Boolean> taskEditable;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private SessionMB sessionMB;
     private Task newTask = new Task();
     private Task selectedTask;
 
@@ -76,7 +78,7 @@ public class TaskEditMB implements Serializable {
     }
 
     public String getTaskTypeFormatted(String taskType) {
-        return TaskType.getTypeFormatted(taskType);
+        return TaskType.getTypeFormatted(taskType, sessionMB.getResourceBundle());
     }
 
     public Task getSelectedTask() {

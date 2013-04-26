@@ -2,6 +2,8 @@ package ru.alex.webapp.model.enums;
 
 import ru.alex.webapp.util.CustomActionConfiguration;
 
+import java.util.ResourceBundle;
+
 /**
  * @author Alexander.Isaenco
  */
@@ -40,16 +42,16 @@ public enum Action {
         }
     }
 
-    public static String getActionFormatted(String action) {
+    public static String getActionFormatted(String action, ResourceBundle resourceBundle) {
         switch (getAction(action)) {
             case START:
-                return "Start";
+                return resourceBundle.getString("action.start");
             case EXTEND:
-                return "Extend";
+                return resourceBundle.getString("action.extend");
             case FINISH:
-                return "Finish";
+                return resourceBundle.getString("action.finish");
             case STOP:
-                return "Stop";
+                return resourceBundle.getString("action.stop");
             case CUSTOM1:
                 return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
             case CUSTOM2:
@@ -61,8 +63,8 @@ public enum Action {
         }
     }
 
-    public String getActionFormatted() {
-        return getActionFormatted(String.valueOf(action));
+    public String getActionFormatted(ResourceBundle resourceBundle) {
+        return getActionFormatted(String.valueOf(action), resourceBundle);
     }
 
     public String getActionStr() {

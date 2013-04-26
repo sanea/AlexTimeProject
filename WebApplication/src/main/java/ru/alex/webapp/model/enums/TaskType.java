@@ -1,5 +1,7 @@
 package ru.alex.webapp.model.enums;
 
+import java.util.ResourceBundle;
+
 /**
  * @author Alexander.Isaenco
  */
@@ -30,21 +32,21 @@ public enum TaskType {
         }
     }
 
-    public static String getTypeFormatted(String type) {
+    public static String getTypeFormatted(String type, ResourceBundle resourceBundle) {
         switch (getType(type)) {
             case PROCESS:
-                return "Process";
+                return resourceBundle.getString("type.process");
             case TASK:
-                return "Task";
+                return resourceBundle.getString("type.task");
             case TASK_CUSTOM_PRICE:
-                return "Custom price task";
+                return resourceBundle.getString("type.task.custom");
             default:
                 throw new IllegalArgumentException("wrong task type " + type);
         }
     }
 
-    public String getTypeFormatted() {
-        return getTypeFormatted(String.valueOf(type));
+    public String getTypeFormatted(ResourceBundle resourceBundle) {
+        return getTypeFormatted(String.valueOf(type), resourceBundle);
     }
 
     public String getTypeStr() {

@@ -126,7 +126,7 @@ public class TaskMB implements Serializable {
     }
 
     public String getSelectedAction() {
-        return selectedAction == null ? null : selectedAction.getActionFormatted();
+        return selectedAction == null ? null : selectedAction.getActionFormatted(sessionMB.getResourceBundle());
     }
 
     public int getSelectedMinutes() {

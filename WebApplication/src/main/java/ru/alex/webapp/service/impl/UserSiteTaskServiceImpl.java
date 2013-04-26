@@ -254,7 +254,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new IllegalArgumentException("wrong custom price");
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.COMPLETED && taskStatus != TaskStatus.STOPPED && taskStatus != TaskStatus.UNKNOWN)
-            throw new Exception("Can't start task with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't start task with status " + taskStatus);
         if (task.getCurrentTime() != null)
             throw new Exception("Task can't have current time");
         if (task.getUserByUsername().getCurrentChange() == null)
@@ -302,10 +302,10 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (seconds <= 0)
             throw new IllegalArgumentException("wrong seconds param: " + seconds);
         if (action != Action.START && action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
-            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+            throw new IllegalArgumentException("wrong action param: " + action);
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.COMPLETED && taskStatus != TaskStatus.STOPPED && taskStatus != TaskStatus.UNKNOWN)
-            throw new Exception("Can't start process with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't start process with status " + taskStatus);
         if (task.getCurrentTime() != null)
             throw new Exception("Process can't have current time on start");
         if (task.getUserByUsername().getCurrentChange() == null)
@@ -391,10 +391,10 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (seconds <= 0)
             throw new IllegalArgumentException("wrong seconds param: " + seconds);
         if (action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
-            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+            throw new IllegalArgumentException("wrong action param: " + action);
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING)
-            throw new Exception("Can't switch process with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't switch process with status " + taskStatus);
         UserTaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on start");
@@ -476,7 +476,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new Exception("Can't start Task, only process");
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
-            throw new Exception("Can't only Custom process can be processed: " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't only Custom process can be processed: " + taskStatus);
         if (task.getCurrentTime() == null)
             throw new Exception("Process should have current time on resume");
         //force ending custom
@@ -496,10 +496,10 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (seconds <= 0)
             throw new IllegalArgumentException("wrong seconds param: " + seconds);
         if (action != Action.CUSTOM1 && action != Action.CUSTOM2 && action != Action.CUSTOM3)
-            throw new IllegalArgumentException("wrong action param: " + action.getActionFormatted());
+            throw new IllegalArgumentException("wrong action param: " + action);
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
-            throw new Exception("Can't switchCustom process with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't switchCustom process with status " + taskStatus);
         if (task.getCurrentTime() == null)
             throw new Exception("Process should have current time on resume");
 
@@ -519,7 +519,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new IllegalArgumentException("wrong seconds param: " + seconds);
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
-            throw new Exception("Can't extend process with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't extend process with status " + taskStatus);
         UserTaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on extend");
@@ -574,7 +574,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             throw new Exception("Can't extend Task, only process");
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
-            throw new Exception("Can't stop process with status " + taskStatus.getStatusFormatted());
+            throw new Exception("Can't stop process with status " + taskStatus);
         UserTaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on stop");

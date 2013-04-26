@@ -23,7 +23,7 @@ public class TimeSequenceWrapper {
         this.endTime = timeSeq.getEndTime();
         this.durationSec = (int) ((endTime.getTime() - startTime.getTime()) / 1000);
         this.durationFormatted = TimeUtils.formatTimeSec(durationSec, resourceBundle);
-        this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus());
+        this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus(), resourceBundle);
     }
 
     public Date getStartTime() {

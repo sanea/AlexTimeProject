@@ -2,6 +2,8 @@ package ru.alex.webapp.model.enums;
 
 import ru.alex.webapp.util.CustomActionConfiguration;
 
+import java.util.ResourceBundle;
+
 /**
  * @author Alexander.Isaenco
  */
@@ -40,16 +42,16 @@ public enum TaskStatus {
         }
     }
 
-    public static String getStatusFormatted(String status) {
+    public static String getStatusFormatted(String status, ResourceBundle resourceBundle) {
         switch (getStatus(status)) {
             case RUNNING:
-                return "Running";
+                return resourceBundle.getString("status.running");
             case COMPLETED:
-                return "Completed";
+                return resourceBundle.getString("status.completed");
             case STOPPED:
-                return "Stopped";
+                return resourceBundle.getString("status.stopped");
             case UNKNOWN:
-                return "Unknown";
+                return resourceBundle.getString("status.unknown");
             case CUSTOM1:
                 return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
             case CUSTOM2:
@@ -61,8 +63,8 @@ public enum TaskStatus {
         }
     }
 
-    public String getStatusFormatted() {
-        return getStatusFormatted(String.valueOf(status));
+    public String getStatusFormatted(ResourceBundle resourceBundle) {
+        return getStatusFormatted(String.valueOf(status), resourceBundle);
     }
 
     public String getStatusStr() {

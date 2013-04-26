@@ -36,7 +36,7 @@
         <p:selectOneMenu value="#{cancelTaskTimeMB.selectedTaskType}" converter="#{taskTypeConverter}">
             <f:selectItem itemLabel="#{msg['select.one']}" itemValue=""/>
             <f:selectItems value="#{cancelTaskTimeMB.taskTypeList}" var="taskType"
-                           itemLabel="#{taskType.typeFormatted}" itemValue="#{taskType}"/>
+                           itemLabel="#{taskType.getTypeFormatted(sessionMB.resourceBundle)}" itemValue="#{taskType}"/>
         </p:selectOneMenu>
         <p:calendar value="#{cancelTaskTimeMB.dateFrom}" pattern="dd/MM/yyyy HH:mm"/>
         <p:calendar value="#{cancelTaskTimeMB.dateTo}" pattern="dd/MM/yyyy HH:mm"/>
@@ -194,7 +194,8 @@
 <p:dialog id="changeDialog" header="#{msg['details.change']}" widgetVar="changeDialog" resizable="false"
           modal="true"
           closeOnEscape="true">
-    Change Time:
+    <h:outputText value="#{msg['all.tasks.change.time']}"/>
+
     <div>
         <h:outputText value="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.startTime}"/> -
         <h:outputText value="#{cancelTaskTimeMB.selectedTaskWrapper.userChange.endTime}"
