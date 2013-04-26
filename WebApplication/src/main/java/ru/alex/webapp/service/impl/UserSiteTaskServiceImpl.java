@@ -273,6 +273,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTime.setFinishTimePlay(now);
         userTaskTime.setStartTime(now);
         userTaskTime.setFinishTime(now);
+        userTaskTime.setDeleted(false);
         if (taskType == TaskType.TASK_CUSTOM_PRICE) {
             userTaskTime.setPriceHour(customPrice);
             userTaskTime.setTotal(customPrice);
@@ -360,6 +361,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTime.setStartTime(now);
         userTaskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
         userTaskTime.setUserChange(task.getUserByUsername().getCurrentChange());
+        userTaskTime.setDeleted(false);
         task.addUserTaskTime(userTaskTime);
         task.setCurrentTime(userTaskTime);
 

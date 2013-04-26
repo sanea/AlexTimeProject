@@ -297,5 +297,27 @@ public class TaskMB implements Serializable {
             initAssignedTasks();
     }
 
+    public String getTaskRowStyle(String currentStatus) {
+        TaskStatus taskStatus = TaskStatus.getStatus(currentStatus);
+        String taskRowStyle = "";
+        switch (taskStatus) {
+            case RUNNING:
+                taskRowStyle = "row-green";
+                break;
+            case CUSTOM1:
+            case CUSTOM2:
+            case CUSTOM3:
+                taskRowStyle = "row-yellow";
+                break;
+            case STOPPED:
+                taskRowStyle = "row-red";
+                break;
+            default:
+                taskRowStyle = "";
+                break;
+        }
+        return taskRowStyle;
+    }
+
 }
 

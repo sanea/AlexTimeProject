@@ -54,7 +54,8 @@
              paginator="true" rows="10"
              style="padding-top: 20px;"
              rowsPerPageTemplate="#{cancelTaskTimeMB.rowsPerPageTemplate}" paginatorPosition="top"
-             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+             rowStyleClass="#{taskTime.deleted ? 'row-red' : null}">
 
     <p:column>
         <p:commandButton update=":contentForm:removeConfirmDialog" oncomplete="removeConfirmDlg.show();"
