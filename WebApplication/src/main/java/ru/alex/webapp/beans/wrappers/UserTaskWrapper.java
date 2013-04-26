@@ -136,7 +136,7 @@ public class UserTaskWrapper implements Serializable {
         return userSiteTask.getStatus();
     }
 
-    public String getCurrentStatusFormatted(ResourceBundle resourceBundle) {
+    public String getCurrentStatusFormatted() {
         return TaskStatus.getStatusFormatted(userSiteTask.getStatus(), resourceBundle);
     }
 
