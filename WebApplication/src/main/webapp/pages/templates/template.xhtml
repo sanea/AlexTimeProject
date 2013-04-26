@@ -7,54 +7,56 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:comp="http://java.sun.com/jsf/composite/components"
       xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=UTF-8"/>
-    <title><h:outputText value="#{msg['project.title']}" /> </title>
-    <h:outputScript library="js" name="script.js"/>
-    <h:outputStylesheet library="styles" name="main.css"/>
+<f:view locale="#{sessionMB.locale}">
+    <h:head>
+        <meta http-equiv="Content-Type"
+              content="text/html; charset=UTF-8"/>
+        <title><h:outputText value="#{msg['project.title']}"/></title>
+        <h:outputScript library="js" name="script.js"/>
+        <h:outputStylesheet library="styles" name="main.css"/>
 
-</h:head>
-<h:body>
-    <div id="menu">
-        <div class="container">
-            <ui:insert name="menu">
-                <comp:menu/>
-            </ui:insert>
+    </h:head>
+    <h:body>
+        <div id="menu">
+            <div class="container">
+                <ui:insert name="menu">
+                    <comp:menu/>
+                </ui:insert>
+            </div>
         </div>
-    </div>
-    <div class="container">
-        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
-        <ui:insert name="content">Main Content</ui:insert>
-    </div>
-    <p:ajaxStatus styleClass="ajax-loading">
-        <f:facet name="start">
-            <p:graphicImage value="#{resource['images/loading.gif']}" styleClass="ajax-loading-img"/>
-        </f:facet>
+        <div class="container">
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
+            <ui:insert name="content">Main Content</ui:insert>
+        </div>
+        <p:ajaxStatus styleClass="ajax-loading">
+            <f:facet name="start">
+                <p:graphicImage value="#{resource['images/loading.gif']}" styleClass="ajax-loading-img"/>
+            </f:facet>
 
-        <f:facet name="complete">
-            <h:outputText value=""/>
-        </f:facet>
+            <f:facet name="complete">
+                <h:outputText value=""/>
+            </f:facet>
 
-        <f:facet name="error">
-            <h:panelGroup layout="block" styleClass="ui-message-error ui-widget ui-corner-all">
-                <h:outputText value="#{msg['error.template.occurred']}"/><br/>
-                <h:outputLink value="#" onclick="window.location.reload(true)">
-                    <h:outputText value="#{msg['error.template.reload']}"/>
-                </h:outputLink>
-                <br/>
-                <h:outputLink value="#{msg['error.template.feedback']}">
-                    <h:outputText value="#{msg['error.template.vain']}"/>
-                </h:outputLink>
-            </h:panelGroup>
-        </f:facet>
-    </p:ajaxStatus>
-    <h:form>
-        <p:confirmDialog header="#{msg['error']}" severity="alert" visible="#{not empty param['expired']}"
-                         message="#{msg['error.template.view.expired']}" widgetVar="confirmDlg">
-            <p:commandButton type="button" value="#{msg['reload']}"
-                             onclick="confirmDlg.hide(); window.location.replace(window.location.href.replace('?expired=true', ''));"/>
-        </p:confirmDialog>
-    </h:form>
-</h:body>
+            <f:facet name="error">
+                <h:panelGroup layout="block" styleClass="ui-message-error ui-widget ui-corner-all">
+                    <h:outputText value="#{msg['error.template.occurred']}"/><br/>
+                    <h:outputLink value="#" onclick="window.location.reload(true)">
+                        <h:outputText value="#{msg['error.template.reload']}"/>
+                    </h:outputLink>
+                    <br/>
+                    <h:outputLink value="#{msg['error.template.feedback']}">
+                        <h:outputText value="#{msg['error.template.vain']}"/>
+                    </h:outputLink>
+                </h:panelGroup>
+            </f:facet>
+        </p:ajaxStatus>
+        <h:form>
+            <p:confirmDialog header="#{msg['error']}" severity="alert" visible="#{not empty param['expired']}"
+                             message="#{msg['error.template.view.expired']}" widgetVar="confirmDlg">
+                <p:commandButton type="button" value="#{msg['reload']}"
+                                 onclick="confirmDlg.hide(); window.location.replace(window.location.href.replace('?expired=true', ''));"/>
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</f:view>
 </html>

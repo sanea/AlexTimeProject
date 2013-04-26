@@ -37,7 +37,7 @@ public class SessionMB implements Serializable {
     private Site selectedSite;
     private User currentUser;
     private Locale locale;
-    ResourceBundle resourceBundle;
+    private ResourceBundle resourceBundle;
 
     @PostConstruct
     private void init() {
@@ -102,11 +102,15 @@ public class SessionMB implements Serializable {
         return locale;
     }
 
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
+
     public String switchLocaleRU() {
         logger.info("switching to russian");
-        Locale german = new Locale("ru");
-        FacesUtil.getViewRoot().setLocale(german);
+        FacesUtil.getViewRoot().setLocale(new Locale("ru"));
         locale = FacesUtil.getViewRoot().getLocale();
+        resourceBundle = ResourceBundle.getBundle("messages", locale);
         return null;
     }
 
@@ -114,6 +118,7 @@ public class SessionMB implements Serializable {
         logger.info("switching to english");
         FacesUtil.getViewRoot().setLocale(Locale.ENGLISH);
         locale = FacesUtil.getViewRoot().getLocale();
+        resourceBundle = ResourceBundle.getBundle("messages", locale);
         return null;
     }
 

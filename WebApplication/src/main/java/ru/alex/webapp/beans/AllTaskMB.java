@@ -80,6 +80,8 @@ public class AllTaskMB implements Serializable {
     private UserService userService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private SessionMB sessionMB;
 
     private List<Site> siteList;
     private List<User> userList;
@@ -149,7 +151,7 @@ public class AllTaskMB implements Serializable {
                 //check if task is not current (null check for data consistence and performance)
                 if (taskTime.getTotal() == null && taskTime.getUserSiteTaskById().getCurrentTime().equals(taskTime))
                     continue;
-                UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime);
+                UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime, sessionMB.getResourceBundle());
                 filteredTasks.add(taskTimeWrapper);
                 if (taskTimeWrapper.getTaskIncome()) {
                     totalMinutesIncome += taskTimeWrapper.getDurationPlaySec();
@@ -250,7 +252,7 @@ public class AllTaskMB implements Serializable {
     }
 
     public String getTotalTimeIncome() {
-        return TimeUtils.formatTimeSec(totalMinutesIncome);
+        return TimeUtils.formatTimeSec(totalMinutesIncome, sessionMB.getResourceBundle());
     }
 
     public int getTotalMinutesOutcome() {
@@ -258,7 +260,7 @@ public class AllTaskMB implements Serializable {
     }
 
     public String getTotalTimeOutcome() {
-        return TimeUtils.formatTimeSec(totalMinutesOutcome);
+        return TimeUtils.formatTimeSec(totalMinutesOutcome, sessionMB.getResourceBundle());
     }
 
     public BigDecimal getTotalIncome() {
@@ -317,7 +319,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
             List<TimeSequenceWrapper> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
             for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
-                timeSeqList.add(new TimeSequenceWrapper(timeSeq));
+                timeSeqList.add(new TimeSequenceWrapper(timeSeq, sessionMB.getResourceBundle()));
             selectedTimeSeqList = timeSeqList;
             RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);

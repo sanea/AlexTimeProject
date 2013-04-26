@@ -11,6 +11,7 @@ import ru.alex.webapp.util.TimeUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * @author Alex
@@ -19,17 +20,19 @@ public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserTaskWrapper.class);
     private UserSiteTask userSiteTask;
+    private ResourceBundle resourceBundle;
     private Date startTime;
     private Date finishTime;
     private Integer durationSec;
     private String durationSecFormatted;
 
 
-    public UserTaskWrapper(UserSiteTask userSiteTask) {
+    public UserTaskWrapper(UserSiteTask userSiteTask, ResourceBundle resourceBundle) {
         logger.debug("init UserTaskWrapper userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new IllegalArgumentException("User task can't be null");
         this.userSiteTask = userSiteTask;
+        this.resourceBundle = resourceBundle;
         init();
     }
 
@@ -59,7 +62,7 @@ public class UserTaskWrapper implements Serializable {
                 default:
                     throw new IllegalStateException("Unreachable case, current time should be null for " + status);
             }
-            durationSecFormatted = TimeUtils.formatTimeSec(durationSec);
+            durationSecFormatted = TimeUtils.formatTimeSec(durationSec, resourceBundle);
         } else {
             startTime = null;
             finishTime = null;
@@ -126,7 +129,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getTimeLeftFormatted() {
-        return TimeUtils.formatTimeSec(getTimeLeftSec());
+        return TimeUtils.formatTimeSec(getTimeLeftSec(), resourceBundle);
     }
 
     public String getCurrentStatus() {

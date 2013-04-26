@@ -59,10 +59,22 @@
     <p:column>
         <p:commandButton update=":contentForm:removeConfirmDialog" oncomplete="removeConfirmDlg.show();"
                          process="@this"
-                         icon="ui-icon-trash" title="${msg['cancel.time.button']}">
+                         icon="ui-icon-trash" title="${msg['cancel.time.button.remove']}"
+                         rendered="#{not taskTime.deleted}">
             <f:setPropertyActionListener value="#{taskTime}"
                                          target="#{cancelTaskTimeMB.selectedTaskWrapper}"/>
         </p:commandButton>
+        <p:commandButton update=":contentForm:restoreConfirmDialog" oncomplete="restoreConfirmDlg.show();"
+                         process="@this"
+                         icon="ui-icon-plus" title="${msg['cancel.time.button.restore']}"
+                         rendered="#{taskTime.deleted}">
+            <f:setPropertyActionListener value="#{taskTime}"
+                                         target="#{cancelTaskTimeMB.selectedTaskWrapper}"/>
+        </p:commandButton>
+    </p:column>
+
+    <p:column headerText="#{msg['deleted']}">
+        <p:selectBooleanCheckbox value="#{taskTime.deleted}" disabled="true"/>
     </p:column>
 
     <p:column headerText="#{msg['id']}">
@@ -206,6 +218,20 @@
                          oncomplete="removeConfirmDlg.hide()"
                          action="#{cancelTaskTimeMB.removeTaskTimeRecord}" process="@this"/>
         <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmDlg.hide()"/>
+    </f:facet>
+</p:dialog>
+
+<p:dialog id="restoreConfirmDialog" header="#{msg['cancel.time.restore']}" widgetVar="restoreConfirmDlg"
+          modal="true"
+          closeOnEscape="true">
+
+    <h:outputText value="#{msg['are.you.sure']}. #{msg['id']} : '#{cancelTaskTimeMB.selectedTaskWrapper.id}'?"/>
+
+    <f:facet name="footer">
+        <p:commandButton value="#{msg['button.yes']}" update=":contentForm:filteredTasks"
+                         oncomplete="restoreConfirmDlg.hide()"
+                         action="#{cancelTaskTimeMB.restoreTaskTimeRecord}" process="@this"/>
+        <p:commandButton value="#{msg['button.no']}" onclick="restoreConfirmDlg.hide()"/>
     </f:facet>
 </p:dialog>
 </h:form>

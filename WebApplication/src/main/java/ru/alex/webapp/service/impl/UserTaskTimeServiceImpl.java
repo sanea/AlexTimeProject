@@ -50,7 +50,22 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
             throw new IllegalArgumentException("UserTaskTime is null");
         if (entity.getTotal() == null && entity.getUserSiteTaskById().getCurrentTime().equals(entity))
             throw new Exception("Can't remove current time!");
+        if (entity.getDeleted())
+            throw new Exception("Can't remove deleted time!");
         entity.setDeleted(true);
+        userTaskTimeDao.merge(entity);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public void restore(UserTaskTime entity) throws Exception {
+        if (entity == null)
+            throw new IllegalArgumentException("UserTaskTime is null");
+        if (entity.getTotal() == null && entity.getUserSiteTaskById().getCurrentTime().equals(entity))
+            throw new Exception("Can't remove current time!");
+        if (!entity.getDeleted())
+            throw new Exception("Can't restore not deleted time!");
+        entity.setDeleted(false);
         userTaskTimeDao.merge(entity);
     }
 

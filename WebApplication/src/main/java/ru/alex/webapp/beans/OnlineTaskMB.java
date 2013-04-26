@@ -28,6 +28,8 @@ public class OnlineTaskMB implements Serializable {
     private static final int UPDATE_INTERVAL_SEC = 5;
     @Autowired
     private UserSiteTaskService userSiteTaskService;
+    @Autowired
+    private SessionMB sessionMB;
     private List<UserTaskWrapper> onlineTasks;
 
     @PostConstruct
@@ -43,7 +45,7 @@ public class OnlineTaskMB implements Serializable {
             logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
             for (UserSiteTask ut : tasks) {
-                taskWrappers.add(new UserTaskWrapper(ut));
+                taskWrappers.add(new UserTaskWrapper(ut, sessionMB.getResourceBundle()));
             }
             onlineTasks = taskWrappers;
         } catch (Exception e) {

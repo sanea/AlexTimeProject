@@ -81,7 +81,7 @@ public class TaskMB implements Serializable {
                 logger.debug("initAssignedTasks userSiteTaskList={}", userSiteTaskList);
                 assignedTasks = new ArrayList<>(userSiteTaskList.size());
                 for (UserSiteTask ut : userSiteTaskList) {
-                    assignedTasks.add(new UserTaskWrapper(ut));
+                    assignedTasks.add(new UserTaskWrapper(ut, sessionMB.getResourceBundle()));
                     if (ut.getCurrentTime() != null) {
                         startTableUpdater = true;
                         finishChangeDisable = true;

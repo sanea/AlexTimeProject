@@ -11,6 +11,7 @@ import ru.alex.webapp.util.TimeUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * @author Alex
@@ -19,12 +20,14 @@ public class UserTaskTimeWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserTaskTimeWrapper.class);
     private UserTaskTime userTaskTime;
+    private ResourceBundle resourceBundle;
 
-    public UserTaskTimeWrapper(UserTaskTime userTaskTime) {
+    public UserTaskTimeWrapper(UserTaskTime userTaskTime, ResourceBundle resourceBundle) {
         logger.debug("init userTaskTime={}", userTaskTime);
         if (userTaskTime == null)
             throw new IllegalArgumentException("userTaskTime can't be null");
         this.userTaskTime = userTaskTime;
+        this.resourceBundle = resourceBundle;
     }
 
     public Long getId() {
@@ -81,7 +84,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public String getDurationPlayFormatted() {
-        return TimeUtils.formatTimeSec(getDurationPlaySec());
+        return TimeUtils.formatTimeSec(getDurationPlaySec(), resourceBundle);
     }
 
     public Integer getDurationCustom1Sec() {
@@ -89,7 +92,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public String getDurationCustom1Formatted() {
-        return (getDurationCustom1Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom1Sec()) : null;
+        return (getDurationCustom1Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom1Sec(), resourceBundle) : null;
     }
 
     public Integer getDurationCustom2Sec() {
@@ -97,7 +100,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public String getDurationCustom2Formatted() {
-        return (getDurationCustom2Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom2Sec()) : null;
+        return (getDurationCustom2Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom2Sec(), resourceBundle) : null;
     }
 
     public Integer getDurationCustom3Sec() {
@@ -105,7 +108,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public String getDurationCustom3Formatted() {
-        return (getDurationCustom3Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom3Sec()) : null;
+        return (getDurationCustom3Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom3Sec(), resourceBundle) : null;
     }
 
     public UserTaskTimeSeq getUserTaskTimeSeq() {
@@ -118,6 +121,10 @@ public class UserTaskTimeWrapper implements Serializable {
 
     public UserTaskTime getUserTaskTime() {
         return userTaskTime;
+    }
+
+    public Boolean getDeleted() {
+        return userTaskTime.getDeleted();
     }
 
     @Override
