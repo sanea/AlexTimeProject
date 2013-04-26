@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.model.CustomAction;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.enums.CustomActionEnum;
@@ -90,7 +91,11 @@ public class SessionMB implements Serializable {
 
     public String getCustomActionName(int id) {
         CustomActionEnum customActionEnum = CustomActionEnum.getCustomAction(id);
-        return CustomActionConfiguration.getInstance().getCustomAction(customActionEnum).getName();
+        CustomAction customAction = CustomActionConfiguration.getInstance().getCustomAction(customActionEnum);
+        if (locale.equals(Locale.ENGLISH))
+            return customAction.getNameEn();
+        else
+            return customAction.getNameRu();
     }
 
     public boolean getCustomActionEnabled(int id) {

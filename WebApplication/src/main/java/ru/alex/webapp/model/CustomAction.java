@@ -19,8 +19,10 @@ public class CustomAction implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
+    @Column(name = "name_en", nullable = false, length = 50)
+    private String nameEn;
+    @Column(name = "name_ru", nullable = false, length = 50)
+    private String nameRu;
     @Column(name = "enabled", nullable = false, columnDefinition = "BIT")
     private Boolean enabled;
 
@@ -32,14 +34,21 @@ public class CustomAction implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameEn() {
+        return nameEn;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
+    public String getNameRu() {
+        return nameRu;
+    }
+
+    public void setNameRu(String nameRu) {
+        this.nameRu = nameRu;
+    }
 
     public Boolean getEnabled() {
         return enabled;
@@ -71,7 +80,8 @@ public class CustomAction implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("Task");
         sb.append("{id=").append(id);
-        sb.append(", name='").append(name).append('\'');
+        sb.append(", nameEn='").append(nameEn).append('\'');
+        sb.append(", nameRu='").append(nameRu).append('\'');
         sb.append(", enabled=").append(enabled);
         sb.append('}');
         return sb.toString();

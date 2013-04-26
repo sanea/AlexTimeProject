@@ -11,6 +11,7 @@ import ru.alex.webapp.util.TimeUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -20,6 +21,7 @@ public class UserTaskWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(UserTaskWrapper.class);
     private UserSiteTask userSiteTask;
+    private Locale locale;
     private ResourceBundle resourceBundle;
     private Date startTime;
     private Date finishTime;
@@ -27,11 +29,12 @@ public class UserTaskWrapper implements Serializable {
     private String durationSecFormatted;
 
 
-    public UserTaskWrapper(UserSiteTask userSiteTask, ResourceBundle resourceBundle) {
+    public UserTaskWrapper(UserSiteTask userSiteTask, Locale locale, ResourceBundle resourceBundle) {
         logger.debug("init UserTaskWrapper userSiteTask={}", userSiteTask);
         if (userSiteTask == null)
             throw new IllegalArgumentException("User task can't be null");
         this.userSiteTask = userSiteTask;
+        this.locale = locale;
         this.resourceBundle = resourceBundle;
         init();
     }
@@ -137,7 +140,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getCurrentStatusFormatted() {
-        return TaskStatus.getStatusFormatted(userSiteTask.getStatus(), resourceBundle);
+        return TaskStatus.getStatusFormatted(userSiteTask.getStatus(), locale);
     }
 
     public Long getTaskId() {

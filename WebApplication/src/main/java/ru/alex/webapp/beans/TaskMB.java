@@ -81,7 +81,7 @@ public class TaskMB implements Serializable {
                 logger.debug("initAssignedTasks userSiteTaskList={}", userSiteTaskList);
                 assignedTasks = new ArrayList<>(userSiteTaskList.size());
                 for (UserSiteTask ut : userSiteTaskList) {
-                    assignedTasks.add(new UserTaskWrapper(ut, sessionMB.getResourceBundle()));
+                    assignedTasks.add(new UserTaskWrapper(ut, sessionMB.getLocale(), sessionMB.getResourceBundle()));
                     if (ut.getCurrentTime() != null) {
                         startTableUpdater = true;
                         finishChangeDisable = true;
@@ -126,7 +126,7 @@ public class TaskMB implements Serializable {
     }
 
     public String getSelectedAction() {
-        return selectedAction == null ? null : selectedAction.getActionFormatted(sessionMB.getResourceBundle());
+        return selectedAction == null ? null : selectedAction.getActionFormatted(sessionMB.getLocale());
     }
 
     public int getSelectedMinutes() {

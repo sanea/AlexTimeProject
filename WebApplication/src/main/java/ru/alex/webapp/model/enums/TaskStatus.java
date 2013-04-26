@@ -2,6 +2,7 @@ package ru.alex.webapp.model.enums;
 
 import ru.alex.webapp.util.CustomActionConfiguration;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -42,7 +43,8 @@ public enum TaskStatus {
         }
     }
 
-    public static String getStatusFormatted(String status, ResourceBundle resourceBundle) {
+    public static String getStatusFormatted(String status, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         switch (getStatus(status)) {
             case RUNNING:
                 return resourceBundle.getString("status.running");
@@ -53,18 +55,18 @@ public enum TaskStatus {
             case UNKNOWN:
                 return resourceBundle.getString("status.unknown");
             case CUSTOM1:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_1, locale);
             case CUSTOM2:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_2, locale);
             case CUSTOM3:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_3, locale);
             default:
                 throw new IllegalArgumentException("wrong status " + status);
         }
     }
 
-    public String getStatusFormatted(ResourceBundle resourceBundle) {
-        return getStatusFormatted(String.valueOf(status), resourceBundle);
+    public String getStatusFormatted(Locale locale) {
+        return getStatusFormatted(String.valueOf(status), locale);
     }
 
     public String getStatusStr() {

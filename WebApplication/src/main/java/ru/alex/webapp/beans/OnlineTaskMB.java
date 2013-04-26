@@ -45,7 +45,7 @@ public class OnlineTaskMB implements Serializable {
             logger.debug("tasks={}", tasks);
             List<UserTaskWrapper> taskWrappers = new ArrayList<>(tasks.size());
             for (UserSiteTask ut : tasks) {
-                taskWrappers.add(new UserTaskWrapper(ut, sessionMB.getResourceBundle()));
+                taskWrappers.add(new UserTaskWrapper(ut, sessionMB.getLocale(), sessionMB.getResourceBundle()));
             }
             onlineTasks = taskWrappers;
         } catch (Exception e) {

@@ -10,8 +10,11 @@
             <h2><h:outputText value="#{msg['custom.edit.title']}"/></h2>
             <h:form id="contentForm">
                 <p:dataTable id="customActionTable" value="#{customActionEditMB.customActions}" var="customAction">
-                    <p:column headerText="#{msg['name']}">
-                        <h:outputText value="#{customAction.name}"/>
+                    <p:column headerText="#{msg['name.en']}">
+                        <h:outputText value="#{customAction.nameEn}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['name.ru']}">
+                        <h:outputText value="#{customAction.nameRu}"/>
                     </p:column>
                     <p:column headerText="#{msg['enabled']}">
                         <p:selectBooleanCheckbox value="#{customAction.enabled}" disabled="true"/>
@@ -31,9 +34,15 @@
                           closable="true"
                           closeOnEscape="true">
                     <h:panelGrid id="editDialogContent" columns="3" cellpadding="2">
-                        <h:outputLabel for="name" value="#{msg['name']}:"/>
-                        <p:inputText value="#{customActionEditMB.selectedCustomAction.name}" id="name" required="true"/>
-                        <p:message for="name" display="icon"/>
+                        <h:outputLabel for="nameEn" value="#{msg['name.en']}:"/>
+                        <p:inputText value="#{customActionEditMB.selectedCustomAction.nameEn}" id="nameEn"
+                                     required="true"/>
+                        <p:message for="nameEn" display="icon"/>
+
+                        <h:outputLabel for="nameRu" value="#{msg['name.ru']}:"/>
+                        <p:inputText value="#{customActionEditMB.selectedCustomAction.nameRu}" id="nameRu"
+                                     required="true"/>
+                        <p:message for="nameRu" display="icon"/>
 
                         <h:outputLabel for="enabled" value="#{msg['enabled']}:"/>
                         <p:selectBooleanCheckbox value="#{customActionEditMB.selectedCustomAction.enabled}"

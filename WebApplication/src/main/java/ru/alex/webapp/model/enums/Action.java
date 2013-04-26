@@ -2,6 +2,7 @@ package ru.alex.webapp.model.enums;
 
 import ru.alex.webapp.util.CustomActionConfiguration;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -42,7 +43,8 @@ public enum Action {
         }
     }
 
-    public static String getActionFormatted(String action, ResourceBundle resourceBundle) {
+    public static String getActionFormatted(String action, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         switch (getAction(action)) {
             case START:
                 return resourceBundle.getString("action.start");
@@ -53,18 +55,18 @@ public enum Action {
             case STOP:
                 return resourceBundle.getString("action.stop");
             case CUSTOM1:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_1).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_1, locale);
             case CUSTOM2:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_2).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_2, locale);
             case CUSTOM3:
-                return CustomActionConfiguration.getInstance().getCustomAction(CustomActionEnum.CUSTOM_3).getName();
+                return CustomActionConfiguration.getCustomActionFormatted(CustomActionEnum.CUSTOM_3, locale);
             default:
                 throw new IllegalArgumentException("wrong action " + action);
         }
     }
 
-    public String getActionFormatted(ResourceBundle resourceBundle) {
-        return getActionFormatted(String.valueOf(action), resourceBundle);
+    public String getActionFormatted(Locale locale) {
+        return getActionFormatted(String.valueOf(action), locale);
     }
 
     public String getActionStr() {

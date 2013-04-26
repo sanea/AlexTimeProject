@@ -12,7 +12,9 @@ import ru.alex.webapp.service.CustomActionService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author Alexander.Isaenco
@@ -77,6 +79,14 @@ public class CustomActionConfiguration {
 
     public synchronized void reload() {
         loadFromDb();
+    }
+
+    public static String getCustomActionFormatted(CustomActionEnum customActionEnum, Locale locale) {
+        CustomAction customAction = CustomActionConfiguration.getInstance().getCustomAction(customActionEnum);
+        if (locale.equals(Locale.ENGLISH))
+            return customAction.getNameEn();
+        else
+            return customAction.getNameRu();
     }
 
 }

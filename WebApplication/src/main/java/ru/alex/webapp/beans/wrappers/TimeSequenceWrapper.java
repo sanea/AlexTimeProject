@@ -5,6 +5,7 @@ import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.util.TimeUtils;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -18,12 +19,12 @@ public class TimeSequenceWrapper {
     private String statusFormatted;
 
 
-    public TimeSequenceWrapper(UserTaskTimeSeq timeSeq, ResourceBundle resourceBundle) {
+    public TimeSequenceWrapper(UserTaskTimeSeq timeSeq, Locale locale, ResourceBundle resourceBundle) {
         this.startTime = timeSeq.getStartTime();
         this.endTime = timeSeq.getEndTime();
         this.durationSec = (int) ((endTime.getTime() - startTime.getTime()) / 1000);
         this.durationFormatted = TimeUtils.formatTimeSec(durationSec, resourceBundle);
-        this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus(), resourceBundle);
+        this.statusFormatted = TaskStatus.getStatusFormatted(timeSeq.getTaskStatus(), locale);
     }
 
     public Date getStartTime() {

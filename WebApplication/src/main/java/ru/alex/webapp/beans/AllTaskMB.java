@@ -319,7 +319,7 @@ public class AllTaskMB implements Serializable {
             logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
             List<TimeSequenceWrapper> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
             for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
-                timeSeqList.add(new TimeSequenceWrapper(timeSeq, sessionMB.getResourceBundle()));
+                timeSeqList.add(new TimeSequenceWrapper(timeSeq, sessionMB.getLocale(), sessionMB.getResourceBundle()));
             selectedTimeSeqList = timeSeqList;
             RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
             logger.debug("selectTaskListener timeSeqList={}", selectedTimeSeqList);
