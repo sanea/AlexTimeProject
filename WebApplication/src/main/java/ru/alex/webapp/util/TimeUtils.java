@@ -11,8 +11,9 @@ public class TimeUtils {
         timeSec = timeSec - hours * 3600;
         int minutes = timeSec / 60;
         int seconds = timeSec - minutes * 60;
-        return (hours != 0 ? String.valueOf(hours) + " " + resourceBundle.getString("time.hours") + " " : "")
+        String result = (hours != 0 ? String.valueOf(hours) + " " + resourceBundle.getString("time.hours") + " " : "")
                 + (minutes != 0 ? String.valueOf(minutes) + " " + resourceBundle.getString("time.minutes") + " " : "")
                 + (seconds != 0 ? String.valueOf(seconds) + " " + resourceBundle.getString("time.seconds") + " " : "");
+        return result.equals("") ? "0 " + resourceBundle.getString("time.seconds") : result;
     }
 }

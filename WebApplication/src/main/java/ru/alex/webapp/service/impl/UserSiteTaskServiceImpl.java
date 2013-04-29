@@ -115,7 +115,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     @Override
     public List<UserSiteTask> getAllCurrentTime() throws Exception {
         List<UserSiteTask> userSiteTaskList = userSiteTaskDao.findWithNamedQuery(UserSiteTask.ALL_CURRENT_TIME);
-        logger.debug("getAllCurrentTime userSiteTaskList={}", userSiteTaskList);
+        if (userSiteTaskList != null && userSiteTaskList.size() > 0)
+            logger.debug("getAllCurrentTime userSiteTaskList={}", userSiteTaskList);
         return userSiteTaskList;
     }
 
