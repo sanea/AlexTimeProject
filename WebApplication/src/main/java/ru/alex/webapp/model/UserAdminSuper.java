@@ -14,7 +14,7 @@ public class UserAdminSuper extends UserAdmin {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("UserAdminTask");
+        sb.append("UserAdminSuper");
         sb.append("{").append(super.toString());
         sb.append('}');
         return sb.toString();

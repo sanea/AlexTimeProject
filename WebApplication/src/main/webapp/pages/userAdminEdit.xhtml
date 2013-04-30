@@ -1,14 +1,61 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-        >
+      xmlns:p="http://primefaces.org/ui">
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
             <h2><h:outputText value="#{msg['admin.edit.title']}"/></h2>
             <h:form id="contentForm">
+                <p:panel id="userAdminSuperPanel" header="#{msg['admin.edit.super']}">
+                    <p:dataTable id="userAdminSuperTable" var="userAdmin" value="#{userAdminEditMB.userAdminSuperList}">
+                        <p:column headerText="id">
+                            <h:outputText value="#{userAdmin.id}"/>
+                        </p:column>
+                        <p:column headerText="user">
+                            <h:outputText value="#{userAdmin.user}"/>
+                        </p:column>
+                        <p:column headerText="startTime">
+                            <h:outputText value="#{userAdmin.startTime}"/>
+                        </p:column>
+                        <p:column headerText="user">
+                            <h:outputText value="#{userAdmin.endTime}"/>
+                        </p:column>
+                        <p:column headerText="value">
+                            <h:outputText value="#{userAdmin.value}"/>
+                        </p:column>
+                        <p:column headerText="valueType">
+                            <h:outputText value="#{userAdmin.valueType}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
 
+                <p:panel id="userAdminSitePanel" header="#{msg['admin.edit.site']}">
+                    <p:dataTable id="userAdminSuperTable" var="userAdmin" value="#{userAdminEditMB.userAdminSiteList}">
+                        <p:column headerText="id">
+                            <h:outputText value="#{userAdmin.id}"/>
+                        </p:column>
+                        <p:column headerText="user">
+                            <h:outputText value="#{userAdmin.user}"/>
+                        </p:column>
+                        <p:column headerText="siteName">
+                            <h:outputText value="#{userAdmin.site}"/>
+                        </p:column>
+                        <p:column headerText="startTime">
+                            <h:outputText value="#{userAdmin.startTime}"/>
+                        </p:column>
+                        <p:column headerText="user">
+                            <h:outputText value="#{userAdmin.endTime}"/>
+                        </p:column>
+                        <p:column headerText="value">
+                            <h:outputText value="#{userAdmin.value}"/>
+                        </p:column>
+                        <p:column headerText="valueType">
+                            <h:outputText value="#{userAdmin.valueType}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
             </h:form>
         </ui:define>
     </ui:composition>

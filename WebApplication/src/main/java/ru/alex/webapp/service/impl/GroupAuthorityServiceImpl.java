@@ -17,7 +17,7 @@ import ru.alex.webapp.service.GroupAuthorityService;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class GroupAuthorityServiceImpl extends GenericServiceImpl<GroupAuthority, Long> implements GroupAuthorityService {
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupAuthorityServiceImpl.class);
     @Autowired
     GroupAuthorityDao groupAuthorityDao;
 

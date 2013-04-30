@@ -15,22 +15,22 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(AdminType.TYPE_TASK)
 public class UserAdminTask extends UserAdmin {
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = true)
-    private Task task;
+    @JoinColumn(name = "site_task_id", referencedColumnName = "id", nullable = true)
+    private SiteTask siteTask;
 
-    public Task getTask() {
-        return task;
+    public SiteTask getSiteTask() {
+        return siteTask;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public void setSiteTask(SiteTask siteTask) {
+        this.siteTask = siteTask;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserAdminTask");
-        sb.append("{task=").append(task);
+        sb.append("{siteTask=").append(siteTask);
         sb.append(", ").append(super.toString());
         sb.append('}');
         return sb.toString();

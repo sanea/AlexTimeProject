@@ -20,7 +20,7 @@ import java.util.Collection;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements GroupService {
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
     @Autowired
     GroupDao groupDao;
 

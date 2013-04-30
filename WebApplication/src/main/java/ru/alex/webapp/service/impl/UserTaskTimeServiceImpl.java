@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Long> implements UserTaskTimeService {
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserTaskTimeServiceImpl.class);
     @Autowired
     UserTaskTimeDao userTaskTimeDao;
 

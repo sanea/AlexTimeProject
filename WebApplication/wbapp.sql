@@ -264,15 +264,16 @@ CREATE TABLE `user_admin` (
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `end_time` timestamp NULL DEFAULT NULL,
   `site_id` bigint(20) unsigned DEFAULT NULL,
-  `task_id` bigint(20) unsigned DEFAULT NULL,
+  `site_task_id` bigint(20) unsigned DEFAULT NULL,
   `value` decimal(10,2) NOT NULL,
   `value_type` char(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_admin_site_idx` (`site_id`),
-  KEY `fk_admin_task_idx` (`task_id`),
+  KEY `fk_admin_task_idx` (`site_task_id`),
   KEY `fk_admin_user_idx` (`username`),
+  KEY `idx_admin_type` (`admin_type`),
+  KEY `fk_admin_site_idx` (`site_id`),
   CONSTRAINT `fk_admin_site` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
-  CONSTRAINT `fk_admin_task` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
+  CONSTRAINT `fk_admin_site_task` FOREIGN KEY (`site_task_id`) REFERENCES `site_task` (`id`),
   CONSTRAINT `fk_admin_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -481,4 +482,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-30 15:58:53
+-- Dump completed on 2013-04-30 19:32:46

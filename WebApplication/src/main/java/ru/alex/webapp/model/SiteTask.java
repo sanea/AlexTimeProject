@@ -33,6 +33,8 @@ public class SiteTask implements Serializable {
     private Task taskByTaskId;
     @OneToMany(mappedBy = "siteTask", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Collection<UserSiteTask> userSiteTaskList;
+    @OneToMany(mappedBy = "siteTask", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Collection<UserAdminTask> userAdminTaskList;
 
     public Long getId() {
         return id;
@@ -72,6 +74,14 @@ public class SiteTask implements Serializable {
 
     public void setUserSiteTaskList(Collection<UserSiteTask> userSiteTaskList) {
         this.userSiteTaskList = userSiteTaskList;
+    }
+
+    public Collection<UserAdminTask> getUserAdminTaskList() {
+        return userAdminTaskList;
+    }
+
+    public void setUserAdminTaskList(Collection<UserAdminTask> userAdminTaskList) {
+        this.userAdminTaskList = userAdminTaskList;
     }
 
     @Override

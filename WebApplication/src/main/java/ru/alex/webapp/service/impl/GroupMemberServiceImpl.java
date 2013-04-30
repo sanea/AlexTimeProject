@@ -21,7 +21,7 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class GroupMemberServiceImpl extends GenericServiceImpl<GroupMember, Long> implements GroupMemberService {
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupMemberServiceImpl.class);
     @Autowired
     GroupMemberDao groupMemberDao;
 

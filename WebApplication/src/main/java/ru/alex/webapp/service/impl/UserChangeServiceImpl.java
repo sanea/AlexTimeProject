@@ -17,7 +17,7 @@ import ru.alex.webapp.service.UserChangeService;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserChangeServiceImpl extends GenericServiceImpl<UserChange, Long> implements UserChangeService {
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserChangeServiceImpl.class);
     @Autowired
     UserChangeDao userChangeDao;
 
