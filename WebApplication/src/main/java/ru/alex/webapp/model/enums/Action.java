@@ -9,7 +9,18 @@ import java.util.ResourceBundle;
  * @author Alexander.Isaenco
  */
 public enum Action {
-    START('r'), RESUME('c'), EXTEND('e'), FINISH('f'), STOP('s'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');  //Custom like pause
+    START(Action.ACTION_START), RESUME(Action.ACTION_RESUME), EXTEND(Action.ACTION_EXTEND), FINISH(Action.ACTION_FINISH),
+    STOP(Action.ACTION_STOP), CUSTOM1(Action.ACTION_CUSTOM1), CUSTOM2(Action.ACTION_CUSTOM2), CUSTOM3(Action.ACTION_CUSTOM3);  //Custom like pause
+
+    private static final char ACTION_START = 'r';
+    private static final char ACTION_RESUME = 'c';
+    private static final char ACTION_EXTEND = 'e';
+    private static final char ACTION_FINISH = 'f';
+    private static final char ACTION_STOP = 's';
+    private static final char ACTION_CUSTOM1 = '1';
+    private static final char ACTION_CUSTOM2 = '2';
+    private static final char ACTION_CUSTOM3 = '3';
+
     private final char action;
 
     private Action(char action) {
@@ -24,19 +35,19 @@ public enum Action {
 
     public static Action getAction(String action) {
         switch (getChar(action)) {
-            case 'r':
+            case Action.ACTION_START:
                 return START;
-            case 'e':
+            case Action.ACTION_EXTEND:
                 return EXTEND;
-            case 'f':
+            case Action.ACTION_FINISH:
                 return FINISH;
-            case 's':
+            case Action.ACTION_STOP:
                 return STOP;
-            case '1':
+            case Action.ACTION_CUSTOM1:
                 return CUSTOM1;
-            case '2':
+            case Action.ACTION_CUSTOM2:
                 return CUSTOM2;
-            case '3':
+            case Action.ACTION_CUSTOM3:
                 return CUSTOM3;
             default:
                 throw new IllegalArgumentException("wrong action " + action);

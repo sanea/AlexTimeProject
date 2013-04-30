@@ -26,6 +26,7 @@
         <intercept-url pattern="/pages/assignTasks*" access="hasRole('ASSIGN_TASKS')"/>
         <intercept-url pattern="/pages/customActionEdit*" access="hasRole('CHANGE_CUSTOM')"/>
         <intercept-url pattern="/pages/cancelTaskTime*" access="hasRole('CANCEL_TIME')"/>
+        <intercept-url pattern="/pages/userAdminEdit*" access="hasRole('EDIT_USER_ADMIN')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <form-login login-page="/pages/login.xhtml" default-target-url="/pages/index.xhtml"
                     always-use-default-target="true"

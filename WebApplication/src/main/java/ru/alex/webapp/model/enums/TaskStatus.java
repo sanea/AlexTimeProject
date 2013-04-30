@@ -9,7 +9,17 @@ import java.util.ResourceBundle;
  * @author Alexander.Isaenco
  */
 public enum TaskStatus {
-    RUNNING('r'), COMPLETED('c'), STOPPED('s'), UNKNOWN('u'), CUSTOM1('1'), CUSTOM2('2'), CUSTOM3('3');
+    RUNNING(TaskStatus.STATUS_RUNNING), COMPLETED(TaskStatus.STATUS_COMPLETED), STOPPED(TaskStatus.STATUS_STOPPED),
+    UNKNOWN(TaskStatus.STATUS_UNKNOWN), CUSTOM1(TaskStatus.STATUS_CUSTOM1), CUSTOM2(TaskStatus.STATUS_CUSTOM2), CUSTOM3(TaskStatus.STATUS_CUSTOM3);
+
+    private static final char STATUS_RUNNING = 'r';
+    private static final char STATUS_COMPLETED = 'c';
+    private static final char STATUS_STOPPED = 's';
+    private static final char STATUS_UNKNOWN = 'u';
+    private static final char STATUS_CUSTOM1 = '1';
+    private static final char STATUS_CUSTOM2 = '2';
+    private static final char STATUS_CUSTOM3 = '3';
+
     private final char status;
 
     private TaskStatus(char status) {
@@ -24,19 +34,19 @@ public enum TaskStatus {
 
     public static TaskStatus getStatus(String status) {
         switch (getChar(status)) {
-            case 'r':
+            case TaskStatus.STATUS_RUNNING:
                 return RUNNING;
-            case 'c':
+            case TaskStatus.STATUS_COMPLETED:
                 return COMPLETED;
-            case 's':
+            case TaskStatus.STATUS_STOPPED:
                 return STOPPED;
-            case 'u':
+            case TaskStatus.STATUS_UNKNOWN:
                 return UNKNOWN;
-            case '1':
+            case TaskStatus.STATUS_CUSTOM1:
                 return CUSTOM1;
-            case '2':
+            case TaskStatus.STATUS_CUSTOM2:
                 return CUSTOM2;
-            case '3':
+            case TaskStatus.STATUS_CUSTOM3:
                 return CUSTOM3;
             default:
                 throw new IllegalArgumentException("wrong status " + status);

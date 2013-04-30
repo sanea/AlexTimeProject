@@ -39,6 +39,8 @@
                             rendered="#{sessionMB.hasRole('CHANGE_CUSTOM')}"/>
                 <p:menuitem value="#{msg['menu.cancel.time']}" url="/pages/cancelTaskTime.jsf" ajax="false"
                             rendered="#{sessionMB.hasRole('CANCEL_TIME')}"/>
+                <p:menuitem value="#{msg['menu.admin.edit']}" url="/pages/userAdminEdit.jsf" ajax="false"
+                            rendered="#{sessionMB.hasRole('EDIT_USER_ADMIN')}"/>
                 <p:menuitem value="#{msg['menu.logout']}" url="/logout" ajax="false"/>
                 <f:facet name="options">
                     <p:commandLink styleClass="inline" style="#{sessionMB.locale == 'ru' ? 'font-weight: bold;' : ''}"

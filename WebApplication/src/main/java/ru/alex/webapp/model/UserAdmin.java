@@ -1,7 +1,10 @@
 package ru.alex.webapp.model;
 
+import ru.alex.webapp.model.enums.AdminType;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,19 +14,23 @@ import java.util.Date;
 @Table(name = "user_admin")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "admin_type", discriminatorType = DiscriminatorType.CHAR)
-@DiscriminatorValue(value = "n")
+@DiscriminatorValue(value = AdminType.TYPE_NONE)
 public abstract class UserAdmin implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     protected Long id;
-//    @Column(name = "admin_type", nullable = false, length = 1, columnDefinition = "CHAR")
+    //    @Column(name = "admin_type", nullable = false, length = 1, columnDefinition = "CHAR")
 //    protected String adminType;
     @Column(name = "start_time", nullable = false)
     protected Date startTime;
     @Column(name = "end_time", nullable = false)
     protected Date endTime;
+    @Column(name = "value", nullable = false)
+    protected BigDecimal value;
+    @Column(name = "value_type", nullable = false, length = 1, columnDefinition = "CHAR")
+    protected String valueType;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     protected User user;
@@ -66,6 +73,22 @@ public abstract class UserAdmin implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     @Override

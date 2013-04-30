@@ -1,5 +1,7 @@
 package ru.alex.webapp.model;
 
+import ru.alex.webapp.model.enums.AdminType;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +12,7 @@ import javax.persistence.ManyToOne;
  * @author Alexander.Isaenco
  */
 @Entity
-@DiscriminatorValue("t")
+@DiscriminatorValue(AdminType.TYPE_TASK)
 public class UserAdminTask extends UserAdmin {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = true)

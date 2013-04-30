@@ -6,7 +6,12 @@ import java.util.ResourceBundle;
  * @author Alexander.Isaenco
  */
 public enum TaskType {
-    PROCESS('p'), TASK('t'), TASK_CUSTOM_PRICE('c');
+    PROCESS(TaskType.TYPE_PROCESS), TASK(TaskType.TYPE_TASK), TASK_CUSTOM_PRICE(TaskType.TYPE_CUSTOM_PRICE);
+
+    private static final char TYPE_PROCESS = 'p';
+    private static final char TYPE_TASK = 't';
+    private static final char TYPE_CUSTOM_PRICE = 'c';
+
     private final char type;
 
     private TaskType(char type) {
@@ -21,11 +26,11 @@ public enum TaskType {
 
     public static TaskType getType(String type) {
         switch (getChar(type)) {
-            case 'p':
+            case TaskType.TYPE_PROCESS:
                 return PROCESS;
-            case 't':
+            case TaskType.TYPE_TASK:
                 return TASK;
-            case 'c':
+            case TaskType.TYPE_CUSTOM_PRICE:
                 return TASK_CUSTOM_PRICE;
             default:
                 throw new IllegalArgumentException("wrong task type " + type);
