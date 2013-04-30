@@ -1,20 +1,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
 <h:body>
     <ui:composition template="templates/template.xhtml">
         <ui:define name="content">
 
+            //TODO
+
             <h2><h:outputText value="#{msg['admin.edit.title']}"/></h2>
             <h:form id="contentForm">
                 <p:panel id="userAdminSuperPanel" header="#{msg['admin.edit.super']}">
+                    <p:commandButton icon="ui-icon-plus" update=":contentForm:addDialogContent"
+                                     actionListener="#{groupEditMB.addNewGroupListener}"
+                                     oncomplete="addGroupDlg.show();" process="@this"
+                                     title="#{msg['groups.edit.add.new']}"/>
                     <p:dataTable id="userAdminSuperTable" var="userAdmin" value="#{userAdminEditMB.userAdminSuperList}">
                         <p:column headerText="id">
                             <h:outputText value="#{userAdmin.id}"/>
                         </p:column>
                         <p:column headerText="user">
-                            <h:outputText value="#{userAdmin.user}"/>
+                            <h:outputText value="#{userAdmin.user.username}"/>
                         </p:column>
                         <p:column headerText="startTime">
                             <h:outputText value="#{userAdmin.startTime}"/>
@@ -28,11 +34,64 @@
                         <p:column headerText="valueType">
                             <h:outputText value="#{userAdmin.valueType}"/>
                         </p:column>
+                        <p:column>
+                            <p:commandButton value="edit" onsuccess="userAdminSuperDlg.show();"
+                                             update=":contentForm:userAdminSuperDialog">
+                                <f:setPropertyActionListener value="#{userAdmin}"
+                                                             target="#{userAdminEditMB.selectedUserAdminSuper}"/>
+                            </p:commandButton>
+                            <p:commandButton value="remove" onsuccess="removeConfirmAdminSuperDlg.show();"
+                                             update=":contentForm:removeConfirmAdminSuperDialog">
+                                <f:setPropertyActionListener value="#{userAdmin}"
+                                                             target="#{userAdminEditMB.selectedUserAdminSuper}"/>
+                            </p:commandButton>
+                        </p:column>
                     </p:dataTable>
+
+                    <p:dialog id="userAdminSuperDialog" widgetVar="userAdminSuperDlg"
+                              closeOnEscape="true" closable="true" modal="true"
+                              header="#{msg['admin.edit.super.dialog']}">
+
+                        <h:panelGrid id="userAdminSuperDialogContent" columns="3" cellpadding="2">
+                            <h:outputLabel for="groupName" value="#{msg['name']}:"/>
+                            <p:inputText value="#{groupEditMB.newGroup.groupName}" id="groupName" required="true"
+                                         requiredMessage="#{msg['name.mess.needed']}"/>
+                            <p:message for="groupName"/>
+
+                        </h:panelGrid>
+                        <f:facet name="footer">
+                            <p:commandButton value="#{msg['button.save']}"
+                                             update=":contentForm:groupTable :contentForm:addDialogContent"
+                                             oncomplete="if(args &amp;&amp; !args.validationFailed) addGroupDlg.hide();"
+                                             action="#{groupEditMB.addNewGroup}" process=":contentForm:addDialog"/>
+                            <p:commandButton value="#{msg['button.cancel']}" oncomplete="addGroupDlg.hide();"
+                                             immediate="true"/>
+                        </f:facet>
+                    </p:dialog>
+
+                    <p:dialog id="removeConfirmAdminSuperDialog" header="#{msg['admin.edit.super.remove']}"
+                              widgetVar="removeConfirmAdminSuperDlg"
+                              modal="true"
+                              closeOnEscape="true">
+
+                        <h:outputText
+                                value="#{msg['are.you.sure.remove']} '#{userAdminEditMB.selectedUserAdminSuper.user.username}'?"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="#{msg['button.yes']}" update=":contentForm:groupTable"
+                                             oncomplete="removeConfirmAdminSuperDlg.hide()"
+                                             action="#{}" process="@this"/>
+                            <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmAdminSuperDlg.hide()"/>
+                        </f:facet>
+                    </p:dialog>
+
+
                 </p:panel>
 
+
+                <!-- ######################################## -->
                 <p:panel id="userAdminSitePanel" header="#{msg['admin.edit.site']}">
-                    <p:dataTable id="userAdminSuperTable" var="userAdmin" value="#{userAdminEditMB.userAdminSiteList}">
+                    <p:dataTable id="userAdminSiteTable" var="userAdmin" value="#{userAdminEditMB.userAdminSiteList}">
                         <p:column headerText="id">
                             <h:outputText value="#{userAdmin.id}"/>
                         </p:column>
