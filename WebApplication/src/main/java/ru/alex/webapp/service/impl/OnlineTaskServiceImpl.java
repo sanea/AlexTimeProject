@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,14 @@ import java.util.List;
 @Service
 @Scope("singleton")
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+//TODO make stateful, db request only when task_time changes
 public class OnlineTaskServiceImpl implements OnlineTaskService {
     private static final Logger logger = LoggerFactory.getLogger(OnlineTaskServiceImpl.class);
     @Autowired
     UserSiteTaskService userSiteTaskService;
 
     @Override
+    @Scheduled(fixedDelay = 1000)
     public void checkAllTasks() {
         //logger.debug("checkAllTasks");
         try {
