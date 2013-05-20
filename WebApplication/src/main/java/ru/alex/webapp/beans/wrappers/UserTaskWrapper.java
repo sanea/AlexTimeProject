@@ -102,6 +102,14 @@ public class UserTaskWrapper implements Serializable {
         return userSiteTask.getSiteTask().getTaskByTaskId().getPriceHour();
     }
 
+    public String getComment() {
+        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        if (currentTime != null)
+            return currentTime.getComment();
+        else
+            return null;
+    }
+
     public int getTimeLeftSec() {
         int timeLeftSec = 0;
         Date now = new Date();

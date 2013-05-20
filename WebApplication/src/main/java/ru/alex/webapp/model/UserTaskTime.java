@@ -66,6 +66,8 @@ public class UserTaskTime implements Serializable {
     private Integer durationCustom3Sec;
     @Column(name = "price", nullable = false)
     private BigDecimal priceHour;
+    @Column(name = "comment", nullable = true, length = 255)
+    private String comment;
     @Column(name = "total", nullable = true)
     private BigDecimal total;
     @Column(name = "deleted", nullable = false, columnDefinition = "BIT")
@@ -178,6 +180,14 @@ public class UserTaskTime implements Serializable {
         this.priceHour = priceHour;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public BigDecimal getTotal() {
         return total;
     }
@@ -259,6 +269,7 @@ public class UserTaskTime implements Serializable {
         sb.append(", durationCustom2Sec=").append(durationCustom2Sec);
         sb.append(", durationCustom3Sec=").append(durationCustom3Sec);
         sb.append(", priceHour=").append(priceHour);
+        sb.append(", comment=").append(comment);
         sb.append(", total=").append(total);
         sb.append(", deleted=").append(deleted);
         sb.append(", userSiteTaskById=").append(userSiteTaskById);
