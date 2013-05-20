@@ -79,8 +79,8 @@
 
                         <f:facet name="footer">
                             <p:commandButton value="#{msg['button.yes']}" update=":contentForm:groupTable"
-                                             oncomplete="removeConfirmAdminSuperDlg.hide()"
-                                             action="#{}" process="@this"/>
+                                             oncomplete="removeConfirmAdminSuperDlg.hide(); alert('TODO');"
+                                             process="@this"/>
                             <p:commandButton value="#{msg['button.no']}" onclick="removeConfirmAdminSuperDlg.hide()"/>
                         </f:facet>
                     </p:dialog>

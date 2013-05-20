@@ -11,22 +11,19 @@ body {
 }
 
 .row-green {
-    background-color: #a9dba9 !important;
-    background-image: none !important;
+    background: #a9dba9 none !important;
 }
 
 .row-yellow {
-    background-color: #ffff99 !important;
-    background-image: none !important;
+    background: #ffff99 none !important;
 }
 
 .row-red {
-    background-color: #ffcccc !important;
-    background-image: none !important;
+    background: #ffcccc none !important;
 }
 
 .noBorder {
-    border-width: 0px !important;
+    border-width: 0 !important;
 }
 
 .w100 {

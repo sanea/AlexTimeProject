@@ -193,7 +193,7 @@ public class TaskMB implements Serializable {
         if (actionAttr != null)
             selectedAction = Action.getAction((String) actionAttr);
         Object showExtendAttr = event.getComponent().getAttributes().get("showExtend");
-        showExtend = showExtendAttr != null && ((Boolean) showExtendAttr).booleanValue();
+        showExtend = showExtendAttr != null && (Boolean) showExtendAttr;
         logger.debug("startListener selectedTask={}, selectedAction={}", selectedTask, selectedAction);
     }
 
@@ -217,7 +217,7 @@ public class TaskMB implements Serializable {
     public void startCustomPriceTask() {
         logger.debug("startTask {}, {}", selectedTask, selectedPrice);
         if (selectedPrice.compareTo(new BigDecimal(0)) < 0) {
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting tasl", "custom price should be >= 0"));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error starting task", "custom price should be >= 0"));
             return;
         }
         try {
@@ -276,7 +276,7 @@ public class TaskMB implements Serializable {
             userSiteTaskService.stopProcess(task.getUserSiteTask());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stoping task", e.toString()));
+            FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error stopping task", e.toString()));
         }
         initAssignedTasks();
     }
@@ -299,7 +299,7 @@ public class TaskMB implements Serializable {
 
     public String getTaskRowStyle(String currentStatus) {
         TaskStatus taskStatus = TaskStatus.getStatus(currentStatus);
-        String taskRowStyle = "";
+        String taskRowStyle;
         switch (taskStatus) {
             case RUNNING:
                 taskRowStyle = "row-green";

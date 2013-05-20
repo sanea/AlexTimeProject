@@ -243,14 +243,14 @@ public class CancelTaskTimeMB implements Serializable {
     public static class TaskTimeLazyModel extends LazyDataModel<TaskTimeWrapper> {
         private static final Logger logger = LoggerFactory.getLogger(TaskTimeLazyModel.class);
 
-        private TaskTimeService taskTimeService;
-        private ResourceBundle resourceBundle;
-        private Site site;
-        private User user;
-        private Task task;
-        private TaskType taskType;
-        private Date dateFrom;
-        private Date dateTo;
+        private final TaskTimeService taskTimeService;
+        private final ResourceBundle resourceBundle;
+        private final Site site;
+        private final User user;
+        private final Task task;
+        private final TaskType taskType;
+        private final Date dateFrom;
+        private final Date dateTo;
         private int rowCount = 0;
 
 

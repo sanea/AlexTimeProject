@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class PrimeResourceHandlerWithCache extends PrimeResourceHandler {
 
-    private Map<String, Resource> resCache = new HashMap<String, Resource>();
+    private final Map<String, Resource> resCache = new HashMap<>();
 
     public PrimeResourceHandlerWithCache(ResourceHandler wrapped) {
         super(wrapped);

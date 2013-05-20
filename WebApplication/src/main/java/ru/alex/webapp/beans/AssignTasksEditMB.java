@@ -190,7 +190,7 @@ public class AssignTasksEditMB implements Serializable {
         }
         logger.debug("buildAssignedUserList selectedUserSet={}", selectedUserSet);
         logger.debug("buildAssignedUserList disabledUserSet={}", disabledUserSet);
-        List<AssignedUser> assignedUserList = new ArrayList<AssignedUser>(userList.size());
+        List<AssignedUser> assignedUserList = new ArrayList<>(userList.size());
         for (User user : userList) {
             boolean selected = selectedUserSet.contains(user);
             boolean disabled = disabledUserSet.contains(user);

@@ -125,10 +125,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
             params.put("taskId", task.getId());
             Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.CURRENT_BY_TASK_ID, params);
             logger.debug("isTaskEditable CURRENT_BY_TASK_ID taskTimeList={}", taskTimeList);
-            if (taskTimeList == null || taskTimeList.size() == 0)
-                result = true;
-            else
-                result = false;
+            result = taskTimeList == null || taskTimeList.size() == 0;
         }
         logger.debug("isTaskEditable {}", result);
         return result;

@@ -102,8 +102,8 @@ public class TaskTimeDaoImpl extends GenericDaoImpl<TaskTime, Long> implements T
     }
 
     private static class BuildParamResult {
-        StringBuilder queryBuilder;
-        Map<String, Object> paramMap;
+        final StringBuilder queryBuilder;
+        final Map<String, Object> paramMap;
 
         BuildParamResult(StringBuilder queryBuilder, Map<String, Object> paramMap) {
             this.queryBuilder = queryBuilder;

@@ -336,6 +336,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             case CUSTOM3:
                 newTaskStatus = TaskStatus.CUSTOM3;
                 break;
+            default:
+                throw new IllegalArgumentException("wrong action param: " + action);
         }
 
         //change user_task status
@@ -436,6 +438,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             case CUSTOM3:
                 newTaskStatus = TaskStatus.CUSTOM3;
                 break;
+            default:
+                throw new IllegalArgumentException("wrong action param: " + action);
         }
         task.setStatus(newTaskStatus.getStatusStr());
         task.setUpdateTime(now);

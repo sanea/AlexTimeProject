@@ -381,9 +381,9 @@ public class AllTaskMB implements Serializable {
 
     public static class ColumnModel implements Serializable {
 
-        private String header;
-        private String val;
-        private String sortVal;
+        private final String header;
+        private final String val;
+        private final String sortVal;
 
         public ColumnModel(String header, String val, String sortVal) {
             this.header = header;

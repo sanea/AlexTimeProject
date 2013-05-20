@@ -20,20 +20,20 @@ public abstract class UserAdmin implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    protected Long id;
+    private Long id;
     //    @Column(name = "admin_type", nullable = false, length = 1, columnDefinition = "CHAR")
 //    protected String adminType;
     @Column(name = "start_time", nullable = false)
-    protected Date startTime;
+    private Date startTime;
     @Column(name = "end_time", nullable = false)
-    protected Date endTime;
+    private Date endTime;
     @Column(name = "value", nullable = false)
-    protected BigDecimal value;
+    private BigDecimal value;
     @Column(name = "value_type", nullable = false, length = 1, columnDefinition = "CHAR")
-    protected String valueType;
+    private String valueType;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
-    protected User user;
+    private User user;
 
     public Long getId() {
         return id;

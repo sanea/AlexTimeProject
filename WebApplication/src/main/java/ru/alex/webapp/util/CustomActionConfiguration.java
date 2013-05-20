@@ -67,7 +67,7 @@ public class CustomActionConfiguration {
     public CustomAction getCustomAction(CustomActionEnum customActionEnum) {
         if (customActionEnum == null)
             throw new IllegalArgumentException("Wrong customActionEnum = null");
-        return customActionMap.get(new Long(customActionEnum.getId()));
+        return customActionMap.get((long) customActionEnum.getId());
     }
 
     public List<CustomAction> getAll() {

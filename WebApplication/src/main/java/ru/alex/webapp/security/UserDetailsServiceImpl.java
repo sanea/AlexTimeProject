@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Empty login");
         }
 
-        User user = null;
+        User user;
         try {
             user = userService.findById(username);
         } catch (Exception e) {

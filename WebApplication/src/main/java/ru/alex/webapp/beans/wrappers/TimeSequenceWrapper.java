@@ -12,11 +12,11 @@ import java.util.ResourceBundle;
  * @author Alexander.Isaenco
  */
 public class TimeSequenceWrapper {
-    private Date startTime;
-    private Date endTime;
-    private int durationSec;
-    private String durationFormatted;
-    private String statusFormatted;
+    private final Date startTime;
+    private final Date endTime;
+    private final int durationSec;
+    private final String durationFormatted;
+    private final String statusFormatted;
 
 
     public TimeSequenceWrapper(TaskTimeSeq timeSeq, Locale locale, ResourceBundle resourceBundle) {

@@ -100,10 +100,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
             result = false;
         } else {
             User userEntity = userDao.findById(user.getUsername());
-            if (userEntity.getCurrentChange() != null)
-                result = false;
-            else
-                result = true;
+            result = userEntity.getCurrentChange() == null;
         }
         logger.debug("isUserDeletable {}", result);
         return result;
