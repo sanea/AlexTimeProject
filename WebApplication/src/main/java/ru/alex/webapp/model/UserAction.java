@@ -24,7 +24,7 @@ public class UserAction implements Serializable {
     private String params;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_time_id", referencedColumnName = "id", nullable = false)
-    private UserTaskTime userTaskTimeById;
+    private TaskTime taskTimeById;
 
     public Long getId() {
         return id;
@@ -58,12 +58,12 @@ public class UserAction implements Serializable {
         this.params = params;
     }
 
-    public UserTaskTime getUserTaskTimeById() {
-        return userTaskTimeById;
+    public TaskTime getTaskTimeById() {
+        return taskTimeById;
     }
 
-    public void setUserTaskTimeById(UserTaskTime userTaskTimeById) {
-        this.userTaskTimeById = userTaskTimeById;
+    public void setTaskTimeById(TaskTime taskTimeById) {
+        this.taskTimeById = taskTimeById;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class UserAction implements Serializable {
         sb.append(", timestamp=").append(timestamp);
         sb.append(", action='").append(action).append('\'');
         sb.append(", params='").append(params).append('\'');
-        sb.append(", userTaskTimeById=").append(userTaskTimeById);
+        sb.append(", taskTimeById=").append(taskTimeById);
         sb.append('}');
         return sb.toString();
     }

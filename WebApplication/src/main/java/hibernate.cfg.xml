@@ -15,7 +15,7 @@
         <property name="use_sql_comments">true</property>
         <mapping class="ru.alex.webapp.model.Task"/>
         <mapping class="ru.alex.webapp.model.UserSiteTask"/>
-        <mapping class="ru.alex.webapp.model.UserTaskTime"/>
+        <mapping class="ru.alex.webapp.model.TaskTime"/>
         <mapping class="ru.alex.webapp.model.TaskTimeSeq"/>
         <mapping class="ru.alex.webapp.model.GroupAuthority"/>
         <mapping class="ru.alex.webapp.model.GroupMember"/>

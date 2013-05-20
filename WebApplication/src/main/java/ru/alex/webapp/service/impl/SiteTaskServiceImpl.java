@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteTaskDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.model.*;
 import ru.alex.webapp.service.SiteTaskService;
 
@@ -30,7 +30,7 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
     @Autowired
     UserSiteTaskDao userSIteTaskDao;
     @Autowired
-    UserTaskTimeDao userTaskTimeDao;
+    TaskTimeDao taskTimeDao;
 
     @Override
     protected GenericDao<SiteTask, Long> getDao() {
@@ -69,15 +69,15 @@ public class SiteTaskServiceImpl extends GenericServiceImpl<SiteTask, Long> impl
 
         Map<String, Object> params = new HashMap<>(1);
         params.put("siteTaskId", entity.getId());
-        List<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_SITE_TASK, params);
-        logger.debug("remove BY_SITE_TASK userTaskTimeList={}", userTaskTimeList);
-        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+        List<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.BY_SITE_TASK, params);
+        logger.debug("remove BY_SITE_TASK taskTimeList={}", taskTimeList);
+        if (taskTimeList == null || taskTimeList.size() == 0) {
             entity = siteTaskDao.merge(entity);
             entity.getTaskByTaskId().getSiteTasksById().remove(entity);
             entity.getSiteBySiteId().getSiteTaskList().remove(entity);
             siteTaskDao.remove(entity);
         } else {
-            List<UserTaskTime> currentTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_TASK_ID, params);
+            List<TaskTime> currentTimeList = taskTimeDao.findWithNamedQuery(TaskTime.CURRENT_BY_SITE_TASK_ID, params);
             logger.debug("remove CURRENT_BY_SITE_TASK_ID currentTimeList={}", currentTimeList);
             if (currentTimeList != null && currentTimeList.size() > 0)
                 throw new Exception("Can't remove siteTask, it is active");

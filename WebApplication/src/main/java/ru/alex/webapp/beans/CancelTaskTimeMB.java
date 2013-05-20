@@ -8,18 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.beans.wrappers.TaskTimeWrapper;
 import ru.alex.webapp.beans.wrappers.TimeSequenceWrapper;
-import ru.alex.webapp.beans.wrappers.UserTaskTimeWrapper;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
-import ru.alex.webapp.service.UserTaskTimeService;
+import ru.alex.webapp.service.TaskTimeService;
 import ru.alex.webapp.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +43,7 @@ public class CancelTaskTimeMB implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CancelTaskTimeMB.class);
 
     @Autowired
-    private UserTaskTimeService userTaskTimeService;
+    private TaskTimeService taskTimeService;
     @Autowired
     private SiteService siteService;
     @Autowired
@@ -64,10 +64,10 @@ public class CancelTaskTimeMB implements Serializable {
     private Date dateFrom;
     private Date dateTo;
 
-    private UserTaskTimeWrapper selectedTaskWrapper;
+    private TaskTimeWrapper selectedTaskWrapper;
     private List<TimeSequenceWrapper> selectedTimeSeqList;
 
-    private LazyDataModel<UserTaskTimeWrapper> lazyFilteredTasks;
+    private LazyDataModel<TaskTimeWrapper> lazyFilteredTasks;
 
     @PostConstruct
     private void init() {
@@ -156,16 +156,16 @@ public class CancelTaskTimeMB implements Serializable {
         this.dateTo = dateTo;
     }
 
-    public LazyDataModel<UserTaskTimeWrapper> getLazyFilteredTasks() {
+    public LazyDataModel<TaskTimeWrapper> getLazyFilteredTasks() {
         return lazyFilteredTasks;
     }
 
 
-    public UserTaskTimeWrapper getSelectedTaskWrapper() {
+    public TaskTimeWrapper getSelectedTaskWrapper() {
         return selectedTaskWrapper;
     }
 
-    public void setSelectedTaskWrapper(UserTaskTimeWrapper selectedTaskWrapper) {
+    public void setSelectedTaskWrapper(TaskTimeWrapper selectedTaskWrapper) {
         this.selectedTaskWrapper = selectedTaskWrapper;
     }
 
@@ -174,7 +174,7 @@ public class CancelTaskTimeMB implements Serializable {
     }
 
     public void selectTaskListener(ActionEvent event) {
-        selectedTaskWrapper = (UserTaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
+        selectedTaskWrapper = (TaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
         logger.debug("selectTaskListener selectedTaskWrapper={}", selectedTaskWrapper);
         try {
             List<TaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getTaskTimeSeq());
@@ -194,7 +194,7 @@ public class CancelTaskTimeMB implements Serializable {
 
     public void filterTable() {
         logger.debug("filterTable selectedSite={}, selectedUser={}, selectedTask={}, selectedTaskType={}, dateFrom={}, dateTo={}", selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
-        lazyFilteredTasks = new TaskTimeLazyModel(userTaskTimeService, sessionMB.getResourceBundle(), selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
+        lazyFilteredTasks = new TaskTimeLazyModel(taskTimeService, sessionMB.getResourceBundle(), selectedSite, selectedUser, selectedTask, selectedTaskType, dateFrom, dateTo);
     }
 
 
@@ -211,7 +211,7 @@ public class CancelTaskTimeMB implements Serializable {
     public void removeTaskTimeRecord() {
         logger.debug("removeTaskTimeRecord selectedTaskWrapper={}", selectedTaskWrapper);
         try {
-            userTaskTimeService.remove(selectedTaskWrapper.getUserTaskTime());
+            taskTimeService.remove(selectedTaskWrapper.getTaskTime());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in removing task time record", e.toString()));
@@ -221,7 +221,7 @@ public class CancelTaskTimeMB implements Serializable {
     public void restoreTaskTimeRecord() {
         logger.debug("restoreTaskTimeRecord selectedTaskWrapper={}", selectedTaskWrapper);
         try {
-            userTaskTimeService.restore(selectedTaskWrapper.getUserTaskTime());
+            taskTimeService.restore(selectedTaskWrapper.getTaskTime());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             FacesUtil.getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error in restoring task time record", e.toString()));
@@ -240,10 +240,10 @@ public class CancelTaskTimeMB implements Serializable {
     }
 
 
-    public static class TaskTimeLazyModel extends LazyDataModel<UserTaskTimeWrapper> {
+    public static class TaskTimeLazyModel extends LazyDataModel<TaskTimeWrapper> {
         private static final Logger logger = LoggerFactory.getLogger(TaskTimeLazyModel.class);
 
-        private UserTaskTimeService userTaskTimeService;
+        private TaskTimeService taskTimeService;
         private ResourceBundle resourceBundle;
         private Site site;
         private User user;
@@ -254,9 +254,9 @@ public class CancelTaskTimeMB implements Serializable {
         private int rowCount = 0;
 
 
-        public TaskTimeLazyModel(UserTaskTimeService userTaskTimeService, ResourceBundle resourceBundle, Site site, User user, Task task, TaskType taskType, Date from, Date to) {
-            logger.debug("TaskTimeLazyModel() userTaskTimeService={}, site={}, user={}, task={}, taskType={}, from={}, to={}", userTaskTimeService, site, user, task, taskType, from, to);
-            this.userTaskTimeService = userTaskTimeService;
+        public TaskTimeLazyModel(TaskTimeService taskTimeService, ResourceBundle resourceBundle, Site site, User user, Task task, TaskType taskType, Date from, Date to) {
+            logger.debug("TaskTimeLazyModel() taskTimeService={}, site={}, user={}, task={}, taskType={}, from={}, to={}", taskTimeService, site, user, task, taskType, from, to);
+            this.taskTimeService = taskTimeService;
             this.resourceBundle = resourceBundle;
             this.site = site;
             this.user = user;
@@ -265,7 +265,7 @@ public class CancelTaskTimeMB implements Serializable {
             this.dateFrom = from;
             this.dateTo = to;
             try {
-                rowCount = userTaskTimeService.getAllCount(site, user, task, taskType, from, to, true).intValue();
+                rowCount = taskTimeService.getAllCount(site, user, task, taskType, from, to, true).intValue();
                 logger.debug("TaskTimeLazyModel() rowCount={}", rowCount);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -279,19 +279,19 @@ public class CancelTaskTimeMB implements Serializable {
         }
 
         @Override
-        public List<UserTaskTimeWrapper> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+        public List<TaskTimeWrapper> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
             logger.debug("load() first={}, pageSize={}, sortField={}, sortOrder={}, filters={}", first, pageSize, sortField, sortOrder, filters);
-            List<UserTaskTimeWrapper> timeWrapperList = null;
+            List<TaskTimeWrapper> timeWrapperList = null;
             try {
                 int last = first + pageSize > rowCount ? rowCount : first + pageSize;
-                List<UserTaskTime> userTaskTimeList = userTaskTimeService.getAll(site, user, task, taskType, dateFrom, dateTo, true, first, last);
-                logger.debug("load userTaskTimeList={}", userTaskTimeList);
-                timeWrapperList = new ArrayList<>(userTaskTimeList.size());
-                for (UserTaskTime taskTime : userTaskTimeList) {
+                List<TaskTime> taskTimeList = taskTimeService.getAll(site, user, task, taskType, dateFrom, dateTo, true, first, last);
+                logger.debug("load taskTimeList={}", taskTimeList);
+                timeWrapperList = new ArrayList<>(taskTimeList.size());
+                for (TaskTime taskTime : taskTimeList) {
                     //check if task is not current (null check for data consistence and performance)
                     if (taskTime.getTotal() == null && taskTime.getUserSiteTaskById().getCurrentTime().equals(taskTime))
                         continue;
-                    UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime, resourceBundle);
+                    TaskTimeWrapper taskTimeWrapper = new TaskTimeWrapper(taskTime, resourceBundle);
                     timeWrapperList.add(taskTimeWrapper);
                 }
                 logger.debug("load timeWrapperList={}", timeWrapperList);

@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.TaskDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.dao.UserActionDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.model.Task;
-import ru.alex.webapp.model.UserTaskTime;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.service.TaskService;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
     @Autowired
     private TaskDao taskDao;
     @Autowired
-    private UserTaskTimeDao userTaskTimeDao;
+    private TaskTimeDao taskTimeDao;
     @Autowired
     private TaskTimeSeqDao taskTimeSeqDao;
     @Autowired
@@ -69,9 +69,9 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
 
         Map<String, Object> params = new HashMap<>(1);
         params.put("taskId", task.getId());
-        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_TASK_ID, params);
-        logger.debug("remove BY_TASK_ID userTaskTimeList={}", userTaskTimeList);
-        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+        Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.BY_TASK_ID, params);
+        logger.debug("remove BY_TASK_ID taskTimeList={}", taskTimeList);
+        if (taskTimeList == null || taskTimeList.size() == 0) {
             task = taskDao.merge(task);
             taskDao.remove(task);
         } else {
@@ -123,9 +123,9 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
         } else {
             Map<String, Object> params = new HashMap<>(1);
             params.put("taskId", task.getId());
-            Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_TASK_ID, params);
-            logger.debug("isTaskEditable CURRENT_BY_TASK_ID userTaskTimeList={}", userTaskTimeList);
-            if (userTaskTimeList == null || userTaskTimeList.size() == 0)
+            Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.CURRENT_BY_TASK_ID, params);
+            logger.debug("isTaskEditable CURRENT_BY_TASK_ID taskTimeList={}", taskTimeList);
+            if (taskTimeList == null || taskTimeList.size() == 0)
                 result = true;
             else
                 result = false;

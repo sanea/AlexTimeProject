@@ -23,7 +23,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
     @Autowired
     private UserChangeDao userChangeDao;
     @Autowired
-    private UserTaskTimeDao userTaskTimeDao;
+    private TaskTimeDao taskTimeDao;
     @Autowired
     private SiteDao siteDao;
 
@@ -148,9 +148,9 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
             throw new Exception("can't finish change, no active change");
         Map<String, Object> params = new HashMap<>(1);
         params.put("username", user.getUsername());
-        List<UserTaskTime> currentUserTaskTime = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_USER_ID, params);
-        logger.debug("finishChange currentUserTaskTime={}", currentUserTaskTime);
-        if (currentUserTaskTime != null && currentUserTaskTime.size() > 0)
+        List<TaskTime> currentTaskTime = taskTimeDao.findWithNamedQuery(TaskTime.CURRENT_BY_USER_ID, params);
+        logger.debug("finishChange currentTaskTime={}", currentTaskTime);
+        if (currentTaskTime != null && currentTaskTime.size() > 0)
             throw new Exception("Can't finish change, there are unfinished tasks");
         currentChange.setEndTime(new Date());
         currentChange = userChangeDao.merge(currentChange);

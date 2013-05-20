@@ -46,10 +46,10 @@ public class UserSiteTask implements Serializable {
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User userByUsername;
     @OneToMany(mappedBy = "userSiteTaskById", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<UserTaskTime> userTaskTimeList;
+    private Collection<TaskTime> taskTimeList;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "`current_time`", referencedColumnName = "id", nullable = true)
-    private UserTaskTime currentTime;
+    private TaskTime currentTime;
 
     public Long getId() {
         return id;
@@ -107,19 +107,19 @@ public class UserSiteTask implements Serializable {
         this.userByUsername = userByUsername;
     }
 
-    public Collection<UserTaskTime> getUserTaskTimeList() {
-        return userTaskTimeList;
+    public Collection<TaskTime> getTaskTimeList() {
+        return taskTimeList;
     }
 
-    public void setUserTaskTimeList(Collection<UserTaskTime> userTaskTimeList) {
-        this.userTaskTimeList = userTaskTimeList;
+    public void setTaskTimeList(Collection<TaskTime> taskTimeList) {
+        this.taskTimeList = taskTimeList;
     }
 
-    public UserTaskTime getCurrentTime() {
+    public TaskTime getCurrentTime() {
         return currentTime;
     }
 
-    public void setCurrentTime(UserTaskTime currentTime) {
+    public void setCurrentTime(TaskTime currentTime) {
         this.currentTime = currentTime;
     }
 
@@ -156,10 +156,10 @@ public class UserSiteTask implements Serializable {
         return sb.toString();
     }
 
-    public void addUserTaskTime(UserTaskTime userTaskTime) {
-        userTaskTime.setUserSiteTaskById(this);
-        if (userTaskTimeList == null)
-            userTaskTimeList = new ArrayList<>();
-        userTaskTimeList.add(userTaskTime);
+    public void addTaskTime(TaskTime taskTime) {
+        taskTime.setUserSiteTaskById(this);
+        if (taskTimeList == null)
+            taskTimeList = new ArrayList<>();
+        taskTimeList.add(taskTime);
     }
 }

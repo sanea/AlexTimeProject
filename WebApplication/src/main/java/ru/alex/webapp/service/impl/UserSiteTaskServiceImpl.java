@@ -8,18 +8,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteTaskDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.dao.UserActionDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
 import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.SiteTask;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserAction;
 import ru.alex.webapp.model.UserSiteTask;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
@@ -46,7 +46,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     @Autowired
     UserSiteTaskDao userSiteTaskDao;
     @Autowired
-    UserTaskTimeDao userTaskTimeDao;
+    TaskTimeDao taskTimeDao;
     @Autowired
     SiteTaskDao siteTaskDao;
     @Autowired
@@ -95,9 +95,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         Map<String, Object> params = new HashMap<>(1);
         params.put("userSiteTaskId", entity.getId());
-        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_USER_SITE_TASK, params);
-        logger.debug("remove BY_USER_SITE_TASK userTaskTimeList={}", userTaskTimeList);
-        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+        Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.BY_USER_SITE_TASK, params);
+        logger.debug("remove BY_USER_SITE_TASK taskTimeList={}", taskTimeList);
+        if (taskTimeList == null || taskTimeList.size() == 0) {
             entity = userSiteTaskDao.merge(entity);
             entity.getSiteTask().getUserSiteTaskList().remove(entity);
             entity.getUserByUsername().getUserSiteTasksByUsername().remove(entity);
@@ -268,27 +268,27 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         task = userSiteTaskDao.merge(task);
 
         //add user_task_time
-        UserTaskTime userTaskTime = new UserTaskTime();
-        userTaskTime.setDurationPlaySec(0);
-        userTaskTime.setFinishTimePlay(now);
-        userTaskTime.setStartTime(now);
-        userTaskTime.setFinishTime(now);
-        userTaskTime.setDeleted(false);
+        TaskTime taskTime = new TaskTime();
+        taskTime.setDurationPlaySec(0);
+        taskTime.setFinishTimePlay(now);
+        taskTime.setStartTime(now);
+        taskTime.setFinishTime(now);
+        taskTime.setDeleted(false);
         if (taskType == TaskType.TASK_CUSTOM_PRICE) {
-            userTaskTime.setPriceHour(customPrice);
-            userTaskTime.setTotal(customPrice);
+            taskTime.setPriceHour(customPrice);
+            taskTime.setTotal(customPrice);
         } else {
-            userTaskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
-            userTaskTime.setTotal(task.getSiteTask().getTaskByTaskId().getPriceHour());
+            taskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
+            taskTime.setTotal(task.getSiteTask().getTaskByTaskId().getPriceHour());
         }
-        userTaskTime.setUserChange(task.getUserByUsername().getCurrentChange());
-        task.addUserTaskTime(userTaskTime);
-        userTaskTimeDao.persist(userTaskTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        taskTime.setUserChange(task.getUserByUsername().getCurrentChange());
+        task.addTaskTime(taskTime);
+        taskTimeDao.persist(taskTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
         //add user_action
-        addUserAction(Action.START, now, userTaskTime);
+        addUserAction(Action.START, now, taskTime);
     }
 
     @Override
@@ -338,46 +338,46 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         task = userSiteTaskDao.merge(task);
 
         //add user_task_time
-        UserTaskTime userTaskTime = new UserTaskTime();
+        TaskTime taskTime = new TaskTime();
         if (action == Action.START) {
-            userTaskTime.setDurationPlaySec(seconds);
-            userTaskTime.setFinishTimePlay(endTime.getTime());
+            taskTime.setDurationPlaySec(seconds);
+            taskTime.setFinishTimePlay(endTime.getTime());
         } else if (action == Action.CUSTOM1) {
-            userTaskTime.setDurationPlaySec(0);
-            userTaskTime.setFinishTimePlay(endTime.getTime());
-            userTaskTime.setDurationCustom1Sec(seconds);
-            userTaskTime.setFinishTimeCustom1(endTime.getTime());
+            taskTime.setDurationPlaySec(0);
+            taskTime.setFinishTimePlay(endTime.getTime());
+            taskTime.setDurationCustom1Sec(seconds);
+            taskTime.setFinishTimeCustom1(endTime.getTime());
         } else if (action == Action.CUSTOM2) {
-            userTaskTime.setDurationPlaySec(0);
-            userTaskTime.setFinishTimePlay(endTime.getTime());
-            userTaskTime.setDurationCustom2Sec(seconds);
-            userTaskTime.setFinishTimeCustom2(endTime.getTime());
+            taskTime.setDurationPlaySec(0);
+            taskTime.setFinishTimePlay(endTime.getTime());
+            taskTime.setDurationCustom2Sec(seconds);
+            taskTime.setFinishTimeCustom2(endTime.getTime());
         } else if (action == Action.CUSTOM3) {
-            userTaskTime.setDurationPlaySec(0);
-            userTaskTime.setFinishTimePlay(endTime.getTime());
-            userTaskTime.setDurationCustom3Sec(seconds);
-            userTaskTime.setFinishTimeCustom3(endTime.getTime());
+            taskTime.setDurationPlaySec(0);
+            taskTime.setFinishTimePlay(endTime.getTime());
+            taskTime.setDurationCustom3Sec(seconds);
+            taskTime.setFinishTimeCustom3(endTime.getTime());
         }
-        userTaskTime.setStartTime(now);
-        userTaskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
-        userTaskTime.setUserChange(task.getUserByUsername().getCurrentChange());
-        userTaskTime.setDeleted(false);
-        task.addUserTaskTime(userTaskTime);
-        task.setCurrentTime(userTaskTime);
+        taskTime.setStartTime(now);
+        taskTime.setPriceHour(task.getSiteTask().getTaskByTaskId().getPriceHour());
+        taskTime.setUserChange(task.getUserByUsername().getCurrentChange());
+        taskTime.setDeleted(false);
+        task.addTaskTime(taskTime);
+        task.setCurrentTime(taskTime);
 
         //add user_task_time_seq
         TaskTimeSeq timeSeq = new TaskTimeSeq();
         timeSeq.setStartTime(now);
-        timeSeq.setUserTaskTime(userTaskTime);
+        timeSeq.setTaskTime(taskTime);
         timeSeq.setTaskStatus(newTaskStatus.getStatusStr());
-        userTaskTime.setTimeSeq(timeSeq);
+        taskTime.setTimeSeq(timeSeq);
 
-        userTaskTimeDao.persist(userTaskTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        taskTimeDao.persist(taskTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
         //add user_action
-        addUserAction(Action.START, now, userTaskTime);
+        addUserAction(Action.START, now, taskTime);
     }
 
     @Override
@@ -397,7 +397,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING)
             throw new Exception("Can't switch process with status " + taskStatus);
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on start");
 
@@ -445,9 +445,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
             currentTime.setDurationCustom3Sec(seconds);
             currentTime.setFinishTimeCustom3(endTime.getTime());
         }
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = taskTimeDao.merge(currentTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
 
         //set the last time_seq end_time value
@@ -522,7 +522,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
             throw new Exception("Can't extend process with status " + taskStatus);
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on extend");
 
@@ -558,9 +558,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
                 currentTime.setFinishTimeCustom3(finisTime.getTime());
                 break;
         }
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = taskTimeDao.merge(currentTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
         //add user action
         addUserAction(Action.EXTEND, now, currentTime);
@@ -577,7 +577,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         TaskStatus taskStatus = TaskStatus.getStatus(task.getStatus());
         if (taskStatus != TaskStatus.RUNNING && taskStatus != TaskStatus.CUSTOM1 && taskStatus != TaskStatus.CUSTOM2 && taskStatus != TaskStatus.CUSTOM3)
             throw new Exception("Can't stop process with status " + taskStatus);
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (currentTime == null)
             throw new Exception("Process should have current time on stop");
 
@@ -603,7 +603,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
         TaskStatus status = TaskStatus.getStatus(task.getStatus());
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (status == TaskStatus.RUNNING || status == TaskStatus.CUSTOM1 || status == TaskStatus.CUSTOM2 || status == TaskStatus.CUSTOM3) {
             if (currentTime == null)
                 throw new Exception("Running and Custom status task should have current time");
@@ -638,7 +638,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         logger.debug("entTask task={}, finishTime={}, stop={}", task, finishTime, stop);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("Can't end process without current time and without timeSeq");
         if (TaskStatus.getStatus(task.getStatus()) != TaskStatus.RUNNING)
@@ -647,7 +647,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         task = userSiteTaskDao.merge(task);
         currentTime = task.getCurrentTime();
         userSiteTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
-        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
+        taskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
         List<TaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
@@ -693,9 +693,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         BigDecimal total = currentTime.getPriceHour().multiply(new BigDecimal((double) currentTime.getDurationPlaySec() / 3600));
         currentTime.setTotal(total);
         currentTime.setFinishTime(finishTime);
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = taskTimeDao.merge(currentTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
         //add user_action
         addUserAction(stop ? Action.STOP : Action.FINISH, finishTime, currentTime);
@@ -707,7 +707,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         logger.debug("endCustom task={}, finishTime={}, force={}", task, finishTime, force);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
-        UserTaskTime currentTime = task.getCurrentTime();
+        TaskTime currentTime = task.getCurrentTime();
         if (currentTime == null || currentTime.getTimeSeq() == null)
             throw new Exception("Can't end process without current time and without timeSeq");
         TaskStatus customTaskStatus = TaskStatus.getStatus(task.getStatus());
@@ -717,7 +717,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         task = userSiteTaskDao.merge(task);
         currentTime = task.getCurrentTime();
         userSiteTaskDao.lock(task, LockModeType.PESSIMISTIC_WRITE);
-        userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
+        taskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
         List<TaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
@@ -775,9 +775,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //set user_tak_time new finishTimePlay
         currentTime.setFinishTimePlay(newFinishTimePlay.getTime());
-        currentTime = userTaskTimeDao.merge(currentTime);
-        userTaskTimeDao.flush();
-        userTaskTimeDao.clear();
+        currentTime = taskTimeDao.merge(currentTime);
+        taskTimeDao.flush();
+        taskTimeDao.clear();
 
         //add user_task_time_seq to the end of current user_task_time with status running
         TaskTimeSeq timeSeq = new TaskTimeSeq();
@@ -821,11 +821,11 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         return timeSeqList;
     }
 
-    private void addUserAction(Action action, Date date, UserTaskTime userTaskTime) {
+    private void addUserAction(Action action, Date date, TaskTime taskTime) {
         UserAction userAction = new UserAction();
         userAction.setTimestamp(date);
         userAction.setAction(action.getActionStr());
-        userTaskTime.addUserAction(userAction);
+        taskTime.addUserAction(userAction);
         userActionDao.persist(userAction);
         userActionDao.flush();
         userActionDao.clear();

@@ -3,11 +3,11 @@ package ru.alex.webapp.dao.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.alex.webapp.dao.UserTaskTimeDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskType;
 
 import javax.persistence.TypedQuery;
@@ -20,14 +20,14 @@ import java.util.Map;
  * @author Alexander.Isaenco
  */
 @Repository
-public class UserTaskTimeDaoImpl extends GenericDaoImpl<UserTaskTime, Long> implements UserTaskTimeDao {
-    private static final Logger logger = LoggerFactory.getLogger(UserTaskTimeDaoImpl.class);
+public class TaskTimeDaoImpl extends GenericDaoImpl<TaskTime, Long> implements TaskTimeDao {
+    private static final Logger logger = LoggerFactory.getLogger(TaskTimeDaoImpl.class);
     private static final String RESULT_QUERY = "query";
     private static final String RESULT_PARAM = "param";
 
     @Override
-    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo, boolean showDeleted, int start, int end) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT taskTime FROM UserTaskTime taskTime WHERE 1=1 ");
+    public List<TaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo, boolean showDeleted, int start, int end) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT taskTime FROM TaskTime taskTime WHERE 1=1 ");
 
         BuildParamResult buildParamResult = buildParams(site, user, task, taskType, dateFrom, dateTo, showDeleted);
         queryBuilder.append(buildParamResult.queryBuilder.toString());
@@ -35,7 +35,7 @@ public class UserTaskTimeDaoImpl extends GenericDaoImpl<UserTaskTime, Long> impl
         logger.debug("getAll queryBuilder={}", queryBuilder);
         logger.debug("getAll paramMap={}", paramMap);
 
-        TypedQuery<UserTaskTime> query = getEntityManager().createQuery(queryBuilder.toString(), UserTaskTime.class);
+        TypedQuery<TaskTime> query = getEntityManager().createQuery(queryBuilder.toString(), TaskTime.class);
         for (String param : paramMap.keySet()) {
             query.setParameter(param, paramMap.get(param));
         }
@@ -52,7 +52,7 @@ public class UserTaskTimeDaoImpl extends GenericDaoImpl<UserTaskTime, Long> impl
 
     @Override
     public Long countAll(Site site, User user, Task task, TaskType taskType, Date dateFrom, Date dateTo, boolean withDeleted) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(taskTime) FROM UserTaskTime taskTime WHERE 1=1 ");
+        StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(taskTime) FROM TaskTime taskTime WHERE 1=1 ");
 
         BuildParamResult buildParamResult = buildParams(site, user, task, taskType, dateFrom, dateTo, withDeleted);
         queryBuilder.append(buildParamResult.queryBuilder.toString());

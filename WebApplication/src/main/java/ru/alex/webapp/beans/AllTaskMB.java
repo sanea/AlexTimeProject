@@ -7,19 +7,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.alex.webapp.beans.wrappers.TaskTimeWrapper;
 import ru.alex.webapp.beans.wrappers.TimeSequenceWrapper;
-import ru.alex.webapp.beans.wrappers.UserTaskTimeWrapper;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.CustomActionEnum;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
 import ru.alex.webapp.service.UserService;
-import ru.alex.webapp.service.UserTaskTimeService;
+import ru.alex.webapp.service.TaskTimeService;
 import ru.alex.webapp.util.CustomActionConfiguration;
 import ru.alex.webapp.util.FacesUtil;
 import ru.alex.webapp.util.TimeUtils;
@@ -73,7 +73,7 @@ public class AllTaskMB implements Serializable {
     }
 
     @Autowired
-    private UserTaskTimeService userTaskTimeService;
+    private TaskTimeService taskTimeService;
     @Autowired
     private SiteService siteService;
     @Autowired
@@ -94,7 +94,7 @@ public class AllTaskMB implements Serializable {
     private Date dateFrom;
     private Date dateTo;
 
-    private List<UserTaskTimeWrapper> filteredTasks;
+    private List<TaskTimeWrapper> filteredTasks;
     private int totalMinutesIncome;
     private int totalMinutesOutcome;
     private BigDecimal totalIncome;
@@ -106,7 +106,7 @@ public class AllTaskMB implements Serializable {
     private Map<String, Boolean> colSelectedMap;
     private List<String> colNameList;
 
-    private UserTaskTimeWrapper selectedTaskWrapper;
+    private TaskTimeWrapper selectedTaskWrapper;
     private List<TimeSequenceWrapper> selectedTimeSeqList;
 
     //No LazyDataModel - no need, to count sums and salaries, we need to get all records! memory is more cheap
@@ -139,19 +139,19 @@ public class AllTaskMB implements Serializable {
     private void getFilteredTasks(Site site, User user, Task task, TaskType taskType, Date from, Date to) {
         logger.debug("getFilteredTasks site={}, user={}, task={}, taskType={}, from={}, to={}", site, user, task, taskType, from, to);
         try {
-            List<UserTaskTime> userTaskTimeList = userTaskTimeService.getAll(site, user, task, taskType, from, to);
-            logger.debug("getFilteredTasks userTaskTimeList={}", userTaskTimeList);
-            filteredTasks = new ArrayList<>(userTaskTimeList.size());
+            List<TaskTime> taskTimeList = taskTimeService.getAll(site, user, task, taskType, from, to);
+            logger.debug("getFilteredTasks taskTimeList={}", taskTimeList);
+            filteredTasks = new ArrayList<>(taskTimeList.size());
             totalMinutesIncome = 0;
             totalMinutesOutcome = 0;
             totalIncome = new BigDecimal(0);
             totalOutcome = new BigDecimal(0);
             summ = new BigDecimal(0);
-            for (UserTaskTime taskTime : userTaskTimeList) {
+            for (TaskTime taskTime : taskTimeList) {
                 //check if task is not current (null check for data consistence and performance)
                 if (taskTime.getTotal() == null && taskTime.getUserSiteTaskById().getCurrentTime().equals(taskTime))
                     continue;
-                UserTaskTimeWrapper taskTimeWrapper = new UserTaskTimeWrapper(taskTime, sessionMB.getResourceBundle());
+                TaskTimeWrapper taskTimeWrapper = new TaskTimeWrapper(taskTime, sessionMB.getResourceBundle());
                 filteredTasks.add(taskTimeWrapper);
                 if (taskTimeWrapper.getTaskIncome()) {
                     totalMinutesIncome += taskTimeWrapper.getDurationPlaySec();
@@ -243,7 +243,7 @@ public class AllTaskMB implements Serializable {
         this.dateTo = dateTo;
     }
 
-    public List<UserTaskTimeWrapper> getFilteredTasks() {
+    public List<TaskTimeWrapper> getFilteredTasks() {
         return filteredTasks;
     }
 
@@ -299,11 +299,11 @@ public class AllTaskMB implements Serializable {
         return COLUMN_MODEL;
     }
 
-    public UserTaskTimeWrapper getSelectedTaskWrapper() {
+    public TaskTimeWrapper getSelectedTaskWrapper() {
         return selectedTaskWrapper;
     }
 
-    public void setSelectedTaskWrapper(UserTaskTimeWrapper selectedTaskWrapper) {
+    public void setSelectedTaskWrapper(TaskTimeWrapper selectedTaskWrapper) {
         this.selectedTaskWrapper = selectedTaskWrapper;
     }
 
@@ -312,7 +312,7 @@ public class AllTaskMB implements Serializable {
     }
 
     public void selectTaskListener(ActionEvent event) {
-        selectedTaskWrapper = (UserTaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
+        selectedTaskWrapper = (TaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
         logger.debug("selectTaskListener selectedTaskWrapper={}", selectedTaskWrapper);
         try {
             List<TaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getTaskTimeSeq());

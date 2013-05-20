@@ -13,32 +13,32 @@ import java.util.Date;
 @Table(name = "user_task_time")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = UserTaskTime.BY_SITE_ID, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.siteBySiteId.id = :siteId"),
-        @NamedQuery(name = UserTaskTime.BY_TASK_ID, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.taskByTaskId.id = :taskId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.taskByTaskId.id = :taskId"),
-        @NamedQuery(name = UserTaskTime.BY_USERNAME, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.userByUsername.username = :username"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_USER_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.userByUsername.username = :username"),
-        @NamedQuery(name = UserTaskTime.BY_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.siteTask.id = :siteTaskId"),
-        @NamedQuery(name = UserTaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM UserTaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId"),
-        @NamedQuery(name = UserTaskTime.CURRENT_BY_SITE_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.id = :siteTaskId"),
-        @NamedQuery(name = UserTaskTime.ALL, query = "SELECT u FROM UserTaskTime u"),
-        @NamedQuery(name = UserTaskTime.ALL_NOT_DELETED, query = "SELECT u FROM UserTaskTime u WHERE u.deleted = false"),
-        @NamedQuery(name = UserTaskTime.COUNT_NOT_DELETED, query = "SELECT COUNT(u) FROM UserTaskTime u WHERE u.deleted = false")
+        @NamedQuery(name = TaskTime.BY_SITE_ID, query = "SELECT u FROM TaskTime u WHERE u.userSiteTaskById.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = TaskTime.CURRENT_BY_SITE_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.siteBySiteId.id = :siteId"),
+        @NamedQuery(name = TaskTime.BY_TASK_ID, query = "SELECT u FROM TaskTime u WHERE u.userSiteTaskById.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = TaskTime.CURRENT_BY_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.taskByTaskId.id = :taskId"),
+        @NamedQuery(name = TaskTime.BY_USERNAME, query = "SELECT u FROM TaskTime u WHERE u.userSiteTaskById.userByUsername.username = :username"),
+        @NamedQuery(name = TaskTime.CURRENT_BY_USER_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.userByUsername.username = :username"),
+        @NamedQuery(name = TaskTime.BY_SITE_TASK, query = "SELECT u FROM TaskTime u WHERE u.userSiteTaskById.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = TaskTime.BY_USER_SITE_TASK, query = "SELECT u FROM TaskTime u WHERE u.userSiteTaskById.id = :userSiteTaskId"),
+        @NamedQuery(name = TaskTime.CURRENT_BY_SITE_TASK_ID, query = "SELECT u.currentTime FROM UserSiteTask u WHERE u.siteTask.id = :siteTaskId"),
+        @NamedQuery(name = TaskTime.ALL, query = "SELECT u FROM TaskTime u"),
+        @NamedQuery(name = TaskTime.ALL_NOT_DELETED, query = "SELECT u FROM TaskTime u WHERE u.deleted = false"),
+        @NamedQuery(name = TaskTime.COUNT_NOT_DELETED, query = "SELECT COUNT(u) FROM TaskTime u WHERE u.deleted = false")
 })
-public class UserTaskTime implements Serializable {
-    public static final String BY_SITE_ID = "UserTaskTime.BY_SITE_ID";
-    public static final String CURRENT_BY_SITE_ID = "UserTaskTime.CURRENT_BY_SITE_ID";
-    public static final String BY_TASK_ID = "UserTaskTime.BY_TASK_ID";
-    public static final String CURRENT_BY_TASK_ID = "UserTaskTime.CURRENT_BY_TASK_ID";
-    public static final String BY_USERNAME = "UserTaskTime.BY_USERNAME";
-    public static final String CURRENT_BY_USER_ID = "UserTaskTime.CURRENT_BY_USER_ID";
-    public static final String BY_SITE_TASK = "UserTaskTime.BY_SITE_TASK";
-    public static final String BY_USER_SITE_TASK = "UserTaskTime.BY_USER_SITE_TASK";
-    public static final String CURRENT_BY_SITE_TASK_ID = "UserTaskTime.CURRENT_BY_SITE_TASK_ID";
-    public static final String ALL = "UserTaskTime.ALL";
-    public static final String ALL_NOT_DELETED = "UserTaskTime.ALL_NOT_DELETED";
-    public static final String COUNT_NOT_DELETED = "UserTaskTime.COUNT_NOT_DELETED";
+public class TaskTime implements Serializable {
+    public static final String BY_SITE_ID = "TaskTime.BY_SITE_ID";
+    public static final String CURRENT_BY_SITE_ID = "TaskTime.CURRENT_BY_SITE_ID";
+    public static final String BY_TASK_ID = "TaskTime.BY_TASK_ID";
+    public static final String CURRENT_BY_TASK_ID = "TaskTime.CURRENT_BY_TASK_ID";
+    public static final String BY_USERNAME = "TaskTime.BY_USERNAME";
+    public static final String CURRENT_BY_USER_ID = "TaskTime.CURRENT_BY_USER_ID";
+    public static final String BY_SITE_TASK = "TaskTime.BY_SITE_TASK";
+    public static final String BY_USER_SITE_TASK = "TaskTime.BY_USER_SITE_TASK";
+    public static final String CURRENT_BY_SITE_TASK_ID = "TaskTime.CURRENT_BY_SITE_TASK_ID";
+    public static final String ALL = "TaskTime.ALL";
+    public static final String ALL_NOT_DELETED = "TaskTime.ALL_NOT_DELETED";
+    public static final String COUNT_NOT_DELETED = "TaskTime.COUNT_NOT_DELETED";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -78,7 +78,7 @@ public class UserTaskTime implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_change_id", referencedColumnName = "id", nullable = false)
     private UserChange userChange;
-    @OneToMany(mappedBy = "userTaskTimeById", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "taskTimeById", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Collection<UserAction> userActionsById;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "time_seq_id", referencedColumnName = "id", nullable = true)
@@ -241,7 +241,7 @@ public class UserTaskTime implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserTaskTime taskTime = (UserTaskTime) o;
+        TaskTime taskTime = (TaskTime) o;
 
         if (id != null ? !id.equals(taskTime.id) : taskTime.id != null) return false;
 
@@ -256,7 +256,7 @@ public class UserTaskTime implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("UserTaskTime");
+        sb.append("TaskTime");
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", finishTime=").append(finishTime);
@@ -280,7 +280,7 @@ public class UserTaskTime implements Serializable {
     }
 
     public void addUserAction(UserAction userAction) {
-        userAction.setUserTaskTimeById(this);
+        userAction.setTaskTimeById(this);
         if (userActionsById == null)
             userActionsById = new ArrayList<>();
         userActionsById.add(userAction);

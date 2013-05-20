@@ -2,9 +2,9 @@ package ru.alex.webapp.beans.wrappers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.UserChange;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.util.TimeUtils;
 
@@ -16,38 +16,38 @@ import java.util.ResourceBundle;
 /**
  * @author Alex
  */
-public class UserTaskTimeWrapper implements Serializable {
+public class TaskTimeWrapper implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = LoggerFactory.getLogger(UserTaskTimeWrapper.class);
-    private UserTaskTime userTaskTime;
+    private static final Logger logger = LoggerFactory.getLogger(TaskTimeWrapper.class);
+    private TaskTime taskTime;
     private ResourceBundle resourceBundle;
 
-    public UserTaskTimeWrapper(UserTaskTime userTaskTime, ResourceBundle resourceBundle) {
-        logger.debug("init userTaskTime={}", userTaskTime);
-        if (userTaskTime == null)
-            throw new IllegalArgumentException("userTaskTime can't be null");
-        this.userTaskTime = userTaskTime;
+    public TaskTimeWrapper(TaskTime taskTime, ResourceBundle resourceBundle) {
+        logger.debug("init taskTime={}", taskTime);
+        if (taskTime == null)
+            throw new IllegalArgumentException("taskTime can't be null");
+        this.taskTime = taskTime;
         this.resourceBundle = resourceBundle;
     }
 
     public Long getId() {
-        return userTaskTime.getId();
+        return taskTime.getId();
     }
 
     public String getUsername() {
-        return userTaskTime.getUserSiteTaskById().getUserByUsername().getUsername();
+        return taskTime.getUserSiteTaskById().getUserByUsername().getUsername();
     }
 
     public String getSiteName() {
-        return userTaskTime.getUserSiteTaskById().getSiteTask().getSiteBySiteId().getName();
+        return taskTime.getUserSiteTaskById().getSiteTask().getSiteBySiteId().getName();
     }
 
     public String getTaskName() {
-        return userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getName();
+        return taskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getName();
     }
 
     public String getTaskType() {
-        return userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getType();
+        return taskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getType();
     }
 
     public String getTaskTypeFormatted() {
@@ -55,32 +55,32 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public BigDecimal getTaskPriceHour() {
-        return userTaskTime.getPriceHour();
+        return taskTime.getPriceHour();
     }
 
     public boolean getTaskIncome() {
-        return userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome();
+        return taskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome();
     }
 
     public BigDecimal getTotal() {
-        if (userTaskTime.getTotal() == null)
+        if (taskTime.getTotal() == null)
             return null;
-        if (userTaskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome())
-            return userTaskTime.getTotal();
+        if (taskTime.getUserSiteTaskById().getSiteTask().getTaskByTaskId().getIncome())
+            return taskTime.getTotal();
         else
-            return userTaskTime.getTotal().negate();
+            return taskTime.getTotal().negate();
     }
 
     public Date getStartTime() {
-        return userTaskTime.getStartTime();
+        return taskTime.getStartTime();
     }
 
     public Date getFinishTime() {
-        return userTaskTime.getFinishTime();
+        return taskTime.getFinishTime();
     }
 
     public Integer getDurationPlaySec() {
-        return userTaskTime.getDurationPlaySec();
+        return taskTime.getDurationPlaySec();
     }
 
     public String getDurationPlayFormatted() {
@@ -88,7 +88,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public Integer getDurationCustom1Sec() {
-        return userTaskTime.getDurationCustom1Sec();
+        return taskTime.getDurationCustom1Sec();
     }
 
     public String getDurationCustom1Formatted() {
@@ -96,7 +96,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public Integer getDurationCustom2Sec() {
-        return userTaskTime.getDurationCustom2Sec();
+        return taskTime.getDurationCustom2Sec();
     }
 
     public String getDurationCustom2Formatted() {
@@ -104,7 +104,7 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public Integer getDurationCustom3Sec() {
-        return userTaskTime.getDurationCustom3Sec();
+        return taskTime.getDurationCustom3Sec();
     }
 
     public String getDurationCustom3Formatted() {
@@ -112,26 +112,26 @@ public class UserTaskTimeWrapper implements Serializable {
     }
 
     public TaskTimeSeq getTaskTimeSeq() {
-        return userTaskTime.getTimeSeq();
+        return taskTime.getTimeSeq();
     }
 
     public UserChange getUserChange() {
-        return userTaskTime.getUserChange();
+        return taskTime.getUserChange();
     }
 
-    public UserTaskTime getUserTaskTime() {
-        return userTaskTime;
+    public TaskTime getTaskTime() {
+        return taskTime;
     }
 
     public Boolean getDeleted() {
-        return userTaskTime.getDeleted();
+        return taskTime.getDeleted();
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("UserTaskWrapper");
-        sb.append("{userTaskTime=").append(userTaskTime);
+        sb.append("{taskTime=").append(taskTime);
         sb.append('}');
         return sb.toString();
     }

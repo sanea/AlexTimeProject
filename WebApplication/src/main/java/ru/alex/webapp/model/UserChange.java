@@ -29,7 +29,7 @@ public class UserChange implements Serializable {
     @OneToOne(mappedBy = "currentChange", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private User currentChangeUser;
     @OneToMany(mappedBy = "userChange", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private Collection<UserTaskTime> userTaskTimeList;
+    private Collection<TaskTime> taskTimeList;
 
 
     public Long getId() {
@@ -80,12 +80,12 @@ public class UserChange implements Serializable {
         this.currentChangeUser = user;
     }
 
-    public Collection<UserTaskTime> getUserTaskTimeList() {
-        return userTaskTimeList;
+    public Collection<TaskTime> getTaskTimeList() {
+        return taskTimeList;
     }
 
-    public void setUserTaskTimeList(Collection<UserTaskTime> userTaskTimeList) {
-        this.userTaskTimeList = userTaskTimeList;
+    public void setTaskTimeList(Collection<TaskTime> taskTimeList) {
+        this.taskTimeList = taskTimeList;
     }
 
     @Override

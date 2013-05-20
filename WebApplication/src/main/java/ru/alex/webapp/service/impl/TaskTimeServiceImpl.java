@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskType;
-import ru.alex.webapp.service.UserTaskTimeService;
+import ru.alex.webapp.service.TaskTimeService;
 
 import java.util.Date;
 import java.util.List;
@@ -23,65 +23,65 @@ import java.util.List;
  */
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Long> implements UserTaskTimeService {
-    private static final Logger logger = LoggerFactory.getLogger(UserTaskTimeServiceImpl.class);
+public class TaskTimeServiceImpl extends GenericServiceImpl<TaskTime, Long> implements TaskTimeService {
+    private static final Logger logger = LoggerFactory.getLogger(TaskTimeServiceImpl.class);
     @Autowired
-    UserTaskTimeDao userTaskTimeDao;
+    TaskTimeDao taskTimeDao;
 
     @Override
-    protected GenericDao<UserTaskTime, Long> getDao() {
-        return userTaskTimeDao;
+    protected GenericDao<TaskTime, Long> getDao() {
+        return taskTimeDao;
     }
 
     @Override
-    public void update(UserTaskTime entity) throws Exception {
+    public void update(TaskTime entity) throws Exception {
         throw new UnsupportedOperationException("Can't update");
     }
 
     @Override
-    public void add(UserTaskTime entity) throws Exception {
+    public void add(TaskTime entity) throws Exception {
         throw new UnsupportedOperationException("Adding is on process start");
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void remove(UserTaskTime entity) throws Exception {
+    public void remove(TaskTime entity) throws Exception {
         if (entity == null)
-            throw new IllegalArgumentException("UserTaskTime is null");
+            throw new IllegalArgumentException("TaskTime is null");
         if (entity.getTotal() == null && entity.getUserSiteTaskById().getCurrentTime().equals(entity))
             throw new Exception("Can't remove current time!");
         if (entity.getDeleted())
             throw new Exception("Can't remove deleted time!");
         entity.setDeleted(true);
-        userTaskTimeDao.merge(entity);
+        taskTimeDao.merge(entity);
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void restore(UserTaskTime entity) throws Exception {
+    public void restore(TaskTime entity) throws Exception {
         if (entity == null)
-            throw new IllegalArgumentException("UserTaskTime is null");
+            throw new IllegalArgumentException("TaskTime is null");
         if (entity.getTotal() == null && entity.getUserSiteTaskById().getCurrentTime().equals(entity))
             throw new Exception("Can't remove current time!");
         if (!entity.getDeleted())
             throw new Exception("Can't restore not deleted time!");
         entity.setDeleted(false);
-        userTaskTimeDao.merge(entity);
+        taskTimeDao.merge(entity);
     }
 
     @Override
-    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) throws Exception {
+    public List<TaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to) throws Exception {
         return getAll(site, user, task, taskType, from, to, false, 0, 0);
     }
 
     @Override
-    public List<UserTaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean showDeleted, int start, int end) throws Exception {
+    public List<TaskTime> getAll(Site site, User user, Task task, TaskType taskType, Date from, Date to, boolean showDeleted, int start, int end) throws Exception {
         logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}, showDeleted={}, start={}, end={}", site, user, task, taskType, from, to, showDeleted, start, end);
         if (site == null && user == null && task == null && taskType == null && from == null && to == null) {
             if (showDeleted) {
-                return userTaskTimeDao.findWithNamedQuery(UserTaskTime.ALL, start, end);
+                return taskTimeDao.findWithNamedQuery(TaskTime.ALL, start, end);
             } else {
-                return userTaskTimeDao.findWithNamedQuery(UserTaskTime.ALL_NOT_DELETED, start, end);
+                return taskTimeDao.findWithNamedQuery(TaskTime.ALL_NOT_DELETED, start, end);
             }
         }
         if (start < 0 || end < 0)
@@ -89,7 +89,7 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
         if ((site != null && site.getId() == null) || (user != null && user.getUsername() == null)
                 || (task != null && task.getId() == null))
             throw new IllegalArgumentException("Wrong input params");
-        return userTaskTimeDao.getAll(site, user, task, taskType, from, to, showDeleted, start, end);
+        return taskTimeDao.getAll(site, user, task, taskType, from, to, showDeleted, start, end);
     }
 
     @Override
@@ -97,14 +97,14 @@ public class UserTaskTimeServiceImpl extends GenericServiceImpl<UserTaskTime, Lo
         logger.debug("getAll site={}, user={}, task={}, taskType={}, from={}, to={}, withDeleted={}", site, user, task, taskType, from, to, withDeleted);
         if (site == null && user == null && task == null && taskType == null && from == null && to == null) {
             if (withDeleted) {
-                return userTaskTimeDao.count();
+                return taskTimeDao.count();
             } else {
-                return userTaskTimeDao.countWithNamedQuery(UserTaskTime.COUNT_NOT_DELETED);
+                return taskTimeDao.countWithNamedQuery(TaskTime.COUNT_NOT_DELETED);
             }
         }
         if ((site != null && site.getId() == null) || (user != null && user.getUsername() == null)
                 || (task != null && task.getId() == null))
             throw new IllegalArgumentException("Wrong input params");
-        return userTaskTimeDao.countAll(site, user, task, taskType, from, to, withDeleted);
+        return taskTimeDao.countAll(site, user, task, taskType, from, to, withDeleted);
     }
 }

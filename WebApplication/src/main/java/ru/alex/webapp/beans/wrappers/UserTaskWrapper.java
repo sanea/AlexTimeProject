@@ -2,8 +2,8 @@ package ru.alex.webapp.beans.wrappers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.UserSiteTask;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.util.TimeUtils;
@@ -40,7 +40,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     private void init() {
-        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        TaskTime currentTime = userSiteTask.getCurrentTime();
         if (currentTime != null) {
             startTime = currentTime.getStartTime();
 
@@ -94,7 +94,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public BigDecimal getTaskPriceHour() {
-        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        TaskTime currentTime = userSiteTask.getCurrentTime();
         if (currentTime != null)
             return currentTime.getPriceHour();
         if (TaskType.getType(userSiteTask.getSiteTask().getTaskByTaskId().getType()) == TaskType.TASK_CUSTOM_PRICE)
@@ -103,7 +103,7 @@ public class UserTaskWrapper implements Serializable {
     }
 
     public String getComment() {
-        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        TaskTime currentTime = userSiteTask.getCurrentTime();
         if (currentTime != null)
             return currentTime.getComment();
         else
@@ -113,7 +113,7 @@ public class UserTaskWrapper implements Serializable {
     public int getTimeLeftSec() {
         int timeLeftSec = 0;
         Date now = new Date();
-        UserTaskTime currentTime = userSiteTask.getCurrentTime();
+        TaskTime currentTime = userSiteTask.getCurrentTime();
         if (currentTime != null) {
             TaskStatus status = TaskStatus.getStatus(userSiteTask.getStatus());
             Date finishTime;

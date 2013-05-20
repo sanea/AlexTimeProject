@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteDao;
-import ru.alex.webapp.dao.UserTaskTimeDao;
+import ru.alex.webapp.dao.TaskTimeDao;
 import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.TaskTime;
 import ru.alex.webapp.model.User;
-import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.SiteService;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
     @Autowired
     SiteDao siteDao;
     @Autowired
-    UserTaskTimeDao userTaskTimeDao;
+    TaskTimeDao taskTimeDao;
 
     @Override
     protected GenericDao<Site, Long> getDao() {
@@ -70,9 +70,9 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
 
         Map<String, Object> params = new HashMap<>(1);
         params.put("siteId", entity.getId());
-        Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.BY_SITE_ID, params);
-        logger.debug("remove BY_SITE_ID userTaskTimeList={}", userTaskTimeList);
-        if (userTaskTimeList == null || userTaskTimeList.size() == 0) {
+        Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.BY_SITE_ID, params);
+        logger.debug("remove BY_SITE_ID taskTimeList={}", taskTimeList);
+        if (taskTimeList == null || taskTimeList.size() == 0) {
             entity = siteDao.merge(entity);
             siteDao.remove(entity);
         } else {
@@ -102,9 +102,9 @@ public class SiteServiceImpl extends GenericServiceImpl<Site, Long> implements S
         } else {
             Map<String, Object> params = new HashMap<>(1);
             params.put("siteId", site.getId());
-            Collection<UserTaskTime> userTaskTimeList = userTaskTimeDao.findWithNamedQuery(UserTaskTime.CURRENT_BY_SITE_ID, params);
-            logger.debug("isSiteDeletable CURRENT_BY_SITE_ID userTaskTimeList={}", userTaskTimeList);
-            if (userTaskTimeList == null || userTaskTimeList.size() == 0)
+            Collection<TaskTime> taskTimeList = taskTimeDao.findWithNamedQuery(TaskTime.CURRENT_BY_SITE_ID, params);
+            logger.debug("isSiteDeletable CURRENT_BY_SITE_ID taskTimeList={}", taskTimeList);
+            if (taskTimeList == null || taskTimeList.size() == 0)
                 result = true;
             else
                 result = false;
