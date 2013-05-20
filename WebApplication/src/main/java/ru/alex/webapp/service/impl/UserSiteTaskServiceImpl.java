@@ -228,19 +228,19 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         remove(userSiteTask);
     }
 
-    @Override
-    @Scheduled(fixedDelay = 1000)
-    public void checkAllTasks() {
-        //logger.debug("checkAllTasks");
-        try {
-            List<UserSiteTask> runningTasks = getAllCurrentTime();
-            for (UserSiteTask task : runningTasks) {
-                checkTask(task);
-            }
-        } catch (Exception ex) {
-            logger.error("checkAllTasks " + ex.getMessage(), ex);
-        }
-    }
+//    @Override
+//    @Scheduled(fixedDelay = 1000)
+//    public void checkAllTasks() {
+//        //logger.debug("checkAllTasks");
+//        try {
+//            List<UserSiteTask> runningTasks = getAllCurrentTime();
+//            for (UserSiteTask task : runningTasks) {
+//                checkTask(task);
+//            }
+//        } catch (Exception ex) {
+//            logger.error("checkAllTasks " + ex.getMessage(), ex);
+//        }
+//    }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -598,7 +598,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
      * @return if task was ended
      * @throws Exception
      */
-    private boolean checkTask(UserSiteTask task) throws Exception {
+    @Override
+    public boolean checkTask(UserSiteTask task) throws Exception {
         logger.debug("checkTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");

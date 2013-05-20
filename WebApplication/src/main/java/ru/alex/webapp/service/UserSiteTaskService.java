@@ -27,7 +27,7 @@ public interface UserSiteTaskService extends GenericService<UserSiteTask, Long> 
 
     void removeUserSiteTask(User user, Site site, Task task) throws Exception;
 
-    void checkAllTasks();
+    //void checkAllTasks();
 
     void startTask(UserSiteTask userSiteTask, BigDecimal customPrice) throws Exception;
 
@@ -42,5 +42,7 @@ public interface UserSiteTaskService extends GenericService<UserSiteTask, Long> 
     void extendProcess(UserSiteTask userSiteTask, int seconds) throws Exception;
 
     void stopProcess(UserSiteTask userSiteTask) throws Exception;
+
+    boolean checkTask(UserSiteTask task) throws Exception;
 
 }
