@@ -82,7 +82,7 @@ public class UserTaskTime implements Serializable {
     private Collection<UserAction> userActionsById;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "time_seq_id", referencedColumnName = "id", nullable = true)
-    private UserTaskTimeSeq timeSeq;
+    private TaskTimeSeq timeSeq;
 
     public Long getId() {
         return id;
@@ -228,11 +228,11 @@ public class UserTaskTime implements Serializable {
         this.userActionsById = userActionsById;
     }
 
-    public UserTaskTimeSeq getTimeSeq() {
+    public TaskTimeSeq getTimeSeq() {
         return timeSeq;
     }
 
-    public void setTimeSeq(UserTaskTimeSeq timeSeq) {
+    public void setTimeSeq(TaskTimeSeq timeSeq) {
         this.timeSeq = timeSeq;
     }
 

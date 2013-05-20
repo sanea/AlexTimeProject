@@ -9,7 +9,7 @@ import java.util.Date;
  */
 @Table(name = "user_task_time_seq")
 @Entity
-public class UserTaskTimeSeq implements Serializable {
+public class TaskTimeSeq implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,10 +23,10 @@ public class UserTaskTimeSeq implements Serializable {
     private String taskStatus;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "next_id")
-    private UserTaskTimeSeq nextTimeSeq;
+    private TaskTimeSeq nextTimeSeq;
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "prev_id")
-    private UserTaskTimeSeq prevTimeSeq;
+    private TaskTimeSeq prevTimeSeq;
     @OneToOne(mappedBy = "timeSeq", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private UserTaskTime userTaskTime;
 
@@ -62,19 +62,19 @@ public class UserTaskTimeSeq implements Serializable {
         this.taskStatus = taskStatus;
     }
 
-    public UserTaskTimeSeq getNextTimeSeq() {
+    public TaskTimeSeq getNextTimeSeq() {
         return nextTimeSeq;
     }
 
-    public void setNextTimeSeq(UserTaskTimeSeq nextTimeSeq) {
+    public void setNextTimeSeq(TaskTimeSeq nextTimeSeq) {
         this.nextTimeSeq = nextTimeSeq;
     }
 
-    public UserTaskTimeSeq getPrevTimeSeq() {
+    public TaskTimeSeq getPrevTimeSeq() {
         return prevTimeSeq;
     }
 
-    public void setPrevTimeSeq(UserTaskTimeSeq prevTimeSeq) {
+    public void setPrevTimeSeq(TaskTimeSeq prevTimeSeq) {
         this.prevTimeSeq = prevTimeSeq;
     }
 
@@ -91,7 +91,7 @@ public class UserTaskTimeSeq implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserTaskTimeSeq that = (UserTaskTimeSeq) o;
+        TaskTimeSeq that = (TaskTimeSeq) o;
 
         if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
@@ -111,7 +111,7 @@ public class UserTaskTimeSeq implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("UserTaskTimeSeq");
+        sb.append("TaskTimeSeq");
         sb.append("{id=").append(id);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);

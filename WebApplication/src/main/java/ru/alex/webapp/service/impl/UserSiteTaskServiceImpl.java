@@ -3,7 +3,6 @@ package ru.alex.webapp.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +11,15 @@ import ru.alex.webapp.dao.SiteTaskDao;
 import ru.alex.webapp.dao.UserActionDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
-import ru.alex.webapp.dao.UserTaskTimeSeqDao;
+import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.SiteTask;
 import ru.alex.webapp.model.Task;
+import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserAction;
 import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.UserTaskTime;
-import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
@@ -53,7 +52,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     @Autowired
     SiteTaskService siteTaskService;
     @Autowired
-    UserTaskTimeSeqDao userTaskTimeSeqDao;
+    TaskTimeSeqDao taskTimeSeqDao;
     @Autowired
     UserActionDao userActionDao;
 
@@ -367,7 +366,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         task.setCurrentTime(userTaskTime);
 
         //add user_task_time_seq
-        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        TaskTimeSeq timeSeq = new TaskTimeSeq();
         timeSeq.setStartTime(now);
         timeSeq.setUserTaskTime(userTaskTime);
         timeSeq.setTaskStatus(newTaskStatus.getStatusStr());
@@ -407,11 +406,11 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         endTime.add(Calendar.SECOND, seconds);
 
         //get Time Seq in reverse order
-        List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        List<TaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
         logger.debug("endTask timeSeqList={}", timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
-        UserTaskTimeSeq currentTimeSeq = timeSeqList.get(0);
+        TaskTimeSeq currentTimeSeq = timeSeqList.get(0);
         TaskStatus currentTimeSeqStatus = TaskStatus.getStatus(currentTimeSeq.getTaskStatus());
         if (currentTimeSeqStatus != TaskStatus.RUNNING)
             throw new Exception("last timeSeq should have status RUNNING");
@@ -452,17 +451,17 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
 
         //set the last time_seq end_time value
-        currentTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        currentTimeSeq = taskTimeSeqDao.findById(currentTimeSeq.getId());
         currentTimeSeq.setEndTime(now);
         //add user_task_time_seq to the end of current user_task_time with status running
-        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        TaskTimeSeq timeSeq = new TaskTimeSeq();
         timeSeq.setTaskStatus(newTaskStatus.getStatusStr());
         timeSeq.setStartTime(now);
         timeSeq.setPrevTimeSeq(currentTimeSeq);
         currentTimeSeq.setNextTimeSeq(timeSeq);
-        userTaskTimeSeqDao.merge(currentTimeSeq);
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
+        taskTimeSeqDao.merge(currentTimeSeq);
+        taskTimeSeqDao.flush();
+        taskTimeSeqDao.clear();
 
         //add user_action
         addUserAction(action, now, currentTime);
@@ -651,20 +650,20 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
-        List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        List<TaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
         logger.debug("endTask timeSeqList={}", timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
-        UserTaskTimeSeq currentTimeSeq = timeSeqList.get(0);
+        TaskTimeSeq currentTimeSeq = timeSeqList.get(0);
         if (TaskStatus.getStatus(currentTimeSeq.getTaskStatus()) != TaskStatus.RUNNING)
             throw new Exception("last timeSeq should have status RUNNING");
 
         //set the last time_seq end_time value
-        currentTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        currentTimeSeq = taskTimeSeqDao.findById(currentTimeSeq.getId());
         currentTimeSeq.setEndTime(finishTime);
-        currentTimeSeq = userTaskTimeSeqDao.merge(currentTimeSeq);
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
+        currentTimeSeq = taskTimeSeqDao.merge(currentTimeSeq);
+        taskTimeSeqDao.flush();
+        taskTimeSeqDao.clear();
         timeSeqList.set(0, currentTimeSeq);
 
         //change user_site_task status and remove current_time
@@ -679,7 +678,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (stop) {
             int timeSpentSec = 0;
             //timeSeqList is updated
-            for (UserTaskTimeSeq timeSeq : timeSeqList) {
+            for (TaskTimeSeq timeSeq : timeSeqList) {
                 if (timeSeq.getEndTime() == null || timeSeq.getEndTime().before(timeSeq.getStartTime()))
                     throw new Exception("time sequence should have correct end time");
                 if (TaskStatus.getStatus(timeSeq.getTaskStatus()) == TaskStatus.RUNNING) {
@@ -721,27 +720,27 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTimeDao.lock(currentTime, LockModeType.PESSIMISTIC_WRITE);
 
         //get Time Seq in reverse order
-        List<UserTaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
+        List<TaskTimeSeq> timeSeqList = getAllTimeSeq(currentTime.getTimeSeq());
         logger.debug("endTask timeSeqList={}", timeSeqList);
         if (timeSeqList.size() == 0)
             throw new Exception("timeSeqList should have size >= 1");
-        UserTaskTimeSeq currentTimeSeq = timeSeqList.get(0);
+        TaskTimeSeq currentTimeSeq = timeSeqList.get(0);
         TaskStatus currentTimeSeqStatus = TaskStatus.getStatus(currentTimeSeq.getTaskStatus());
         if (currentTimeSeqStatus != TaskStatus.CUSTOM1 && currentTimeSeqStatus != TaskStatus.CUSTOM2 && currentTimeSeqStatus != TaskStatus.CUSTOM3)
             throw new Exception("last timeSeq should have status CUSTOM");
 
         //set the last time_seq end_time value
-        currentTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        currentTimeSeq = taskTimeSeqDao.findById(currentTimeSeq.getId());
         currentTimeSeq.setEndTime(finishTime);
-        currentTimeSeq = userTaskTimeSeqDao.merge(currentTimeSeq);
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
+        currentTimeSeq = taskTimeSeqDao.merge(currentTimeSeq);
+        taskTimeSeqDao.flush();
+        taskTimeSeqDao.clear();
         timeSeqList.set(0, currentTimeSeq);
 
         //calculate new finish_time_now for user_task_time
         int timeSpentSec = 0;
         int timeSpentCustomSec = 0;
-        for (UserTaskTimeSeq ts : timeSeqList) {
+        for (TaskTimeSeq ts : timeSeqList) {
             if (ts.getEndTime() == null || ts.getEndTime().before(ts.getStartTime()))
                 throw new Exception("time sequence should have correct end time");
             long seqDif = (ts.getEndTime().getTime() - ts.getStartTime().getTime()) / 1000;
@@ -781,15 +780,15 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userTaskTimeDao.clear();
 
         //add user_task_time_seq to the end of current user_task_time with status running
-        UserTaskTimeSeq timeSeq = new UserTaskTimeSeq();
+        TaskTimeSeq timeSeq = new TaskTimeSeq();
         timeSeq.setTaskStatus(TaskStatus.RUNNING.getStatusStr());
         timeSeq.setStartTime(finishTime);
-        UserTaskTimeSeq prevTimeSeq = userTaskTimeSeqDao.findById(currentTimeSeq.getId());
+        TaskTimeSeq prevTimeSeq = taskTimeSeqDao.findById(currentTimeSeq.getId());
         timeSeq.setPrevTimeSeq(prevTimeSeq);
         prevTimeSeq.setNextTimeSeq(timeSeq);
-        userTaskTimeSeqDao.merge(prevTimeSeq);
-        userTaskTimeSeqDao.flush();
-        userTaskTimeSeqDao.clear();
+        taskTimeSeqDao.merge(prevTimeSeq);
+        taskTimeSeqDao.flush();
+        taskTimeSeqDao.clear();
 
         //add user_action
         addUserAction(Action.RESUME, finishTime, currentTime);
@@ -803,9 +802,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
      * @return
      * @throws Exception
      */
-    private List<UserTaskTimeSeq> getAllTimeSeq(UserTaskTimeSeq timeSeq) throws Exception {
+    private List<TaskTimeSeq> getAllTimeSeq(TaskTimeSeq timeSeq) throws Exception {
         logger.debug("getAllTimeSeq timeSeq={}", timeSeq);
-        List<UserTaskTimeSeq> nextTimeSeqList = null;
+        List<TaskTimeSeq> nextTimeSeqList = null;
         if (timeSeq.equals(timeSeq.getNextTimeSeq()))
             throw new Exception("Unlimited recursion in getAllTimeSeq for task");
 
@@ -815,7 +814,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         if (nextTimeSeqList != null && nextTimeSeqList.contains(timeSeq))
             throw new Exception("Unlimited recursion in getAllTimeSeq for task");
 
-        List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
+        List<TaskTimeSeq> timeSeqList = new ArrayList<>();
         if (nextTimeSeqList != null)
             timeSeqList.addAll(nextTimeSeqList);
         timeSeqList.add(timeSeq);

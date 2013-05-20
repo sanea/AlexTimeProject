@@ -14,7 +14,7 @@ import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.User;
 import ru.alex.webapp.model.UserTaskTime;
-import ru.alex.webapp.model.UserTaskTimeSeq;
+import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.service.SiteService;
 import ru.alex.webapp.service.TaskService;
@@ -177,10 +177,10 @@ public class CancelTaskTimeMB implements Serializable {
         selectedTaskWrapper = (UserTaskTimeWrapper) event.getComponent().getAttributes().get("taskTime");
         logger.debug("selectTaskListener selectedTaskWrapper={}", selectedTaskWrapper);
         try {
-            List<UserTaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getUserTaskTimeSeq());
+            List<TaskTimeSeq> taskTimeSeqList = buildTimeSeqList(selectedTaskWrapper.getTaskTimeSeq());
             logger.debug("selectTaskListener taskTimeSeqList={}", taskTimeSeqList);
             List<TimeSequenceWrapper> timeSeqList = new ArrayList<>(taskTimeSeqList.size());
-            for (UserTaskTimeSeq timeSeq : taskTimeSeqList)
+            for (TaskTimeSeq timeSeq : taskTimeSeqList)
                 timeSeqList.add(new TimeSequenceWrapper(timeSeq, sessionMB.getLocale(), sessionMB.getResourceBundle()));
             selectedTimeSeqList = timeSeqList;
             RequestContext.getCurrentInstance().addCallbackParam("showTaskDlg", true);
@@ -228,9 +228,9 @@ public class CancelTaskTimeMB implements Serializable {
         }
     }
 
-    private List<UserTaskTimeSeq> buildTimeSeqList(UserTaskTimeSeq timeSeq) throws Exception {
+    private List<TaskTimeSeq> buildTimeSeqList(TaskTimeSeq timeSeq) throws Exception {
         logger.debug("buildTimeSeqList timeSeq={}", timeSeq);
-        List<UserTaskTimeSeq> timeSeqList = new ArrayList<>();
+        List<TaskTimeSeq> timeSeqList = new ArrayList<>();
         if (timeSeq != null) {
             timeSeqList.add(timeSeq);
             if (timeSeq.getNextTimeSeq() != null)

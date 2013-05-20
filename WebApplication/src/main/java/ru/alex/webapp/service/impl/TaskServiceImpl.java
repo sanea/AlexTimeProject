@@ -10,7 +10,7 @@ import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.TaskDao;
 import ru.alex.webapp.dao.UserActionDao;
 import ru.alex.webapp.dao.UserTaskTimeDao;
-import ru.alex.webapp.dao.UserTaskTimeSeqDao;
+import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.model.Task;
 import ru.alex.webapp.model.UserTaskTime;
 import ru.alex.webapp.service.TaskService;
@@ -29,7 +29,7 @@ public class TaskServiceImpl extends GenericServiceImpl<Task, Long> implements T
     @Autowired
     private UserTaskTimeDao userTaskTimeDao;
     @Autowired
-    private UserTaskTimeSeqDao userTaskTimeSeqDao;
+    private TaskTimeSeqDao taskTimeSeqDao;
     @Autowired
     private UserActionDao userActionDao;
 

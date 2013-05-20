@@ -1,6 +1,6 @@
 package ru.alex.webapp.beans.wrappers;
 
-import ru.alex.webapp.model.UserTaskTimeSeq;
+import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.util.TimeUtils;
 
@@ -19,7 +19,7 @@ public class TimeSequenceWrapper {
     private String statusFormatted;
 
 
-    public TimeSequenceWrapper(UserTaskTimeSeq timeSeq, Locale locale, ResourceBundle resourceBundle) {
+    public TimeSequenceWrapper(TaskTimeSeq timeSeq, Locale locale, ResourceBundle resourceBundle) {
         this.startTime = timeSeq.getStartTime();
         this.endTime = timeSeq.getEndTime();
         this.durationSec = (int) ((endTime.getTime() - startTime.getTime()) / 1000);

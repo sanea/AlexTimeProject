@@ -2,9 +2,9 @@ package ru.alex.webapp.beans.wrappers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.alex.webapp.model.TaskTimeSeq;
 import ru.alex.webapp.model.UserChange;
 import ru.alex.webapp.model.UserTaskTime;
-import ru.alex.webapp.model.UserTaskTimeSeq;
 import ru.alex.webapp.model.enums.TaskType;
 import ru.alex.webapp.util.TimeUtils;
 
@@ -111,7 +111,7 @@ public class UserTaskTimeWrapper implements Serializable {
         return (getDurationCustom3Sec() != null) ? TimeUtils.formatTimeSec(getDurationCustom3Sec(), resourceBundle) : null;
     }
 
-    public UserTaskTimeSeq getUserTaskTimeSeq() {
+    public TaskTimeSeq getTaskTimeSeq() {
         return userTaskTime.getTimeSeq();
     }
 
