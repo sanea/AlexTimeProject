@@ -7,4 +7,6 @@ public interface OnlineTaskService {
 
     void checkAllTasks();
 
+    void updateTasksStatus() throws Exception;
+
 }

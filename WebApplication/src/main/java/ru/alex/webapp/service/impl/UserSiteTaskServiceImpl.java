@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.webapp.dao.GenericDao;
 import ru.alex.webapp.dao.SiteTaskDao;
 import ru.alex.webapp.dao.TaskTimeDao;
+import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.dao.UserActionDao;
 import ru.alex.webapp.dao.UserSiteTaskDao;
-import ru.alex.webapp.dao.TaskTimeSeqDao;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.SiteTask;
 import ru.alex.webapp.model.Task;
@@ -23,6 +23,7 @@ import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.model.enums.Action;
 import ru.alex.webapp.model.enums.TaskStatus;
 import ru.alex.webapp.model.enums.TaskType;
+import ru.alex.webapp.service.OnlineTaskService;
 import ru.alex.webapp.service.SiteTaskService;
 import ru.alex.webapp.service.UserSiteTaskService;
 
@@ -55,6 +56,8 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
     TaskTimeSeqDao taskTimeSeqDao;
     @Autowired
     UserActionDao userActionDao;
+    @Autowired
+    OnlineTaskService onlineTaskService;
 
     @Override
     protected GenericDao<UserSiteTask, Long> getDao() {
@@ -289,6 +292,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user_action
         addUserAction(Action.START, now, taskTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     @Override
@@ -378,6 +384,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user_action
         addUserAction(Action.START, now, taskTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     @Override
@@ -465,6 +474,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user_action
         addUserAction(action, now, currentTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     @Override
@@ -564,6 +576,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user action
         addUserAction(Action.EXTEND, now, currentTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     @Override
@@ -599,7 +614,7 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
      */
     @Override
     public boolean checkTask(UserSiteTask task) throws Exception {
-        logger.debug("checkTask task={}", task);
+        //logger.debug("checkTask task={}", task);
         if (task == null)
             throw new IllegalArgumentException("UserSiteTask is null");
         TaskStatus status = TaskStatus.getStatus(task.getStatus());
@@ -699,6 +714,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user_action
         addUserAction(stop ? Action.STOP : Action.FINISH, finishTime, currentTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     //end custom and resume to play
@@ -792,6 +810,9 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
 
         //add user_action
         addUserAction(Action.RESUME, finishTime, currentTime);
+
+        //reload currentTasks from db
+        onlineTaskService.updateTasksStatus();
     }
 
     /**
@@ -829,7 +850,6 @@ public class UserSiteTaskServiceImpl extends GenericServiceImpl<UserSiteTask, Lo
         userActionDao.persist(userAction);
         userActionDao.flush();
         userActionDao.clear();
-
     }
 
 }
