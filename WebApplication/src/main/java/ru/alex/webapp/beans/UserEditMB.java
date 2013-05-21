@@ -80,6 +80,10 @@ public class UserEditMB implements Serializable {
         }
     }
 
+    public String getUsernameRegexp() {
+        return UserService.USERNAME_REGEXP;
+    }
+
     public List<User> getUserList() {
         return userList;
     }

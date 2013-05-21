@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import ru.alex.webapp.model.CustomAction;
 import ru.alex.webapp.model.Site;
 import ru.alex.webapp.model.User;
@@ -37,6 +38,7 @@ public class SessionMB implements Serializable {
     private Set<String> authorities;
     private Site selectedSite;
     private User currentUser;
+    private String userLabel;
     private Locale locale;
     private ResourceBundle resourceBundle;
 
@@ -58,6 +60,12 @@ public class SessionMB implements Serializable {
                 authorities.add(grantedAuthority.getAuthority());
             }
             currentUser = userService.findById(userName);
+
+            if (currentUser == null) {
+
+            }
+
+            userLabel = StringUtils.isEmpty(currentUser.getFirstName()) ? currentUser.getUsername() : currentUser.getFirstName();
             if (currentUser.getCurrentChange() != null)
                 selectedSite = currentUser.getCurrentChange().getSite();
         }
@@ -83,6 +91,10 @@ public class SessionMB implements Serializable {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public String getUserLabel() {
+        return userLabel;
     }
 
     public void setCurrentUser(User currentUser) {

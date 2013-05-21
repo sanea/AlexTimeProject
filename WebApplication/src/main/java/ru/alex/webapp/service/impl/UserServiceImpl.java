@@ -6,16 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.webapp.dao.*;
-import ru.alex.webapp.model.*;
+import ru.alex.webapp.dao.GenericDao;
+import ru.alex.webapp.dao.SiteDao;
+import ru.alex.webapp.dao.TaskTimeDao;
+import ru.alex.webapp.dao.UserChangeDao;
+import ru.alex.webapp.dao.UserDao;
+import ru.alex.webapp.dao.UserSiteTaskDao;
+import ru.alex.webapp.model.Site;
+import ru.alex.webapp.model.TaskTime;
+import ru.alex.webapp.model.User;
+import ru.alex.webapp.model.UserChange;
+import ru.alex.webapp.model.UserSiteTask;
 import ru.alex.webapp.service.UserService;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserServiceImpl extends GenericServiceImpl<User, String> implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -39,6 +53,8 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
             throw new IllegalArgumentException("Wrong user");
+        if (!user.getUsername().matches(USERNAME_REGEXP))
+            throw new IllegalArgumentException("Wrong username: '" + user.getUsername() + "'");
         user.setDeleted(false);
         userDao.persist(user);
     }
@@ -50,9 +66,13 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         if (user == null || user.getUsername() == null || user.getUsername().equals("")
                 || user.getPassword() == null || user.getPassword().equals(""))
             throw new IllegalArgumentException("Wrong user");
+        if (!user.getUsername().matches(USERNAME_REGEXP))
+            throw new IllegalArgumentException("Wrong username: '" + user.getUsername() + "'");
         User userEntity = userDao.findById(user.getUsername());
         if (userEntity == null)
             throw new Exception("Can't find for update user " + user.getUsername());
+        if (!user.getUsername().equals(userEntity.getUsername()))
+            throw new IllegalArgumentException("Can't change username!");
         User mergedUser = userDao.merge(user);
         logger.debug("Updated user: {}", mergedUser);
     }
@@ -158,4 +178,5 @@ public class UserServiceImpl extends GenericServiceImpl<User, String> implements
         logger.debug("finishChange mergedUser={}", user);
         return user;
     }
+
 }

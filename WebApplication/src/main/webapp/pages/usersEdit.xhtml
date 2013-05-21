@@ -226,7 +226,10 @@
     <h:panelGrid id="addDialogContent" columns="3" cellpadding="2">
         <h:outputLabel for="userName" value="#{msg['name']}:"/>
         <p:inputText value="#{userEditMB.newUser.username}" id="userName" required="true"
-                     requiredMessage="#{msg['name.mess.needed']}"/>
+                     requiredMessage="#{msg['name.mess.needed']}"
+                     validatorMessage="#{msg['name.mess.inval.format']}">
+            <f:validateRegex pattern="#{userEditMB.usernameRegexp}"/>
+        </p:inputText>
         <p:message for="userName"/>
 
         <h:outputLabel for="password" value="#{msg['password']}:"/>
